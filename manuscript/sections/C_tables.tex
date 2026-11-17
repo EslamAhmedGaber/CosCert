@@ -1,0 +1,24 @@
+\section{Complete tables}\label{app:tables}
+
+\Cref{tab:sncvfull} gives the certified quantiles of $T_H$ at all \pthree{sn-n-H} values of $H$ and six levels; each
+entry is the correct rounding of every point of its enclosure. \Cref{tab:fixedfull} gives the two-sided $5\,\%$ values of
+the fixed-$m$ and EWC limits on a coarser grid of $H$; all \pthree{fx-n-cells} certified values, at $10$, $5$ and
+$1\,\%$ and $H=0.50,0.51,\dots,0.99$, are in the files \texttt{E2\_sn\_critical\_values.json} and
+\texttt{E2b\_fixed\_*.json} (\cref{app:repro}). \Cref{tab:surface} gives the response-surface coefficients of
+\cref{sec:surface}.
+
+{\small\setlength{\tabcolsep}{5pt}
+\input{tables/tab_sn_cv_full.tex}}%
+
+\begin{table}[tbp]\centering\small
+\caption{Two-sided $5\,\%$ critical values of the fixed-$m$ statistic (HI) and of the EWC statistic (certified).}\label{tab:fixedfull}
+\footnotesize\setlength{\tabcolsep}{3.2pt}\input{tables/tab_fixed_cv_full.tex}%
+\end{table}
+
+\begin{table}[h]\centering\small
+\caption{Response surface $\log q_p(H)=-\log(1-H)+\sum_{i=0}^Ka_{p,i}(H-\frac12)^i$ for the quantile $q_p$ of $T_H$,
+fitted on even hundredths of $H$ and validated on odd hundredths ($\frac12\le H\le0.99$). Level $p$: two-sided tests at $\alpha=1-p$, one-sided tests with a signed statistic at $a=(1-p)/2$. \textsuperscript{a}Largest held-out size error against the tabulated values, computed through the density. \textsuperscript{b}Largest held-out size error of the printed surface under the true law, certified.}\label{tab:surface}
+\footnotesize\setlength{\tabcolsep}{4pt}\input{tables/tab_surface.tex}%
+\end{table}
+
+\FloatBarrier

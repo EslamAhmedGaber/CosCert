@@ -1,0 +1,33 @@
+\renewcommand{\arraystretch}{1.12}\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.245\textwidth}>{\raggedright\arraybackslash}p{0.205\textwidth}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.24\textwidth}@{}}\toprule
+Quantity & Primary computation & Independent check & Agreement\\\midrule
+\multicolumn{4}{@{}l}{\textit{Enclosure compatibility}: an independent value lies inside a certified enclosure}\\[1pt]
+$q_p$ of $T_{1/2}$, four levels & certified brackets, $J=16384$ & closed form \citep{AP97} & all inside\\
+Cram\'er--von Mises law, three levels & certified bridge engine, $J=4096$ & closed-form quantiles & all inside\\
+fixed smoothing at $H=\frac12$, $m\le16$, $B\le32$ & certified Ruben series & Student $t$ and $F$ laws & all inside\\
+T1, T2: fixed smoothing, $H=0.8$ & certified Ruben series & Imhof (three codes), Ruben (double) & all inside; Davies $4.1\times10^{-11}$ outside\\
+T4: $F_{0.75}$ at its $95\,\%$ point & certified, $J=16384$ & Imhof, $J=512$, remainder by its mean & inside; error $\le$ $9.5\times10^{-9}$\\
+\addlinespace[4pt]
+\multicolumn{4}{@{}l}{\textit{Independent implementation}: the same quantity from separate code or another algorithm}\\[1pt]
+closed forms at $H=\frac12$ ($T_{1/2}$; Cram\'er--von Mises) & characteristic functions (mpmath) & Imhof over the explicit eigenvalues & $\ge14.5$; $\ge12.1$ digits\\
+T3: exact law of $T_n$, $n=1000$ & one eigendecomposition (\cref{prop:exactn}b) & Imhof, Davies, gx2 on the ratio form & $\le$ $1.9\times10^{-11}$\\
+naive size of $T_n$, fGn, $n\le128$ & series route & $30$-digit Imhof; separate double-precision code & $6.7\times10^{-12}$; $3.6\times10^{-5}$\,pp\\
+local power at $H=\frac12$, fixed smoothing & noncentral Imhof (\cref{prop:power}) & noncentral Student $t$ & $\le$ $2.3\times10^{-13}$, 610 cells\\
+\addlinespace[4pt]
+\multicolumn{4}{@{}l}{\textit{Asymptotic consistency}: exact finite-sample or near-edge values approach the certified limit}\\[1pt]
+$q_{0.95}$ at $H=0.99$ & certified limit & exact law, fGn, $n=128$ & size $5.000039$\,\%\\
+naive size at $H=0.9$, $0.99$ & certified limits & exact law, fGn, $n=128$ & $6.9\times10^{-5}$; $9.2\times10^{-6}$\,pp\\
+$(1-H)\,q_{0.95}(H)$, $H\to1$ & certified, $H=0.98$, $0.99$, extrapolated & $C_{0.95}$ of \cref{prop:edge} & $0.04$\,\% relative\\
+\addlinespace[4pt]
+\multicolumn{4}{@{}l}{\textit{Probabilistic check}: simulation against exact values}\\[1pt]
+finite-sample rates (\cref{sec:finite}) & exact laws & simulation, $R=200\,000$, 192 cells & 191 inside $99\,\%$ intervals\\
+oracle rates, estimated-$H$ study & exact laws, true $H$ & simulation, 1\,800 cells & 98.9\,\% inside $99\,\%$ intervals\\
+\citet[Table~2]{HI17} & exact finite-$T$ laws & their simulation & max $|z|=2.17$, 64 cells\\
+\addlinespace[4pt]
+\multicolumn{4}{@{}l}{\textit{Convergence check}: refinement of a discretisation parameter}\\[1pt]
+Bartlett/SN local power & $J=512$ & $J=256$ and $1024$ & $\le$ $9.0\times10^{-9}$; $\le$ $1.1\times10^{-9}$\\
+enclosure width of $F_H$ & $J=512,\dots,8192$ & rate $J^{-1/2-2H}$ (\cref{prop:rate}) & slopes within $0.05$\\
+\addlinespace[4pt]
+\multicolumn{4}{@{}l}{\textit{Reproducibility}: a re-run with the same or with corrected code}\\[1pt]
+\citet{HI17} Tables 2--5 & stored runs & re-runs, same seeds & Tables 3--5 bit-identical (720 rows); Table 2 within $1.1\times10^{-15}$\\
+certified $q_p(H)$, 300 values & first implementation & final implementation (\cref{app:certificate}) & all confirmed; shifts $\le$ $3\times10^{-15}$\\
+\bottomrule\end{tabular}

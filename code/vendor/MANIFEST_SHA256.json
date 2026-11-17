@@ -1,0 +1,41 @@
+{
+ "created": "2026-11-15",
+ "source_root": "<CovFourier working tree, 6 Nov 2026>",
+ "files": [
+  {
+   "original": "repo_v1.3.0\\code\\covfourier\\__init__.py",
+   "copy": "vendor\\covfourier\\__init__.py",
+   "sha256_original": "ee4387943fefac6cd54e9bcfbad2d14c34d9808856b8d68e13a2bd69c7748cad",
+   "sha256_copy": "ee4387943fefac6cd54e9bcfbad2d14c34d9808856b8d68e13a2bd69c7748cad",
+   "match": true
+  },
+  {
+   "original": "repo_v1.3.0\\code\\covfourier\\gram.py",
+   "copy": "vendor\\covfourier\\gram.py",
+   "sha256_original": "aeea4d82a8e08f2880315cfd90b4deb1216029980ae9ac2d54b0d8d99ed75d90",
+   "sha256_copy": "aeea4d82a8e08f2880315cfd90b4deb1216029980ae9ac2d54b0d8d99ed75d90",
+   "match": true
+  },
+  {
+   "original": "repo_v1.3.0\\code\\covfourier\\kummer.py",
+   "copy": "vendor\\covfourier\\kummer.py",
+   "sha256_original": "b5f418e7620b06e84a89152f0aa183813efaf04c41ff3aada016e89e72c0c36b",
+   "sha256_copy": "b5f418e7620b06e84a89152f0aa183813efaf04c41ff3aada016e89e72c0c36b",
+   "match": true
+  },
+  {
+   "original": "repo_v1.3.0\\code\\covfourier\\comparators.py",
+   "copy": "vendor\\covfourier\\comparators.py",
+   "sha256_original": "0cad6dbee7c0d5ed8650ca721c943d3d3d7385618a6833a669d6a75127c40fa4",
+   "sha256_copy": "0cad6dbee7c0d5ed8650ca721c943d3d3d7385618a6833a669d6a75127c40fa4",
+   "match": true
+  },
+  {
+   "original": "repo_v1.3.0\\code\\applications\\app4_kl_spectrum.py",
+   "copy": "vendor\\app4_kl_spectrum.py",
+   "sha256_original": "f06cb0eac25d66ad6526ba517c23b6ab317cb3ae763a910c5b6d9f5a0a0860ac",
+   "sha256_copy": "f06cb0eac25d66ad6526ba517c23b6ab317cb3ae763a910c5b6d9f5a0a0860ac",
+   "match": true
+  }
+ ]
+}

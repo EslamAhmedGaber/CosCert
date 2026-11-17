@@ -1,0 +1,11 @@
+{
+ "cells": 610,
+ "max_abs_dev": 2.3281376826389533e-13,
+ "worst": [
+  "EWC",
+  2,
+  6.0
+ ],
+ "scipy_nct_nan_cells": 80,
+ "reference": "quadrature over V ~ chi2_nu"
+}

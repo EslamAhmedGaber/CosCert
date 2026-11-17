@@ -1,0 +1,79 @@
+\section{Introduction}\label{sec:intro}
+
+A practitioner who tests $H_0:\mu=\mu_0$ for the mean of a stationary series with long memory has to answer three
+questions before reporting a $p$-value. Which critical value belongs to the statistic at hand? What rejection rate does
+the test actually have at the available sample size $n$? And how accurately are both of these numbers known? This paper
+answers the three questions for the three families of self-normalised statistics in current use: the self-normaliser of
+\citet{Lob01} and \citet{Sha10}, which coincides with the Bartlett kernel at bandwidth equal to the sample size
+\citep{KVB00,KV02,MP12}; the fixed-$m$ periodogram statistic of \citet{HI17}; and the equal-weighted cosine (EWC)
+statistic recommended by \citet{LLSW18}.
+
+All three statistics have limits that are pivotal for fixed Hurst index $H$ but depend on it, so their critical values
+must be computed for each $H$. Published values are of three kinds. At $H=\frac12$ the law of the self-normalised
+statistic is known exactly \citep{AP97,AP02} and tabulated by \citet{Lob01} and \citet{KV02}; for $H\neq\frac12$ the
+values in \citet{MP09,MP12,MP13} and \citet{HI17} come from Monte Carlo simulation of discretised fractional Brownian
+paths. None of these tables reports its accuracy in the unit that matters to a user, the size of the test, and the
+statistics are normalised differently from paper to paper (squared or signed, with or without a factor two), so that a
+value copied from one table into another statistic gives a test of a different level. Finite-sample rejection rates are
+known only from simulation, and the computational methods available for the underlying generalized chi-square laws
+\citep{Imh61,Dav80,Kuo99,BA16,Das25} have not been compared on these targets.
+
+\paragraph{What this paper does} We compute the three limit laws and their finite-sample counterparts \emph{exactly},
+in the following sense. For the Bartlett/self-normalised limit
+$T_H=B_H(1)^2\big/\int_0^1\Bt(r)^2\dd r$, with $\Bt$ the pathwise bridge of fractional Brownian motion, we give
+critical values on $\frac12\le H\le0.99$ together with machine-checked enclosures (\cref{sec:cv,sec:computation}). The
+fixed-smoothing limits are finite-dimensional ratio laws, which we evaluate with certified enclosures for every
+$0<H<1$. Under Gaussian data with fractional Gaussian noise or ARFIMA dependence the finite-sample laws of all three
+statistics are again ratios of Gaussian quadratic forms, which we evaluate exactly at $n$ up to $2000$
+(\cref{sec:finite}). Monte Carlo enters only where it must: to validate the exact computations independently and to
+study tests that plug in an estimate of $H$.
+
+\paragraph{The answers in brief} \Cref{fig:headline} summarises them.
+(i) The correct critical values grow steeply with memory: the $5\,\%$ critical value of $T_H$ rises from
+\pthree{sn-q-0.50-0.950} at $H=\frac12$ to \pthree{sn-q-0.99-0.950} at $H=0.99$, and the short-memory value rejects a
+true null \pthree{naive-sn-0.90-0.05}\,\% of the time at $H=0.9$ (\cref{fig:headline}b).
+(ii) With the critical value of the true $H$, the exact finite-sample size is close to nominal under fractional Gaussian
+noise and ARFIMA$(0,d,0)$ from $n=50$ on, but short-run dynamics distort it, and the more so the more ordinates the
+variance estimator uses (\cref{fig:finite}); when $H$ is estimated, the estimation error dominates the size distortion
+(\cref{sec:plugin}).
+(iii) The published values are accurate to within their own Monte Carlo error in size units, with the exceptions listed
+in \cref{sec:audit}.
+Two structural findings explain much of this. The self-normalisers of all three statistics are quadratic forms in the
+same Gaussian cosine coordinates of the path, and their expectations collapse to zero as $H\to1$; correcting only this
+first moment, by the closed-form factor $\rho(H)$ of \cref{prop:rho}, turns the short-memory Student-$t$ critical values
+of the fixed-smoothing tests into values whose exact size is within \pthree{rs-maxerr-090-0.05}\,pp of $5\,\%$ for
+$H\le0.9$ (\cref{fig:headline}c). And the fixed-$m$ test with $m$ frequencies and the EWC test with $B=2m$ cosines have
+practically the same limit power at every $H$ (\cref{sec:power}).
+
+\paragraph{Contributions}
+\begin{enumerate}
+\item[(C1)] Certified critical values of $T_H$ at six levels and of the fixed-$m$ and EWC limits at three levels, tabulated
+for $\frac12\le H\le0.99$, with enclosures that hold under the stated arithmetic (\cref{sec:cv,sec:computation},
+\cref{thm:certificate}); the fixed-smoothing certificate also applies for $0<H<\frac12$ and is used there in the audit,
+and the critical values grow at the rate $1/(1-H)$ (\cref{prop:edge}).
+\item[(C2)] Exact finite-sample rejection rates under Gaussian long-memory models, validated against independent
+Monte Carlo, and Monte Carlo rejection rates of the feasible plug-in tests (\cref{sec:finite}).
+\item[(C3)] A closed-form first-moment rescaling of the Student-$t$ values for the fixed-smoothing tests with exactly
+computed size error, and the collapse of the self-normaliser that explains why it works and why it fails for the
+Bartlett/self-normalised statistic (\cref{prop:rho}).
+\item[(C4)] Local power, exact for the fixed-smoothing tests and computed for the Bartlett/self-normalised test, and the
+size--power trade-off across the three families (\cref{sec:power}).
+\item[(C5)] An audit, in test-size units, of \pthree{audit-n-values} published critical values from
+\pthree{audit-n-sources} sources, with explicit matching of statistic, normalisation, tail and design
+(\cref{sec:audit}, \cref{app:audit}).
+\item[(C6)] A comparison of \pthree{e5-n-impl} implementations of \pthree{e5-n-methods} computational methods, including
+four modes of the software of \citet{Das25}, on identical targets, with the cost of each method's spectral step and the
+error interval against a certified reference (\cref{sec:methods}).
+\end{enumerate}
+The mathematical tools are those of the companion paper \citep{AhmedCosChaos}: closed-form cosine Gram matrices of
+fractional Brownian motion and a two-sided weighted cosine inequality. Here they yield a two-sided bound on every
+eigenvalue of the fractional Brownian bridge covariance operator (\cref{thm:eig}), which is the tail estimate the
+certificate needs. We call the resulting certified computation \CosCert{}, for cosine-coordinate certificate; its code
+accompanies the paper. The case $H=\frac12$ serves as validation: there the laws and quantiles are classical \citep{AP97}
+and we reproduce them to \pthree{g0-min-digits}--\pthree{g0-max-digits} significant digits.
+
+\paragraph{Organisation} \Cref{sec:setting} fixes the statistics, their normalisations and their common coordinates.
+\Cref{sec:cv} gives the critical values, \cref{sec:finite} the finite-sample rejection rates, \cref{sec:power} power and
+the choice of test, \cref{sec:audit} the audit and \cref{sec:computation} the computation. Proofs are in
+\cref{app:proofs}, details of the certificate in \cref{app:certificate}, complete tables in \cref{app:tables}, the audit
+ledger in \cref{app:audit} and the reproduction package in \cref{app:repro}.

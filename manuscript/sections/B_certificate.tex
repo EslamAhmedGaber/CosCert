@@ -1,0 +1,128 @@
+\section{The \CosCert{} certificate in detail}\label{app:certificate}
+
+\paragraph{Inputs and arithmetic} $H$ is a decimal and enters as an exact rational. The Kummer values
+$p_k+\mathrm ir_k={}_1F_1(b;b+1;\mathrm ik\pi)$, $k\le J$, are computed in ball arithmetic \citep{Joh17} at $128$ bits;
+every Gram entry used in the head blocks is a ball, and the double-precision copies used for the tail blocks carry
+entrywise rounding bounds proved in the standard model of floating-point arithmetic ($u=2^{-53}$). \Cref{tab:errsources}
+lists every error source, its bound and how the bound is evaluated.
+
+\paragraph{Factorisation} By the parity of \cref{prop:coords}, the covariance of $(Z,\Lambda_1/\pi,\dots,\Lambda_J/(J\pi))$
+splits into an odd block $A_O$ and the block of $(Z,\text{even coordinates})$ with Schur structure
+$(1,g^\top;g,A_E)$, so that, for $z=\vartheta+\mathrm it$ and $\zeta=2cz$,
+\[\mathcal M(z)^{-2}=\det(I-2zK)=\det(I+\zeta A_O)\det(I+\zeta A_E)\,(1-2z\lambda_+)\,\rho(z)\qquad(\cref{lem:branch,lem:interlace}).\]
+Each log-determinant is split into a head of $h$ coordinates and a tail,
+$\log\det(I+\zeta A)=\log\det(I+\zeta A_{hh})+\log\det(I+\zeta S)$ with the Schur complement $S=A_{tt}-\zeta A_{th}(I+\zeta A_{hh})^{-1}A_{ht}$.
+\emph{Head.} An approximate eigenvector matrix $Q$ is computed in floating point and $F=Q^{-1}A_{hh}Q-\operatorname{diag}(\ell)$
+is formed in ball arithmetic; if $|\zeta|\,\|F\|_F<\frac12$ then
+$|\log\det(I+\zeta A_{hh})-\sum_i\log(1+\zeta \ell_i)|\le h|\zeta|\|F\|_F/(1-|\zeta|\|F\|_F)$. The approximate eigenvectors only need to make $F$ small: the similarity is exact in ball arithmetic, so no
+orthogonality of $Q$ is required. For the eigenvalue bounds of the truncation, Gershgorin's theorem is applied to
+$\operatorname{diag}(\ell)+F$, which is exactly similar to $A_{hh}$ and has a real spectrum: a connected union of $k$ discs contains exactly
+$k$ eigenvalues, so sorted lower bounds follow cluster by cluster \citep[Theorem~6.1.1]{HJ13}; by Cauchy's interlacing
+theorem they bound the leading eigenvalues of the full odd and even blocks from below, and the even block, which is
+coupled to $Z$ by a rank-one term, loses its largest bound (\cref{lem:interlace}). \emph{Tail.} With the coupling $W=A_{th}^\top A_{th}$ and
+$\|A_{tt}\|_2\le\min\big(\|A_{tt}\|_F,\ \cH(\ell_0\pi)^{-1-2H}\big)$, $\ell_0$ the first tail mode (\cref{thm:eig}), one has
+$\|S\|_2\le\|A_{tt}\|_2+|\zeta|\tr W$, and if $|\zeta|\|S\|_2<\frac12$,
+\begin{gather*}\log\det(I+\zeta S)=\zeta\tr S-\tfrac12\zeta^2\|A_{tt}\|_F^2+E,\\
+|E|\le\tfrac12|\zeta|^2\big(2|\zeta|\|A_{tt}\|_2\tr W+|\zeta|^2(\tr W)^2\big)+\frac{|\zeta|^3\|S\|_2\,\|S\|_F^2}{3(1-|\zeta|\|S\|_2)},\end{gather*}
+with $\tr S$ evaluated through the diagonal of $Q^{-1}WQ$ and $\tr A_{tt}$, $\|A_{tt}\|_F^2$ summed with rounding bounds.
+The head size $h\in\{8,16,32,64,128\}$ is chosen per quadrature node as the smallest one that meets both conditions and
+gives an enclosure radius below $10^{-12}$.
+
+\paragraph{Positive eigenvalue} Put $U(\zeta)=1-\zeta g^\top(I+\zeta A_E)^{-1}g$, so that the function of
+\cref{lem:interlace} is $u(z)=U(2cz)$. Then $\lambda_+$ is the unique root in $(0,1)$ of $U(c/\lambda)=\lambda$, equivalently
+$u(1/(2\lambda))=\lambda$, and it is enclosed by a certified sign change of $U(c/\lambda)-\lambda$ evaluated in balls. It is needed only for the factorisation used by the truncation bound: the branch itself is the
+principal one for every tilt $\vartheta<\frac12$ (\cref{lem:branch}), and $\lambda_+\le\Var Z=1$ (\cref{lem:interlace}) shows
+that the moment generating function exists on the whole strip. Production uses $\vartheta=\frac14$.
+
+\paragraph{Inversion sums} Write $S_\Delta(x)$ for the infinite tilted midpoint sum of the proof of \cref{thm:certificate}
+and $S_{\Delta,K}(x)$ for its first $K$ terms, which are the ones evaluated. The node spacing $\Delta$ is a binary number
+chosen in floating point; the alias identity holds for the lattice actually summed, so every bound uses its exact period
+$L=2\pi/\Delta$, enclosed in a ball. The upper alias sum is evaluated term by term in balls,
+$P(Z^2>y)=\operatorname{erfc}(\sqrt{y/2})$, until a term falls below $2^{-200}$, and its remainder after $M$ terms is
+bounded through $\operatorname{erfc}(v)\le e^{-v^2}$ by $e^{-x/2}r^{M+1}/(1-r)$, $r=e^{-(1/2-\vartheta)L}$. The truncation
+bound is $\epsilon_K=\frac{2}{\pi|I|}e^{-\vartheta x}(1-2\vartheta)^{-1/2}\prod_{i\in I}(2s_Kc\,\nu_i)^{-1/2}$ with
+$s_K=(K-\frac12)\Delta$, the certified eigenvalue lower bounds $\nu_i$ above and $I=\{i:2s_Kc\,\nu_i>1\}$, evaluated in
+balls.
+
+\paragraph{Procedure and parameters} $J=16384$, $t=25$, $\vartheta=\frac14$; $L$ is chosen so that the alias bounds are
+below $10^{-14}$ and $K$ so that $\epsilon_K\le10^{-14}$; the head size $h\in\{8,\dots,128\}$ at each node is the smallest
+that meets the conditions above and gives a radius below $10^{-12}$. These choices affect only the width of the
+enclosure, never its validity. A critical value is obtained in two stages. First, a computed quantile $q$ is found by
+Brent's method on the double-precision distribution function, together with an estimate $\rho$ of the relative width
+needed. Second, the certified distribution function is evaluated at both ends of
+$[q(1-f\rho-10^{-12}),\,q(1+f\rho+10^{-12})]$, starting with $f=1.5$ and doubling $f$ up to five times; the bracket is
+accepted only if the upper end of the enclosure at the left point is below $p$ and the lower end at the right point
+is above $p$. A value for which no bracket is accepted is reported as computed, not certified; this did not occur.
+The printed critical value is the shortest decimal whose rounding changes the computed size by at most $2\times10^{-5}$,
+and its size is certified separately.
+
+\paragraph{Error budget} \Cref{tab:budget} lists the contributions at three values of $H$. At $H=\frac12$ the remainder
+term dominates and decreases like $J^{-3/2}$; at larger $H$ it decreases faster, and the radius of the finite-dimensional
+computation, which is independent of $J$, becomes the limiting term.
+
+\begin{table}[h]\centering\small
+\caption{Error budget of the certified distribution function at the $90\,\%$ quantile, $J=16384$.}\label{tab:budget}
+\input{tables/tab_budget.tex}%
+\end{table}
+
+\paragraph{What the enclosure covers} Every error source of \cref{tab:errsources} is inside the interval; the
+exceptional events of probability $e^{-t}$ enter as additive terms, so the enclosure is deterministic. Floating point
+is used in two ways only. It selects parameters and approximate bases ($L$, $K$, $h$, $Q$, the computed quantile),
+which can affect the width but not the validity. And the tail blocks are formed in double precision with error bounds
+proved in the standard model (IEEE binary64, round to nearest; the bounds hold for any summation order). An earlier
+version evaluated the alias and truncation bounds in double precision with a heuristic safety factor, stopped the alias
+series without a remainder bound, rounded the evaluation points $cs_{\mathrm{lo}}$, $cs_{\mathrm{hi}}$ to nearest and
+used a residual eigenvalue bound that does not guarantee sorted pairing; all of these steps are now in balls as
+described above, and every certified value of $T_H$ in this paper was recomputed with the corrected code
+(\cref{app:repro}). The correctness of the software (Arb, python-flint, NumPy and our code) is assumed, not proved; the
+validation below and \cref{app:repro} are the checks on it.
+
+\begin{table}[tbp]\centering\footnotesize
+\caption{Error sources of the certified distribution function of $T_H$ and how each is enclosed. ``Balls'': Arb ball
+arithmetic at 128 bits with outward rounding; ``standard model'': a priori floating-point error bounds.}\label{tab:errsources}
+\begin{tabular}{@{}>{\raggedright}p{0.25\textwidth}>{\raggedright}p{0.40\textwidth}>{\raggedright\arraybackslash}p{0.27\textwidth}@{}}\toprule
+error source & bound & evaluation\\\midrule
+remainder $R_J$ & Laurent--Massart with $\tau_J$, $\bar\mu_J$ (\cref{thm:eig,thm:certificate}); $s_{\mathrm{lo}}$, $s_{\mathrm{hi}}$ rounded outward & balls; $e^{-t}$ rounded up\\
+evaluation points $cs_{\mathrm{lo}}$, $cs_{\mathrm{hi}}$ & monotonicity of $P(X_J\le x)$ in $x$ & products in balls, rounded down / up\\
+Gram entries, head blocks & closed forms (\cref{prop:coords}) & balls\\
+Gram entries, tail blocks & entrywise bounds & standard model\\
+tail traces, Frobenius norms, coupling & summation bounds $\gamma_n$ & standard model\\
+head log-determinant & exact similarity, perturbation bound & balls\\
+tail log-determinant & series bound with Schur complement & balls\\
+positive eigenvalue $\lambda_+$ & sign change of $U(c/\lambda)-\lambda$ & balls\\
+eigenvalue lower bounds $\nu_i$ & Gershgorin clusters, Cauchy interlacing & balls\\
+lattice period $L$ & $L=2\pi/\Delta$ for the binary $\Delta$ & balls\\
+alias sums & $\epsilon_\Delta^-$; $\epsilon_\Delta^+$ with geometric remainder & balls (erfc in balls)\\
+omitted nodes $k\ge K$ & $\epsilon_K$ above & balls\\
+quantile bracket & enclosures at the two binary endpoints & balls\\\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Fixed-smoothing laws} For the fixed-$m$ and EWC limits, $P(\tau_{H,m}^2\le c)=P(X_c\le0)$, where $X_c$ is a
+quadratic form in independent standard normal variables with exactly one positive weight, for every $0<H<1$, $m$, $B$
+and $c>0$: the covariance $\Sigma$ of $(Z,\text{components})$ is positive definite and $e_1e_1^\top-c\operatorname{diag}(0,M)$, with
+$M$ positive definite, has inertia $(1,k,0)$, which the congruence by $\Sigma^{1/2}$ preserves (Sylvester's law of inertia). The covariance of $(Z,\text{components})$ is assembled from Gram entries in ball
+arithmetic; the weights, the eigenvalues of a $(2m+1)$- or $(B+1)$-dimensional matrix, are enclosed by an exact
+similarity transformation in ball arithmetic followed by Gershgorin's theorem on clusters of discs (a connected union of
+$k$ discs contains exactly $k$ eigenvalues). Write the
+form as $\theta_+Y_0^2-\sum_{i=1}^ra_iY_i^2$ with $\theta_+>0$, $a_i>0$ and $\beta=\min_ia_i$. \Citet{Rub62} expands
+$\sum_ia_iY_i^2$ as a mixture of $\beta\chi^2_{r+2k}$ laws with weights $c_k\ge0$, $\sum_kc_k=1$, the coefficients of
+$\prod_i(\beta/a_i)^{1/2}(1-\gamma_ix)^{-1/2}$, $\gamma_i=1-\beta/a_i\in[0,1)$. Since $Y_0^2/(Y_0^2+\chi^2_\nu)$ has the
+Beta$(\frac12,\frac\nu2)$ law,
+\[F(0)=P(X_c\le0)=\sum_{k\ge0}c_k\,I_\upsilon\big(\tfrac12,\tfrac r2+k\big),\qquad \upsilon=\frac{\beta}{\theta_++\beta},\]
+with $I_\upsilon$ the regularised incomplete Beta function, evaluated with
+$I_\upsilon(\frac12,b+1)=I_\upsilon(\frac12,b)+\upsilon^{1/2}(1-\upsilon)^b/\{b\,B(\frac12,b)\}$. The coefficients are computed in ball arithmetic
+as a power series; $I_\upsilon(\frac12,b)$ increases with $b$, so after the terms $k\le K$ the omitted part lies between
+$(1-\sum_{k\le K}c_k)\,I_\upsilon(\frac12,\frac r2+K+1)$ and $1-\sum_{k\le K}c_k$, which gives both ends of the enclosure. The
+probability decreases in $\theta_+$ and increases in each $a_i$ (pathwise, the event
+$\{\theta_+Y_0^2\le\sum_ia_iY_i^2\}$ grows with each $a_i$ and shrinks as $\theta_+$ grows), so the lower end of the enclosure is evaluated
+with $\theta_+$ at the upper end of its interval and every $a_i$ at the lower end of its interval, and the upper end the
+other way round. Every one of the \pthree{fx-n-cells} critical values was certified with the tightest bracket tried,
+$[q(1-10^{-9}),q(1+10^{-9})]$ for the squared statistic.
+
+\paragraph{Validation} At $H=\frac12$, where $T_{1/2}$ has a closed-form law \citep{AP97}, the certified quantiles at
+$J=512$ and $4096$ enclose the exact values, and the computed ones agree with them to
+\pthree{g0-min-digits}--\pthree{g0-max-digits} significant digits. The Cram\'er--von Mises quantiles $0.347305$ and
+$0.461361$ of $\int\tilde W^2$ \citep{KPSS92} are reproduced by the same engine.
+
+\FloatBarrier

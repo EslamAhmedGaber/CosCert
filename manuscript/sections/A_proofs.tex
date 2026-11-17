@@ -1,0 +1,255 @@
+\section{Proofs}\label{app:proofs}
+
+Throughout, $R(s,t)=\frac12(s^{2H}+t^{2H}-|t-s|^{2H})$, $b=2H-1$, and for $f\in C^1[0,1]$ the Wiener integral is
+\begin{equation}\label{eq:ibp}
+\int_0^1f\dd B_H=f(1)B_H(1)-\int_0^1f'(r)B_H(r)\dd r ,
+\end{equation}
+which agrees with the $L^2$ extension of the integral of step functions for every $0<H<1$ \citep{PT00}. For
+$\frac12<H<1$ and $f,g\in L^2(0,1)$, $\E[\int f\dd B_H\int g\dd B_H]=Hb\int_0^1\!\int_0^1f(u)g(v)|u-v|^{b-1}\dd u\dd v$
+\citep{PT00}. We write $p_k+\mathrm ir_k={}_1F_1(b;b+1;\mathrm ik\pi)=b\int_0^1x^{b-1}e^{\mathrm ik\pi x}\dd x$ ($b>0$).
+
+\subsection{Proof of \texorpdfstring{\cref{prop:coords}}{Proposition 1}}
+\emph{(a)} Let $e_k(r)=\sqrt2\sin(k\pi r)$ and $E_k(r)=-\sqrt2\cos(k\pi r)/(k\pi)$, so $E_k'=e_k$. The path $\Bt$ is
+continuous with $\Bt(0)=\Bt(1)=0$, and \eqref{eq:ibp} applied to $\Bt=B_H-rZ$ gives
+\[\int_0^1\Bt e_k\dd r=-\int_0^1E_k\dd\Bt=\frac1{k\pi}\Big(\int_0^1\sqrt2\cos(k\pi r)\dd B_H(r)-Z\int_0^1\sqrt2\cos(k\pi r)\dd r\Big)
+=\frac{\Lambda_k}{k\pi},\]
+because $\int_0^1\cos(k\pi r)\dd r=0$ for $k\ge1$. Since $(e_k)_{k\ge1}$ is an orthonormal basis of $L^2(0,1)$,
+Parseval's identity gives $\int\Bt^2=\sum_k\Lambda_k^2/(k\pi)^2$ for every path; the partial sums increase, so the
+convergence also holds in $L^1$ by monotone convergence.
+
+\emph{(b)} $C_j=\int\cos(2\pi jr)\dd B_H=\Lambda_{2j}/\sqrt2$ and $S_j=\Sigma_{2j}/\sqrt2$ by definition; insert into
+\eqref{eq:limits}.
+
+\emph{(c)} For $\frac12\le H<1$ this is \citet[Proposition~1, closed-form Gram matrices]{AhmedCosChaos}; for $0<H<\frac12$ see
+\cref{prop:continuation}.
+
+\emph{Parity.} The process $B'(r)=B_H(1)-B_H(1-r)$ is again a Type~I fractional Brownian motion, and for step functions,
+hence for all integrands, $\int f\dd B'=\int f(1-u)\dd B_H(u)$. Since $\cos(k\pi(1-u))=(-1)^k\cos(k\pi u)$ and
+$\sin(k\pi(1-u))=(-1)^{k+1}\sin(k\pi u)$, the joint law of $(Z,(\Lambda_k),(\Sigma_k))$ is invariant under
+$(Z,\Lambda_k,\Sigma_k)\mapsto(Z,(-1)^k\Lambda_k,(-1)^{k+1}\Sigma_k)$. Hence
+$\Cov(\Lambda_k,\Lambda_l)=(-1)^{k+l}\Cov(\Lambda_k,\Lambda_l)$, $\Cov(\Sigma_k,\Sigma_l)=(-1)^{k+l}\Cov(\Sigma_k,\Sigma_l)$
+and $\Cov(\Sigma_i,\Lambda_k)=(-1)^{i+k+1}\Cov(\Sigma_i,\Lambda_k)$, which vanish when $k+l$ is odd, $k+l$ is odd and
+$i+k$ is even, respectively.
+
+\emph{(d)} Let $\frac12<H<1$ and $\kappa(w)=|w|^{b-1}$. With $u=(\sigma+w)/2$, $v=(\sigma-w)/2$ the unit square becomes
+$\{|w|\le1,\ |w|\le\sigma\le2-|w|\}$ with $\dd u\dd v=\frac12\dd\sigma\dd w$. For integers $i,j\ge1$ put
+$a=(i-j)\pi/2$ and $c=(i+j)\pi/2$, so $i\pi u-j\pi v=a\sigma+cw$ and $i\pi u+j\pi v=c\sigma+aw$, and let
+\[I_1=\iint\cos(i\pi u-j\pi v)\kappa(u-v)\dd u\dd v,\qquad I_2=\iint\cos(i\pi u+j\pi v)\kappa(u-v)\dd u\dd v.\]
+For $i\ne j$, integrating in $\sigma$ and using $\sin(n\pi-y)=(-1)^{n+1}\sin y$ with $n=i-j$, then combining $w=\pm x$,
+\[I_1=\frac{1+(-1)^{i-j}}{2a}\int_0^1x^{b-1}\big(\sin(j\pi x)-\sin(i\pi x)\big)\dd x=\frac{1+(-1)^{i-j}}{(i-j)\pi}\,\frac{r_j-r_i}b,\]
+and in the same way $I_2=-\frac{1+(-1)^{i+j}}{(i+j)\pi}\frac{r_i+r_j}b$. For $i=j$ the inner integrals give
+$I_1=2\int_0^1x^{b-1}(1-x)\cos(i\pi x)\dd x$ and $I_2=-\frac{2r_i}{i\pi b}$. Integration by parts gives
+$\int_0^1x^b\cos(k\pi x)\dd x=-r_k/(k\pi)$, hence $I_1=\frac2b\big(p_i+\frac{b\,r_i}{i\pi}\big)$. Since
+$2\sin(i\pi u)\sin(j\pi v)=\cos(i\pi u-j\pi v)-\cos(i\pi u+j\pi v)$,
+$\Cov(\Sigma_i,\Sigma_j)=Hb(I_1-I_2)$, which is the stated formula: for $i=j$,
+$Hb\cdot\frac2b\big(p_i+\frac{(1+b)r_i}{i\pi}\big)$, and for $i\ne j$ with $i+j$ even,
+$\frac{2H}\pi\big(\frac{r_i+r_j}{i+j}-\frac{r_i-r_j}{i-j}\big)=\frac{4H}\pi\frac{ir_j-jr_i}{i^2-j^2}$. (With
+$2\cos\cos=\cos(\cdot-\cdot)+\cos(\cdot+\cdot)$ the same computation returns the cosine Gram matrix of
+\cref{prop:coords}(c), an independent check.) At $H=\frac12$ both sides are continuous in $H$ (\cref{prop:continuation}),
+and for $0<H<\frac12$ the formula holds by \cref{prop:continuation}.
+
+\subsection{Proof of \texorpdfstring{\cref{prop:continuation}}{Proposition 2}}
+By \eqref{eq:ibp}, $\Lambda_k=\sqrt2(-1)^kZ+\sqrt2k\pi\int_0^1\sin(k\pi r)B_H(r)\dd r$, so $\E\Lambda_k\Lambda_l$ is a
+finite combination of $R(1,1)$, $\int_0^1\sin(l\pi r)R(1,r)\dd r$ and
+$\int_0^1\!\int_0^1\sin(k\pi r)\sin(l\pi s)R(r,s)\dd r\dd s$; similarly for $\Sigma_k$ and for cross terms. For complex
+$H$ with $0<\operatorname{Re}H<1$ and $r,s\in(0,1]$, $r\ne s$, the map $H\mapsto R(r,s)$ is holomorphic and
+$|R(r,s)|\le\frac32$, because $|x^{2H}|=x^{2\operatorname{Re}H}\le1$ on $(0,1]$. By dominated convergence and Morera's
+theorem the covariances are holomorphic in the strip, hence real-analytic on $(0,1)$. On the other side, the Kummer
+series ${}_1F_1(b;b+1;z)=\sum_{n\ge0}\frac{b}{b+n}\frac{z^n}{n!}$ is holomorphic in $b$ away from
+$b\in\{-1,-2,\dots\}$, i.e.\ for $\operatorname{Re}H>0$; so $p_k(H)$, $r_k(H)$ and the rational expressions of
+\cref{prop:coords}(c)--(d) are real-analytic on $(0,1)$. The two real-analytic functions agree on $(\frac12,1)$, hence
+on $(0,1)$ by the identity theorem. \qed
+
+\subsection{Proof of \texorpdfstring{\cref{thm:eig}}{Theorem 3}}
+In the basis $(e_k)$ the operator $K_{\mathrm{br}}$ has the matrix $M_{kl}=\E\big[\int\Bt e_k\int\Bt e_l\big]=G_{kl}/(k\pi\,l\pi)$
+by \cref{prop:coords}. \Citet[Lemma~3, two-sided weighted cosine inequality]{AhmedCosChaos} states, for $\frac12\le H<1$ and real square-summable
+$(a_k)_{k\ge1}$, $\frac12\sum_kw_ka_k^2\le\sum_{k,l}a_ka_lG_{kl}\le\sum_kw_ka_k^2$ with $w_k=\cH(k\pi)^{1-2H}$ (the
+case $T=1$; the inequality is stated for finite sums and extends to $\ell^2$ by continuity of both sides). Put
+$a_k=x_k/(k\pi)$: then $\frac12x^\top Dx\le x^\top Mx\le x^\top Dx$ for all $x\in\ell^2$, with
+$D=\operatorname{diag}(d_k)$, $d_k=\cH(k\pi)^{-1-2H}$ decreasing. By the Courant--Fischer min--max characterisation of the
+eigenvalues of the compact positive operators $M$ and $D$, $\frac12d_k\le\lambda_k(M)\le d_k$. The covariance of
+$(\Lambda_k/(k\pi))_{k>J}$ is the compression $M_{>J}$ (the first omitted mode is $k=J+1$, because by
+\cref{prop:coords}(a) the $k$-th sine coefficient of the bridge is $\Lambda_k/(k\pi)$ and $W_J$ contains $k\le J$), for which $x^\top M_{>J}x\le\sum_{k>J}d_kx_k^2\le d_{J+1}|x|^2$, so
+its eigenvalues, which are the coefficients of $R_J$ in its Karhunen--Lo\`eve expansion $R_J\overset d=\sum_i\mu_i\xi_i^2$,
+are at most $\bar c_J=d_{J+1}$. Finally $\E R_J=\sum_{k>J}M_{kk}=\tr K_{\mathrm{br}}-\sum_{k\le J}G_{kk}/(k\pi)^2$ and
+$\tr K_{\mathrm{br}}=\int_0^1\Var\Bt(r)\dd r=\int_0^1\big(r^{2H}-r(r^{2H}+1-(1-r)^{2H})+r^2\big)\dd r
+=\frac2{(2H+1)(2H+2)}-\frac16$, using $\int_0^1r(1-r)^{2H}\dd r=\frac1{(2H+1)(2H+2)}$. \qed
+
+\subsection{Proof of \texorpdfstring{\cref{prop:rho}}{Proposition 4}}
+$\E D_{\SN}=\tr K_{\mathrm{br}}$, which is $\frac16$ at $H=\frac12$; $\E D_{\HI,m}=m^{-1}\sum_j(\E C_j^2+\E S_j^2)
+=(2m)^{-1}\sum_j(G_{2j,2j}+\Cov(\Sigma_{2j},\Sigma_{2j}))$ and $\E D_{\EWC,B}=B^{-1}\sum_jG_{jj}$, both equal to one at
+$H=\frac12$ where $G$ and the sine Gram matrix are identities. Analyticity follows from \cref{prop:continuation}. As
+$H\uparrow1$, $\E|B_H(r)-rZ|^2=r^{2H}-r(r^{2H}+1-(1-r)^{2H})+r^2\to0$ uniformly in $r$, so by \eqref{eq:ibp}
+$\Lambda_k\to\sqrt2(-1)^kZ+\sqrt2k\pi Z\int_0^1r\sin(k\pi r)\dd r=0$ and
+$\Sigma_{2j}\to-2\sqrt2j\pi Z\int_0^1r\cos(2j\pi r)\dd r=0$ in $L^2$; hence $\rho_P\to0$. The expansion of $\rho_{\SN}$
+follows from $\frac{\dd}{\dd H}\frac6{(2H+1)(H+1)}\big|_{H=1}=-\frac76$. \qed
+
+\subsection{Proof of \texorpdfstring{\cref{prop:edge}}{the growth proposition}}
+Write $\varepsilon=1-H$, $K_H(r,s)=\Cov(\Bt(r),\Bt(s))$ and $R_H(r,s)=\frac12(r^{2H}+s^{2H}-|r-s|^{2H})$, so that
+$K_H(r,s)=R_H(r,s)-sR_H(r,1)-rR_H(1,s)+rsR_H(1,1)$. At $H=1$, $K_1\equiv0$. Since $\partial_Hx^{2H}=2x^{2H}\log x$ and
+$\partial_H^2x^{2H}=4x^{2H}(\log x)^2$ are bounded on $[0,1]\times[\frac12,1]$, Taylor's theorem gives
+$\sup_{r,s}|K_H(r,s)/\varepsilon-k_1(r,s)|=O(\varepsilon)$ with $k_1=-\partial_HK_H|_{H=1}$ as stated; on the diagonal
+$k_1(r,r)=-2r(1-r)\{r\log r+(1-r)\log(1-r)\}$, and $\int_0^1k_1(r,r)\dd r=-4\int_0^1(r^2-r^3)\log r\dd r=\frac7{36}$.
+Similarly $\Cov(Z,\Bt(r))=\frac12(1+r^{2H}-(1-r)^{2H})-r=O(\varepsilon)$ uniformly in $r$.
+
+By \eqref{eq:ibp} and $B_H(r)=\Bt(r)+rZ$, and because $\int_0^1r\sin(k\pi r)\dd r=-(-1)^k/(k\pi)$ and
+$\int_0^1r\cos(2j\pi r)\dd r=0$, the terms in $Z$ cancel:
+$\Lambda_k/(k\pi)=\sqrt2\int_0^1\sin(k\pi r)\Bt(r)\dd r$ and $\Sigma_{2j}=-2\sqrt2j\pi\int_0^1\cos(2j\pi r)\Bt(r)\dd r$.
+Let $g_{k,\varepsilon}=\varepsilon^{-1/2}\Lambda_k/(k\pi)$. By the uniform convergence of the kernels,
+$\Cov(g_{j,\varepsilon},g_{k,\varepsilon})\to\kappa_{jk}=2\iint\sin(j\pi r)\sin(k\pi s)k_1(r,s)\dd r\dd s$ and
+$\Cov(Z,g_{k,\varepsilon})=O(\varepsilon^{1/2})\to0$, so every finite subvector of $(Z,g_{1,\varepsilon},g_{2,\varepsilon},\dots)$
+converges in law to $(Z,g_1,g_2,\dots)$ with $g\sim N(0,\kappa)$ independent of $Z$. For the tail, \cref{prop:coords}
+gives $D_{\SN}/\varepsilon=\sum_kg_{k,\varepsilon}^2$ and
+$\E\sum_{k>J}g_{k,\varepsilon}^2=\tr K_H/\varepsilon-\sum_{k\le J}\Var g_{k,\varepsilon}$; here
+$\tr K_H=\rho_{\SN}(H)/6$, so $\tr K_H/\varepsilon\to\frac7{36}$ by \cref{prop:rho}, and the tail expectation tends to
+$\frac7{36}-\sum_{k\le J}\kappa_{kk}$, which tends to zero as $J\to\infty$ because $(\sqrt2\sin(k\pi\cdot))_{k\ge1}$ is an
+orthonormal basis of $L^2[0,1]$ and $\sum_k\kappa_{kk}=\int_0^1k_1(r,r)\dd r$. By Markov's inequality,
+$\lim_{J\to\infty}\limsup_{\varepsilon\to0}P(\sum_{k>J}g_{k,\varepsilon}^2>\eta)\le\lim_{J\to\infty}(\frac7{36}-\sum_{k\le J}\kappa_{kk})/\eta=0$
+for every $\eta>0$, which is the condition of the approximation theorem for weak convergence
+\citep[Theorem~3.2]{Bil99}; hence $(Z,D_{\SN}/\varepsilon)\Rightarrow(Z,D^*)$ with $D^*=\sum_kg_k^2$, a series of nonnegative
+terms that converges almost surely by monotone convergence ($\E D^*=\sum_k\kappa_{kk}<\infty$) and has the law of
+$\int_0^1G^2$. Since $\E D^*=\frac7{36}>0$, some $g_k$ has positive variance, so $D^*>0$ almost surely, and
+the continuous mapping theorem gives $\varepsilon T_H=Z^2/(D_{\SN}/\varepsilon)\Rightarrow Z^2/D^*$. As $Z$ is independent
+of $D^*$ and $Z^2$ has a positive density, $Z^2/D^*$ has a continuous, strictly increasing distribution function on
+$(0,\infty)$, so its quantiles are the limits of those of $\varepsilon T_H$.
+
+The fixed-smoothing self-normalisers are finite sums of squares of the $\Lambda_j$, or of $C_j=\Lambda_{2j}/\sqrt2$ and
+$S_j=\Sigma_{2j}/\sqrt2$ (\cref{prop:coords}), whose $Z$-terms vanish as above, so $D_P/\varepsilon$ converges jointly with $Z$, without a tail
+argument, to a finite quadratic form $D_P^*$ in $G$, and $\E D_P^*$ is $\E_{1/2}D_P$ times
+$\lim_{H\uparrow1}\rho_P(H)/(1-H)$, which exists by the uniform convergence of the kernels. This limit is positive.
+Taking $x=e_k$ in the lower bound of the proof of \cref{thm:eig} gives
+$G_{kk}=(k\pi)^2M_{kk}\ge\frac12\cH(k\pi)^{1-2H}$, and $\cH/(1-H)=\Gamma(2H+1)\sin(\pi(1-H))/(1-H)\to2\pi$, so
+$\lim_{H\uparrow1}G_{kk}/(1-H)\ge1/k$. Hence $\lim\rho_{\EWC,B}/(1-H)\ge B^{-1}\sum_{j\le B}1/j$, and, keeping only the
+nonnegative cosine terms $G_{2j,2j}/(2m)$ of $\rho_{\HI,m}$, $\lim\rho_{\HI,m}/(1-H)\ge(2m)^{-1}\sum_{j\le m}1/(2j)$. So some
+summand of $D_P^*$ has positive variance, $D_P^*>0$ almost surely, and the argument above applies. \qed
+
+\subsection{Proofs of \texorpdfstring{\cref{prop:exactn,prop:fgn,prop:power}}{Propositions 5--7}}
+\emph{\Cref{prop:exactn}.} All statistics are invariant under $x\mapsto x+\kappa\mathbf 1$ in the denominator and depend
+on $\bar x-\mu_0$ in the numerator, so under $H_0$ we may take $x=\Gamma_n^{1/2}\xi$. Then
+$\{\text{statistic}\le c\}=\{\xi^\top\Gamma_n^{1/2}(aa^\top-cM)\Gamma_n^{1/2}\xi\le0\}$, and the spectral theorem gives the
+representation. Because $Ma=0$ (the demeaned partial sums, the Fourier vectors at $\lambda_j\ne0$ and the cosine vectors
+are orthogonal to $\mathbf 1$), $aa^\top-cM$ has the eigenvalue $|a|^2=1$ on $a$ and is negative semi-definite on
+$a^\perp$; by Sylvester's law of inertia the congruent matrix $\Gamma_n^{1/2}(aa^\top-cM)\Gamma_n^{1/2}$ has exactly one
+positive eigenvalue. Part~(a) holds because the statistic is a function of $C^\top x$. For~(b),
+$\det(I-2\mathrm is(gg^\top-cN))=\det(I+2\mathrm iscN)\,(1-2\mathrm is\,g^\top(I+2\mathrm iscN)^{-1}g)$ with
+$g=\Gamma_n^{1/2}a$, $N=\Gamma_n^{1/2}M\Gamma_n^{1/2}$ (matrix determinant lemma), and the branch is the one of
+\cref{lem:branch}.
+
+\emph{\Cref{prop:fgn}.} By stationarity of increments and self-similarity,
+$(B_H(t))_{t\le n}\overset d=(n^HB_H(t/n))_{t\le n}$, so $(x_t)_{t\le n}\overset d=(n^H(B_H(t/n)-B_H((t-1)/n)))_{t\le n}$.
+The three statistics are ratios of quadratic forms of equal degree, so the factor $n^H$ cancels. For $T_n$,
+$\bar x=B_H(n)/n$ and $S_k=B_H(k)-\frac knB_H(n)\overset d=n^H\Bt(k/n)$, which gives the stated form. \qed
+
+\emph{\Cref{prop:power}.} With $\xi=c\,e_1+L\eta$, $\eta\sim N(0,I)$, the quadratic form is
+$\eta^\top L^\top AL\eta+2c\,e_1^\top AL\eta+c^2e_1^\top Ae_1$. Diagonalising $L^\top AL=P\Theta P^\top$ and completing
+squares gives
+\[\sum_i\Theta_{ii}(w_i+\delta_i)^2+c^2\big(e_1^\top Ae_1-e_1^\top AL(L^\top AL)^{-1}L^\top Ae_1\big),\]
+and the constant vanishes because $L$ is invertible: $L(L^\top AL)^{-1}L^\top=A^{-1}$. \qed
+
+\subsection{The branch of the square root}
+The characteristic function of a generalized chi-square variable is a product of inverse square roots, and the inversion
+integral is evaluated off the real axis. The following argument shows that the principal branch is the correct one on
+the whole strip used, without locating any eigenvalue.
+
+\begin{lemma}[Branch]\label[lemma]{lem:branch}
+Let $s\in\mathbb R^N\setminus\{0\}$, let $B\in\mathbb R^{N\times N}$ be symmetric positive semi-definite, $K=ss^\top-B$ and
+$\xi\sim N(0,I_N)$. On the strip $\Omega=\{z\in\mathbb C:0\le\operatorname{Re}z<1/(2|s|^2)\}$ put
+\[r(z)=1-2z\,s^\top(I+2zB)^{-1}s .\]
+Then $\operatorname{Re}(1+2zb)>0$ for every eigenvalue $b$ of $B$, $r(z)\notin(-\infty,0]$, and
+\[\E e^{z\,\xi^\top K\xi}=\det(I+2zB)^{-1/2}\,r(z)^{-1/2}\qquad(z\in\Omega),\]
+with the principal branch in each factor $(1+2zb_j)^{-1/2}$ and in $r(z)^{-1/2}$.
+\end{lemma}
+\begin{proof}
+In an orthonormal eigenbasis of $B$, with eigenvalues $b_j\ge0$ and coordinates $s_j$ of $s$,
+$r(z)=1-\sum_js_j^2\,2z/(1+2zb_j)$, and $\operatorname{Re}(1+2zb_j)=1+2\vartheta b_j>0$ for $z=\vartheta+\mathrm it$. Since
+$2z(1+2\bar zb_j)=2z+4|z|^2b_j$ has imaginary part $2t$,
+\[\operatorname{Im}r(\vartheta+\mathrm it)=-2t\sum_j\frac{s_j^2}{|1+2zb_j|^2},\]
+which is non-zero for $t\ne0$. For $t=0$, $2\vartheta/(1+2\vartheta b_j)\le2\vartheta$ gives $r(\vartheta)\ge1-2\vartheta|s|^2>0$.
+Hence $r$ omits $(-\infty,0]$ on $\Omega$, the principal roots are continuous on $\Omega$ and holomorphic in its interior,
+and so is their product $\Phi$. By the matrix determinant lemma $\det(I-2zK)=\det(I+2zB)\,r(z)$, so
+$\Phi^2=\det(I-2zK)^{-1}$. The largest eigenvalue of $K$ is at most $|s|^2$ (Weyl's inequality, since $-B\preceq0$), so
+$\E e^{z\xi^\top K\xi}$ exists on $\Omega$, is continuous there and holomorphic in the interior, and is also a square root of
+$\det(I-2zK)^{-1}$; it equals $\Phi(0)=1$ at $z=0$. Two continuous square roots of the same non-vanishing function on the
+connected set $\Omega$ that agree at one point coincide.
+\end{proof}
+
+In \cref{thm:certificate}, $X_J=\xi^\top K\xi$ in law with $s=\Sigma_J^{1/2}e_1$ and
+$B=\Sigma_J^{1/2}\operatorname{diag}(0,cI)\Sigma_J^{1/2}$, where $\Sigma_J$ is the covariance of
+$(Z,\Lambda_1/\pi,\dots,\Lambda_J/(J\pi))$. Then $|s|^2=\Var Z=1$, so every $\vartheta\in[0,\frac12)$ is admissible, and
+$\det(I+2zB)=\det(I+2zcA)=\det(I+2zcA_O)\det(I+2zcA_E)$ with $A$ the covariance of the cosine coordinates and $A_O$, $A_E$
+its odd and even blocks (\cref{prop:coords}(c)). The same lemma, with $s=\Gamma_n^{1/2}a$, gives the branch in
+\cref{prop:exactn}(b).
+
+The implementation factors $r$ further, to isolate the single positive eigenvalue; this is used for the truncation bound
+$\epsilon_K$ and for the density bound of \cref{prop:rate}.
+
+\begin{lemma}[Interlacing]\label[lemma]{lem:interlace}
+In the setting of \cref{lem:branch} with $s=\Sigma^{1/2}e_1$ and $B=\Sigma^{1/2}\operatorname{diag}(0,cI)\Sigma^{1/2}$ for a
+positive definite $\Sigma=\begin{psmallmatrix}1&g^\top\\g&A\end{psmallmatrix}$, let $a_1\le\dots\le a_{N-1}$ be the eigenvalues of
+$cA$. Then $K$ has exactly one positive eigenvalue $\lambda_+\le1$; its $N-1$ negative eigenvalues $-\nu_1\ge\dots\ge-\nu_{N-1}$
+satisfy $0<\nu_1\le a_1\le\nu_2\le\dots\le\nu_{N-1}\le a_{N-1}$; $r(z)=(1-2z\lambda_+)\rho(z)$ with
+$\rho(z)=\prod_i(1+2z\nu_i)/(1+2za_i)$ and $\operatorname{Re}\rho(z)>0$ for $\operatorname{Re}z\ge0$; and, with
+$u(z)=1-2zc\,g^\top(I+2zcA)^{-1}g$, $\operatorname{Re}u(z)\ge1-g^\top A^{-1}g>0$.
+\end{lemma}
+\begin{proof}
+$K=K_0+ss^\top$ with $K_0=-B$, whose eigenvalues are $0$ (once) and $-a_1,\dots,-a_{N-1}$, because the nonzero eigenvalues
+of $B$ are those of $\operatorname{diag}(0,cI)\Sigma$, i.e.\ of $cA$; $K$ is nonsingular since
+$K=\Sigma^{1/2}(e_1e_1^\top-\operatorname{diag}(0,cI))\Sigma^{1/2}$. A rank-one positive update raises the eigenvalues in
+an interlacing way, which gives the ordering of the $\nu_i$ and $\lambda_+\le\lambda_{\max}(K_0)+|s|^2=1$. Comparing zeros
+and poles, $r(z)=\det(I-2zK)/\det(I+2zB)=(1-2z\lambda_+)\prod_i(1+2z\nu_i)/(1+2za_i)$. For $\operatorname{Re}z\ge0$ and
+$\operatorname{Im}z>0$ the function $\varphi(x)=\arg(1+2zx)$ increases on $[0,\infty)$ from $0$ to $\arg z\le\pi/2$; since the
+intervals $[\nu_i,a_i]$ are disjoint and ordered, $0\le-\arg\rho(z)=\sum_i(\varphi(a_i)-\varphi(\nu_i))\le\varphi(a_{N-1})-\varphi(\nu_1)<\pi/2$.
+The case $\operatorname{Im}z<0$ is the conjugate one and $z$ real is trivial. For $u$, in the eigenbasis of $A$ with
+$\gamma$ the coordinates of $g$ and $\zeta=2cz$,
+$\operatorname{Re}u=1-\sum_j\gamma_j^2\frac{\operatorname{Re}\zeta+\alpha_j|\zeta|^2}{|1+\zeta\alpha_j|^2}$, and
+$\frac{\operatorname{Re}\zeta+\alpha|\zeta|^2}{|1+\zeta\alpha|^2}\le\frac1\alpha$ is equivalent to $0\le1+\alpha\operatorname{Re}\zeta$.
+Hence $\operatorname{Re}u\ge1-g^\top A^{-1}g=\Var(Z\mid\Lambda_1,\dots,\Lambda_J)>0$.
+\end{proof}
+
+\subsection{Proof of \texorpdfstring{\cref{thm:certificate}}{Theorem 8}}
+\emph{Remainder.} By \cref{thm:eig}, $R_J\overset d=\sum_i\mu_i\xi_i^2$ with $\sum_i\mu_i=\tau_J$ and
+$0\le\mu_i\le\bar\mu_J$, hence $\sum_i\mu_i^2\le\bar\mu_J\tau_J$. The inequalities of \citet[Lemma~1]{LM00}, which extend
+from finite to convergent sums by monotone limits, give $P(R_J\ge s_{\mathrm{hi}})\le e^{-t}$ and
+$P(R_J\le s_{\mathrm{lo}})\le e^{-t}$. Since $D_{\SN}=W_J+R_J$, $\{X_J\le c\,s_{\mathrm{lo}}\}\cap\{R_J>s_{\mathrm{lo}}\}\subseteq\{Z^2\le cD_{\SN}\}$ and
+$\{Z^2\le cD_{\SN}\}\cap\{R_J<s_{\mathrm{hi}}\}\subseteq\{X_J\le c\,s_{\mathrm{hi}}\}$, whatever the dependence between $R_J$ and
+$X_J$; a union bound with the two exceptional events, each of probability at most $e^{-t}$, gives the first statement.
+
+\emph{Inversion.} For $0<\vartheta<\frac12$ the moment generating function $\mathcal M(z)=\E e^{zX_J}$ exists on
+$\operatorname{Re}z=\vartheta$ and is given there by principal roots (\cref{lem:branch}), and for $v\in\mathbb R$, $e^{(\vartheta+\mathrm is)v}/(\vartheta+\mathrm is)=\int_{-\infty}^ve^{(\vartheta+\mathrm is)y}\dd y$.
+Hence $\psi(s)=\mathcal M(\vartheta+\mathrm is)e^{-(\vartheta+\mathrm is)x}/(\vartheta+\mathrm is)$ is the Fourier transform of
+$y\mapsto e^{\vartheta y}P(X_J>x+y)$, and the Poisson summation formula on the shifted lattice $s_k=(k+\frac12)\Delta$ gives
+\[S_\Delta(x):=\frac\Delta\pi\sum_{k\ge0}\operatorname{Re}\psi(s_k)=\sum_{j\in\mathbb Z}(-1)^je^{\vartheta jL}P(X_J>x+jL),\qquad L=\frac{2\pi}\Delta.\]
+The term $j=0$ is $P(X_J>x)$, so $S_\Delta(x)$ approximates the exceedance probability, and the distribution
+function is $1-P(X_J>x)$. (For $\vartheta=0$ the representation reduces to that of \citet{Dav73}; the bound on the lower
+aliases below then fails, and the untilted computation used for the node-count comparison in \cref{sec:computation} bounds them through the
+lower tail of $X_J$ instead.) Since $X_J\le Z^2$, the aliases satisfy
+$\big|\sum_{j\ge1}(-1)^je^{\vartheta jL}P(X_J>x+jL)\big|\le\sum_{j\ge1}e^{\vartheta jL}P(Z^2>x+jL)$, finite for
+$\vartheta<\frac12$, and $\big|\sum_{j\ge1}(-1)^je^{-\vartheta jL}P(X_J>x-jL)\big|\le e^{-\vartheta L}/(1-e^{-\vartheta L})$.
+These are the alias bounds $\epsilon_\Delta^+(x)$ and $\epsilon_\Delta^-$; as both alias sums are bounded only in absolute value, they
+enter the enclosure symmetrically. For the truncation of the series after $K$ terms, every factor
+$|1-2(\vartheta+\mathrm is)\theta_i|^{-1/2}$ of $|\mathcal M|$ is at most $(1-2\vartheta\theta_i)^{-1/2}$ and decreases in
+$|s|$; keeping only the factors in the index set $I$ of certified eigenvalue magnitude bounds $\nu_i$ with $2s_Kc\,\nu_i>1$,
+$s_K=(K-\frac12)\Delta$, gives the majorant $e^{-\vartheta x}(1-2\vartheta)^{-1/2}s^{-1}\prod_{i\in I}(2sc\,\nu_i)^{-1/2}$ for
+$s\ge s_K$ (each remaining factor is at most one and $\lambda_+\le1$); it decreases in $s$, so the omitted terms
+$\frac\Delta\pi\sum_{k\ge K}|\psi(s_k)|$ are at most its integral over $[s_K,\infty)$, which is finite when $I\ne\emptyset$, of $|\psi|$ and gives the bound $\epsilon_K$, so $|S_\Delta(x)-S_{\Delta,K}(x)|\le\epsilon_K$. All quantities are evaluated in ball
+arithmetic (\cref{app:certificate}), the eigenvalue lower bounds by Gershgorin clusters and Cauchy interlacing. \qed
+
+\subsection{Proof of \texorpdfstring{\cref{prop:rate}}{the width proposition}}
+\emph{Remainder interval.} $\bar\mu_J\le\bar c_J$ and $\tau_J\ge4\bar c_Jt\ge4\bar\mu_Jt$ give $\tau_J\ge2\sqrt{\bar\mu_J\tau_Jt}$,
+so $s_{\mathrm{lo}}=\tau_J-2\sqrt{\bar\mu_J\tau_Jt}$ and
+$s_{\mathrm{hi}}-s_{\mathrm{lo}}=4\sqrt{\bar\mu_J\tau_Jt}+2\bar\mu_Jt\le4\sqrt{\bar c_J\tau_Jt}+2\bar c_Jt$.
+
+\emph{Width.} The width is $P(cs_{\mathrm{lo}}<X_J\le cs_{\mathrm{hi}})+2e^{-t}\le c\,(s_{\mathrm{hi}}-s_{\mathrm{lo}})\sup_xf_{X_J}(x)+2e^{-t}$.
+
+\emph{Density, uniformly in $J$.} $X_J=\sum_i\theta_i\xi_i^2$ has $|\E e^{\mathrm isX_J}|=\prod_i(1+4\theta_i^2s^2)^{-1/4}$, and
+dropping factors only increases the product. By \cref{lem:interlace} the three most negative eigenvalues satisfy
+$\nu_{N-1}\ge a_{N-2}$, $\nu_{N-2}\ge a_{N-3}$, $\nu_{N-3}\ge a_{N-4}$ ($N=J+1\ge5$), i.e.\ they dominate $c$ times the second to fourth largest
+eigenvalues of the covariance $A_J$ of $(\Lambda_k/(k\pi))_{k\le J}$. $A_{J_0}$ is a principal submatrix of $A_J$, so by
+Cauchy's interlacing theorem the $i$-th largest eigenvalue of $A_J$ is at least that of $A_{J_0}$, and $A_{J_0}$ is
+positive definite. Hence $|\E e^{\mathrm isX_J}|\le\prod_{i=2}^4(1+4c^2\alpha_i^2s^2)^{-1/4}$, which decays like $|s|^{-3/2}$,
+and the inversion formula gives $f_{X_J}\le\bar f$.
+
+\emph{Rates.} Taking $x=e_k$ in the two-sided bound in the proof of \cref{thm:eig} gives $\frac12d_k\le M_{kk}\le d_k$, so
+$\tau_J=\sum_{k>J}M_{kk}$ lies between $\frac12$ and $1$ times $\sum_{k>J}d_k=\cH\pi^{-1-2H}\sum_{k>J}k^{-1-2H}\asymp J^{-2H}$,
+while $\bar c_J=d_{J+1}\asymp J^{-1-2H}$. Then $\sqrt{\bar c_J\tau_Jt}\asymp\sqrt t\,J^{-1/2-2H}$ and
+$\bar c_Jt=O(tJ^{-1-2H})$, which is of smaller order once $J\gg t$. \qed

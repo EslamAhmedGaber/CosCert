@@ -1,0 +1,121 @@
+{
+ "environment": {
+  "python": "3.12.14",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "machine": "AMD64",
+  "processor": "AMD64",
+  "logical_cpus": 12,
+  "numpy": "2.5.3",
+  "scipy": "1.18.1",
+  "mpmath": "1.4.1",
+  "python_flint": "0.8.0",
+  "gx2": "1.6.1",
+  "threads": {
+   "OMP_NUM_THREADS": "1",
+   "MKL_NUM_THREADS": "1",
+   "OPENBLAS_NUM_THREADS": "1",
+   "NUMEXPR_NUM_THREADS": "1"
+  },
+  "concurrent_load": "one concurrent single-threaded job (E2r revalidation) on a 12-core host",
+  "rscript": "<conda>/envs\\r\\Lib\\R\\bin\\Rscript.exe",
+  "blas": "blas",
+  "R": "R version 4.5.3 (2026-03-11 ucrt)",
+  "CompQuadForm": "1.4.4",
+  "momentchi2": "0.1.5",
+  "survey": "4.5"
+ },
+ "targets": {
+  "T1 HI m=8 H=0.80": {
+   "c2": 32.75006410291848,
+   "weights": 17,
+   "seconds_shared_covariance_arb": 0.012071700009983033,
+   "seconds_spectrum_double": 0.0001183999702334404,
+   "reference": [
+    0.9499999999999997,
+    0.9500000000000002
+   ]
+  },
+  "T2 EWC B=16 H=0.80": {
+   "c2": 32.59187527946901,
+   "weights": 17,
+   "seconds_shared_covariance_arb": 0.008982100000139326,
+   "seconds_spectrum_double": 7.690000347793102e-05,
+   "reference": [
+    0.9499999999999993,
+    0.9500000000000001
+   ]
+  },
+  "T3 SN n=1000 ARFIMA(0,0.2,0)": {
+   "c": 121.74094095170756,
+   "weights": 1000,
+   "seconds_cholesky": 0.020634900021832436,
+   "seconds_ratio_eigs": 0.2876811000169255,
+   "SNExact_setup_s": 0.36717500002123415,
+   "SNExact_setup_median_s": 0.3739466000115499,
+   "SNExact_first_query_s": 0.060586399980820715,
+   "SNExact_repeat_query_s": 0.057601100008469075,
+   "SNExact_repeat_query_median_s": 0.06138000002829358,
+   "SNExact_clipped_negative_eigenvalues": 0,
+   "SNExact_min_raw_eigenvalue": 5.717477467205432e-19,
+   "amortisation": {
+    "m": 10,
+    "cutoffs": [
+     97.39275276136605,
+     102.8034612481086,
+     108.21416973485117,
+     113.62487822159372,
+     119.03558670833627,
+     124.44629519507883,
+     129.8570036818214,
+     135.26771216856395,
+     140.6784206553065,
+     146.08912914204907
+    ],
+    "SNExact_total_s": 1.0916842999868095,
+    "SNExact_values": [
+     0.9312084537915297,
+     0.9361453010777776,
+     0.9406028403570943,
+     0.9446413548126237,
+     0.9483117221478086,
+     0.9516571679400045,
+     0.9547146401506856,
+     0.9575158974171066,
+     0.960088378604075,
+     0.9624559034162039
+    ],
+    "Imhof (scipy quad)_total_s": 3.9644529999932274,
+    "Imhof (scipy quad)_max_abs_diff_vs_SNExact": 6.283862319378386e-14,
+    "Bromwich tilted midpoint, double_total_s": 8.080459500022698,
+    "Bromwich tilted midpoint, double_max_abs_diff_vs_SNExact": 6.006306563222097e-14,
+    "gx2 imhof_total_s": 4.1011155000305735,
+    "gx2 imhof_max_abs_diff_vs_SNExact": 2.1761703550282618e-11
+   },
+   "reference": 0.950022617821622
+  },
+  "T4": {
+   "q": 163.28369072008022,
+   "reference": [
+    0.9499999908848709,
+    0.9500000095501953
+   ],
+   "source": "results/E1_benchmark_H0.75.json (sha256 2acf87595bfc2069)",
+   "seconds_build": 24.8098539999919,
+   "seconds_eval": 15.711076500010677
+  },
+  "T4 T_H H=0.75 via Galerkin J=512": {
+   "J": 512,
+   "tau": 3.086976117845641e-06,
+   "shift": 0.0005040528536865816,
+   "weights": 513,
+   "seconds_spectrum": 0.2913797000073828
+  },
+  "T4 T_H H=0.75 via Galerkin J=2048": {
+   "J": 2048,
+   "tau": 3.863501161494032e-07,
+   "shift": 6.308467287500622e-05,
+   "weights": 2049,
+   "seconds_spectrum": 2.5568612999632023
+  }
+ }
+}

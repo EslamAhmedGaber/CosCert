@@ -1,0 +1,34 @@
+\FloatBarrier
+\section{Recommendations}\label{sec:conclusion}
+
+For a test of the mean under long memory we recommend the following.
+\begin{enumerate}
+\item Use critical values for the value of $H$ at hand. The short-memory values are invalid under long memory: at
+$H=0.9$ the nominal $5\,\%$ tests reject a true null between \pthree{naive-min-0.90} and \pthree{naive-max-0.90}\,\% of the
+time across the procedures of \cref{fig:headline}.
+\item Take the critical values from \cref{app:tables} or the accompanying files, or, for the fixed-smoothing tests, from
+the closed-form rule \eqref{eq:rescaled}, whose size error is at most \pthree{rs-maxerr-090-0.05}\,pp at $5\,\%$ for
+$H\le0.9$ and every tabulated $m\le16$ and $B\in\{1,2,3,4,6,8,12,16,24,32\}$. For the Bartlett/self-normalised test use the table or the response surface of \cref{sec:surface}; the
+rescaling rule does not apply to it.
+\item Prefer a fixed-smoothing test with few components, $m\le4$ frequencies or $B\in\{4,8\}$ cosines: with the
+correct critical value it is within \pthree{fn-maxdev-small-100}\,pp of $5\,\%$ from $n=100$ in all our designs. With
+$m=4$ ($B=8$) its limit power exceeds that of the Bartlett/self-normalised test at every $H$ and local alternative of our
+grid; with $m=1$ ($B=2$) it is lower everywhere. Use more components only when $n$ is large or short-run dynamics are
+known to be weak.
+\item Treat the estimate of $H$ as the main source of size distortion. With a local Whittle estimate the nominal
+$5\,\%$ tests reject \pthree{pl-pure-min-100}--\pthree{pl-pure-max-100}\,\% of the time at $n=100$ even without short-run
+dynamics (\cref{tab:plugin,tab:hi17}); the distortion again grows with the number of components, so with an estimated $H$
+the power advantage of item~3 is bought with size, and positive short-run correlation turns the over-rejection into
+under-rejection. The error of the critical value itself is now negligible: the printed Bartlett/self-normalised values
+have certified size errors below \pthree{sn-print-maxerr}\,pp, and the certified fixed-smoothing brackets have relative
+width $10^{-9}$. Improvements must come from the estimator of $H$ or from procedures that are robust to it.
+\item When comparing with earlier work, match the normalisation and the tail of the statistic (\cref{tab:norm}) before
+comparing critical values. The published tables are accurate only to their Monte Carlo precision of a few tenths of a
+percentage point in size; for strongly antipersistent series ($\delta\le-0.4$) the fixed-$m$ values of \citet{HI17}
+match a finite design that we infer they simulated rather than the limit, and the fitted Bartlett values of
+\citet{MP09} are slightly liberal for $H\ge0.6$ (a one-sign pattern within Monte Carlo error) and inconsistent at
+$\beta=-0.4$. The certified values replace both.
+\end{enumerate}
+\CosCert{} extends to other functionals of the same cosine coordinates, such as the stationarity statistics of
+\citet{KPSS92} under long memory; at $H=\frac12$ it already reproduces the Cram\'er--von Mises law of their
+$\eta_\mu$ (\cref{tab:reproduction}). We leave these extensions to future work.

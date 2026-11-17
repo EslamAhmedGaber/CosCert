@@ -1,0 +1,112 @@
+% Paper 3 of the fBm series.  Compile:  xelatex main && bibtex main && xelatex main && xelatex main
+% (TeX Live 2025; TEXMFVAR/TEXMFCACHE/TEXMFCONFIG redirected to work/.texmf_var -- see code/manuscript/build.ps1)
+\documentclass[final,3p,11pt]{elsarticle}
+\usepackage{mathtools}
+\usepackage{amsthm}   % amsmath (via mathtools) first, then amsthm, then unicode-math (p3fonts); no amssymb
+\input{p3fonts.tex}
+\usepackage{booktabs,array,multirow,makecell,longtable}
+\setcounter{LTchunksize}{1000}   % each longtable set in one chunk: column widths correct in every LaTeX pass
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[font=small,labelfont=bf,skip=5pt]{caption}
+\usepackage{microtype}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+\usepackage[capitalise,nameinlink]{cleveref}
+\hypersetup{pdftitle={CosCert: certified critical values and exact size for long-memory tests of the mean},
+  pdfauthor={Eslam Ahmed, Mohamed A. El-Beltagy, Ahmed Etman, Sroor M. Elnady}}
+\graphicspath{{../figures/}}
+\setlength{\emergencystretch}{2em}   % prefer slightly looser lines to overfull ones
+% elsarticle puts "Appendix" into \thesection: print appendix references as the bare number
+\crefformat{appendix}{#2#1#3}\Crefformat{appendix}{#2#1#3}
+\crefmultiformat{appendix}{#2#1#3}{ and~#2#1#3}{, #2#1#3}{ and~#2#1#3}
+\Crefmultiformat{appendix}{#2#1#3}{ and~#2#1#3}{, #2#1#3}{ and~#2#1#3}
+\crefrangeformat{appendix}{#3#1#4 to~#5#2#6}
+\journal{Computational Statistics \& Data Analysis}
+
+% ---------------------------------------------------------------- traceable numbers
+% Every reported number is \pthree{<key>}; keys are written by code/manuscript/make_numbers.py from work/results.
+\makeatletter
+\newcommand{\pthreedef}[2]{\expandafter\def\csname p3@#1\endcsname{#2}}
+\newcommand{\pthree}[1]{\ifcsname p3@#1\endcsname\csname p3@#1\endcsname\else
+  \PackageError{p3numbers}{Undefined number key '#1'}{Run make_numbers.py}\textbf{??#1??}\fi}
+\makeatother
+\input{tables/p3_numbers.tex}
+
+% ---------------------------------------------------------------- notation
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\Bt}{\tilde B_H}
+\newcommand{\cH}{c^{\star}_H}
+\newcommand{\SN}{\mathrm{SN}}
+\newcommand{\HI}{\mathrm{HI}}
+\newcommand{\EWC}{\mathrm{EWC}}
+\newcommand{\pp}{\,\mathrm{pp}}
+\newcommand{\dd}{\,\mathrm d}
+
+\usepackage{placeins}
+% float placement: large figures may take a float page instead of drifting to the end (16 Nov)
+\renewcommand{\topfraction}{0.9}\renewcommand{\bottomfraction}{0.6}\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.75}\setcounter{topnumber}{3}\setcounter{bottomnumber}{2}\setcounter{totalnumber}{5}
+\newsavebox{\fixcitebox}   % citation in a box as wide as [00]: table widths independent of the LaTeX pass
+\newcommand{\fixcite}[1]{\sbox{\fixcitebox}{[00]}\makebox[\wd\fixcitebox][l]{\citep{#1}}}
+\newcommand{\CosCert}{CosCert}   % name of the certified computation (17 Nov 2026); change here only
+\begin{document}
+\begin{frontmatter}
+\title{\CosCert: certified critical values and exact size\\ for long-memory tests of the mean}
+
+\author[a]{Eslam Ahmed\corref{cor1}}
+\ead{eslamahmed@eng.cu.edu.eg}
+\author[a]{Mohamed A. El-Beltagy}
+\author[a]{Ahmed Etman}
+\author[b,c]{Sroor M. Elnady}
+\cortext[cor1]{Corresponding author}
+\affiliation[a]{organization={Department of Engineering Mathematics and Physics, Faculty of Engineering, Cairo University},city={Giza},postcode={12613},country={Egypt}}
+\affiliation[b]{organization={School of Aeronautics and Astronautics, Zhejiang University},city={Hangzhou},postcode={310027},country={China}}
+\affiliation[c]{organization={Center for Research on Microgrids (CROM), Huanjiang Laboratory},city={Zhuji, Shaoxing},postcode={311800},country={China}}
+
+\input{sections/00_abstract.tex}%
+\end{frontmatter}
+
+\input{sections/01_introduction.tex}%
+\input{sections/02_setting.tex}%
+\input{sections/03_critical_values.tex}%
+\input{sections/04_finite_samples.tex}%
+\input{sections/05_power.tex}%
+\input{sections/06_audit.tex}%
+\input{sections/07_computation.tex}%
+\input{sections/08_conclusion.tex}%
+
+\section*{Data and code availability}
+All critical values, rejection rates and audit verdicts are provided as machine-readable files, together with the code
+that produced them, in the supplementary archive \texttt{CosCert\_\allowbreak code\_\allowbreak and\_\allowbreak data.zip} (\cref{app:repro}).
+
+\section*{Declaration of competing interest}
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
+
+\section*{Acknowledgements}
+The authors acknowledge support from the Science, Technology \& Innovation Funding Authority (STDF), Egypt, under the Basic Sciences Grant (Project ID 50925). The funder had no role in the study design, analysis and interpretation, manuscript preparation or decision to submit the work for publication.
+
+% Section title as required by the CSDA Guide for Authors (Nov 2026); statement verbatim from the CovFourier manuscript.
+\section*{Declaration of generative AI and AI-assisted technologies in the manuscript preparation process}
+During the preparation of this work the authors used ChatGPT and Claude. After using these tools, the authors reviewed and edited the content as needed and take full responsibility for the content of the publication.
+
+\bibliographystyle{elsarticle-num-names}
+\bibliography{references}
+
+\appendix
+\crefalias{section}{appendix}
+\input{sections/A_proofs.tex}%
+\input{sections/B_certificate.tex}%
+\input{sections/C_tables.tex}%
+\input{sections/D_audit.tex}%
+\input{sections/E_reproducibility.tex}%
+\end{document}

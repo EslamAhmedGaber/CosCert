@@ -1,0 +1,34 @@
+\section{The audit ledger}\label{app:audit}
+
+\paragraph{Sources and versions} Every audited value was read from the document listed in \cref{tab:sources}, at the
+page and table given there; where only a working paper or preprint was available, the version is stated, and values were
+taken from page images when the text layer was unreliable. Each value is stored with its statistic, normalisation, tail,
+design and replication count in the machine-readable ledger \texttt{ledger\_critical\_values.csv}
+(\pthree{ledger-n-cv} values) and \texttt{ledger\_rejection\_rates.csv} (\pthree{ledger-n-rr} rates).
+
+\begin{table}[h]\centering\small
+\caption{Audited sources.}\label{tab:sources}
+\input{tables/tab_sources.tex}%
+\end{table}
+
+\paragraph{Conventions frozen before computation} (i) Fractional Brownian motion is of Type~I with $\Var B_H(1)=1$;
+$H=\delta+\frac12=(\beta+1)/2$. (ii) The bridge is the pathwise bridge $B_H(r)-rB_H(1)$. (iii) Conversions are those of
+\cref{tab:norm}. (iv) A published critical value from $N$ replications is judged against the standard error
+$\sqrt{\alpha(1-\alpha)/N}$ of the size, a published rejection frequency $\hat r$ against $\sqrt{\hat r(1-\hat r)/N}$;
+the two are never mixed. (v) Verdicts: \emph{accurate within Monte Carlo error} (size deviation within three standard
+errors); \emph{inaccurate} only for deviations the design does not explain or above $0.1$\,pp at $5\,\%$;
+\emph{unresolved} when the deviation is systematic but its cause cannot be verified from the source. The five classes
+A--E of \cref{tab:audit} refine these verdicts, with the precedence rule of \cref{sec:audit}. Class~C (consistent with a
+finite design inferred for the source, not with the limit) was added after the Hualde--Iacone pattern at $\delta=-0.49$
+had been seen (protocol Amendment~5); class~D (a one-sign pattern within Monte Carlo error) was first assigned by hand
+to the McElroy--Politis values at $H>\frac12$ and was replaced by the explicit block rule of \cref{sec:audit}, which
+also selects the Hualde--Iacone row $\delta=0$ (protocol Amendment~8).
+
+\paragraph{Per-value results} \Cref{tab:auditfull} lists every audited value at $H\ne\frac12$ with its true size;
+the $H=\frac12$ values are in \cref{tab:audithalf}.
+
+{\footnotesize\setlength{\tabcolsep}{4pt}\input{tables/tab_audit_half.tex}}%
+
+{\footnotesize\setlength{\tabcolsep}{4pt}\input{tables/tab_audit_full.tex}}%
+
+\FloatBarrier

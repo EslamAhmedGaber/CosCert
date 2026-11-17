@@ -1,0 +1,51 @@
+\section{Validation and reproduction package}\label{app:repro}
+
+\begin{figure}[h]\centering
+\includegraphics[width=\textwidth]{figA1_validation.pdf}
+\caption{Validation of the exact finite-sample laws. (a)~Simulated minus exact rejection rates, with $99\,\%$ Wilson
+intervals. (b)~Standardised differences against normal quantiles: validation cells (black) and oracle cells of the
+estimated-$H$ study (grey). (c)~Published rates of \citet[Table~2]{HI17} minus our exact rates, $\pm2$ standard errors;
+filled: $T=64$, open: $T=256$.}\label{fig:validation}
+\end{figure}
+
+\paragraph{Code} \texttt{code/p3}: \texttt{gram.py} (closed-form Gram matrices, double precision), \texttt{lowrank.py}
+(certified fixed-$m$ and EWC limits in ball arithmetic), \texttt{certify.py} (certified distribution function of $T_H$),
+\texttt{finite\_n.py} (exact finite-sample laws, circulant-embedding sampler, local Whittle estimator),
+\texttt{laws.py} (Imhof, Ruben and reference laws). \texttt{code/experiments}: one driver per experiment
+(\cref{tab:experiments}); \texttt{code/figures}: one script per figure, all typeset with the preamble of this manuscript;
+\texttt{code/manuscript/make\_numbers.py} writes every number and table in this paper from the result files, so that no
+number in the text is typed by hand.
+
+\begin{table}[h]\centering\footnotesize
+\caption{Experiments and the scripts that produce them.}\label{tab:experiments}
+\input{tables/tab_experiments.tex}%
+\end{table}
+
+\paragraph{Independent checks} \Cref{tab:reproduction} pairs each headline number with a check by a different
+route, grouped by the kind of evidence. An enclosure check is the strongest: an independently computed value inside a
+certified enclosure confirms both. Every cell is computed by \texttt{make\_numbers.py} from the result files named in
+\texttt{E11\_reproduction.csv}.
+
+\begin{table}[tbp]\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\caption{Independent checks of the headline numbers, grouped by the kind of evidence.}\label{tab:reproduction}
+\input{tables/tab_reproduction.tex}%
+\end{table}
+
+\paragraph{Software} Python 3.12 with NumPy, SciPy, mpmath and python-flint (Arb) for all computations; R 4.5 with
+CompQuadForm, momentchi2 and survey, and the Python package gx2, for the comparison of \cref{sec:methods}; XeLaTeX
+(TeX Live 2025) with Latin Modern fonts for the manuscript and the figures. Run times refer to one Windows machine with
+12 logical cores. The versions of every package are recorded in \texttt{ENVIRONMENT.json}, and the SHA-256 checksums of
+all result files in \texttt{SHA256SUMS.txt}; the timing runs of \cref{sec:methods} pin the linear-algebra libraries to
+one thread.
+
+\paragraph{Numerical safeguards} The exact finite-sample laws diagonalise the positive semi-definite matrix of
+\cref{prop:exactn}(b) in double precision; over the \pthree{clip-ncells} design cells, rounding produced at most
+\pthree{clip-max} negative eigenvalue per cell (in \pthree{clip-nwith} cells), of magnitude at most \pthree{clip-rel}
+of the largest, and these are set to zero. The ARFIMA$(1,d,0)$ autocovariances are summed from their exact series,
+truncated where the remainder is below \pthree{arfima-trunc} of $\gamma(0)$.
+
+\paragraph{Status labels} Every number in the result files carries one of the labels \emph{exact}, \emph{certified},
+\emph{computed} or \emph{simulated} (\cref{sec:setting}); simulated numbers also carry the number of replications and
+the seed.
+
+\FloatBarrier

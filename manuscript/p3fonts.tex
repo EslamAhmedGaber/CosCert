@@ -1,0 +1,38 @@
+% p3fonts.tex -- the ONE font set-up shared by the manuscript and by every figure (matplotlib PGF backend, XeLaTeX).
+% Latin Modern text with optical sizes (as lmodern does under pdfLaTeX) and Latin Modern Math via unicode-math.
+% Fonts are loaded by file name (kpathsea), so no system font cache is consulted or written.
+\usepackage{amsmath}
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{lmroman10-regular.otf}[
+  UprightFeatures = {SizeFeatures = {
+      {Size = -5.5,      Font = lmroman5-regular.otf},
+      {Size = 5.5-6.5,   Font = lmroman6-regular.otf},
+      {Size = 6.5-7.5,   Font = lmroman7-regular.otf},
+      {Size = 7.5-8.5,   Font = lmroman8-regular.otf},
+      {Size = 8.5-9.5,   Font = lmroman9-regular.otf},
+      {Size = 9.5-11.5,  Font = lmroman10-regular.otf},
+      {Size = 11.5-14.5, Font = lmroman12-regular.otf},
+      {Size = 14.5-,     Font = lmroman17-regular.otf}}},
+  BoldFont = lmroman10-bold.otf,
+  BoldFeatures = {SizeFeatures = {
+      {Size = -5.5,      Font = lmroman5-bold.otf},
+      {Size = 5.5-6.5,   Font = lmroman6-bold.otf},
+      {Size = 6.5-7.5,   Font = lmroman7-bold.otf},
+      {Size = 7.5-8.5,   Font = lmroman8-bold.otf},
+      {Size = 8.5-9.5,   Font = lmroman9-bold.otf},
+      {Size = 9.5-11.5,  Font = lmroman10-bold.otf},
+      {Size = 11.5-,     Font = lmroman12-bold.otf}}},
+  ItalicFont = lmroman10-italic.otf,
+  ItalicFeatures = {SizeFeatures = {
+      {Size = -7.5,      Font = lmroman7-italic.otf},
+      {Size = 7.5-8.5,   Font = lmroman8-italic.otf},
+      {Size = 8.5-9.5,   Font = lmroman9-italic.otf},
+      {Size = 9.5-11.5,  Font = lmroman10-italic.otf},
+      {Size = 11.5-,     Font = lmroman12-italic.otf}}},
+  BoldItalicFont = lmroman10-bolditalic.otf]
+\setsansfont{lmsans10-regular.otf}[BoldFont = lmsans10-bold.otf, ItalicFont = lmsans10-oblique.otf]
+\setmonofont{lmmono10-regular.otf}
+\usepackage{unicode-math}
+\setmathfont{latinmodern-math.otf}
+\setmathfont{latinmodern-math.otf}[version=bold, FakeBold=2]   % bold headings with math (no bold Latin Modern Math exists)

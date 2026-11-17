@@ -1,0 +1,13 @@
+{
+ "recorded": "2026-11-15",
+ "python": "3.12.14",
+ "platform": "Windows-10-10.0.19045-SP0",
+ "numpy": "2.5.3",
+ "scipy": "1.18.1",
+ "mpmath": "1.4.1",
+ "python-flint": "0.8.0",
+ "matplotlib": "3.11.2",
+ "cpu_count": 12,
+ "conda_env": "paper2",
+ "note": "second env 'python' (py3.11, numpy 2.4.6, scipy 1.17.1, flint 0.9.0) used for parallel jobs"
+}

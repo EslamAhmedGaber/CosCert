@@ -1,0 +1,149 @@
+\section{Actual rejection rates at sample size \texorpdfstring{$n$}{n}}\label{sec:finite}
+
+\subsection{Exact finite-sample laws}
+Let $x=(x_1,\dots,x_n)^\top\sim N(\mu\mathbf 1,\Gamma_n)$ with a positive definite Toeplitz covariance $\Gamma_n$, and
+let $y=x-\mu_0\mathbf 1$. Each of the three statistics is a ratio $(a^\top y)^2/y^\top My$ with $a=n^{-1/2}\mathbf 1$ and a
+positive semi-definite $M$ with $M\mathbf 1=0$, so that the denominator does not depend on $\mu_0$: for $T_n$,
+$M=n^{-2}D^\top D$ with $D$ the matrix that maps $x$ to the demeaned partial sums $(S_k)$; for $\tau_{n,m}^2$ and $t_{n,B}^2$, $M$ has rank $2m$
+or $B$ and is spanned by the Fourier or cosine vectors in \eqref{eq:tauHI}--\eqref{eq:tEWC}.
+
+\begin{proposition}[Exact finite-sample laws]\label[proposition]{prop:exactn}
+Under $H_0:\mu=\mu_0$, for $c>0$, $P(\text{statistic}\le c)=P\big(\sum_i\theta_i(c)\xi_i^2\le0\big)$, with $\xi_i$
+independent standard normal and $\theta_i(c)$ the eigenvalues of $\Gamma_n^{1/2}(aa^\top-cM)\Gamma_n^{1/2}$, of which exactly
+one is positive (because $Ma=0$ and $\Gamma_n$ is positive definite). (a)~For the fixed-smoothing statistics the law depends on $\Gamma_n$ only through the $(2m+1)$- or
+$(B+1)$-dimensional covariance $C^\top\Gamma_nC$ of $a^\top x$ and the coordinates. (b)~For $T_n$, if
+$\Gamma_n^{1/2}M\Gamma_n^{1/2}=U\operatorname{diag}(\vartheta)U^\top$ and $\beta=U^\top\Gamma_n^{1/2}a$, the characteristic
+function of $\sum_i\theta_i(c)\xi_i^2$ is
+$\prod_k(1+2\mathrm isc\vartheta_k)^{-1/2}\big(1-2\mathrm is\sum_k\beta_k^2/(1+2\mathrm isc\vartheta_k)\big)^{-1/2}$, so one
+eigendecomposition serves every $c$.
+\end{proposition}
+
+Part~(b) is the matrix determinant lemma. After a one-off set-up of \pthree{e5-T3-setup-s}\,s at $n=1000$, the exact
+law costs \pthree{e5-T3-query-s}\,s for each further cutoff instead of \pthree{e5-T3-imhof-s}\,s for a fresh
+eigendecomposition and inversion (\cref{sec:methods}).
+
+\begin{proposition}[Fractional Gaussian noise]\label[proposition]{prop:fgn}
+If $u_t=B_H(t)-B_H(t-1)$, then for every $n$ the vector of statistics $(T_n,\tau_{n,m},t_{n,B})$ has the law of the same
+statistics computed from the increments of the fractional Brownian path $B_H$ on the grid $\{t/n\}$. In particular
+$T_n\overset d=Z^2\big/\big(n^{-1}\sum_{k=1}^n\Bt(k/n)^2\big)$, the rectangle-rule discretisation of $T_H$.
+\end{proposition}
+
+Under fractional Gaussian noise the finite-sample laws are therefore discretisations of the limit laws, with no
+contribution from short-run dynamics, and they converge quickly: at $n=500$ and $H=0.7$ the exact size of the
+Bartlett/self-normalised test at its own limit critical value differs from $5\,\%$ by \pthree{fgn-sn-0.70-500-dev}\,pp.
+
+\subsection{Results}
+\Cref{fig:finite} and \cref{tab:finite} report exact sizes for fractional Gaussian noise, ARFIMA$(0,d,0)$ and
+ARFIMA$(1,d,0)$ with $\phi=\pm0.5$, $d=H-\frac12\in\{0,\allowbreak0.1,\allowbreak0.2,\allowbreak0.3,\allowbreak0.4\}$ and $n\in\{50,\allowbreak100,\allowbreak200,\allowbreak500,\allowbreak1000,\allowbreak2000\}$,
+for the Bartlett/self-normalised test, the fixed-$m$ test with $m\in\{1,2,3,4,6,8,12,16\}$ and the EWC test with
+$B\in\{4,8,12,16,24,32\}$, each test using its own limit critical value at the true $H$. Three conclusions hold for all of them.
+
+\emph{Memory alone costs little.} Under fractional Gaussian noise and ARFIMA$(0,d,0)$ every procedure is within
+\pthree{fn-maxdev-pure}\,pp of $5\,\%$ for every $n\ge50$ and every $H$ in the design.
+
+\emph{Short-run dynamics cost a lot in small samples.} With $\phi=0.5$ at $n=50$, the fixed-$m$ test with $m=16$
+rejects \pthree{fn-arfima1p-HI16-0.50-50}\,\% of the time at $H=0.5$ and \pthree{fn-arfima1p-HI16-0.90-50}\,\% at
+$H=0.9$, the Bartlett/self-normalised test \pthree{fn-arfima1p-SN-0.50-50}\,\% and the test with $m=1$
+\pthree{fn-arfima1p-HI1-0.50-50}\,\%; with $\phi=-0.5$ the tests are conservative, down to
+\pthree{fn-arfima1m-HI16-0.50-50}\,\% for $m=16$. At $n=2000$ every procedure is within \pthree{fn-maxdev-2000}\,pp.
+
+\emph{The more components, the larger the distortion.} The ordering by the number of components is the same at every
+$H$ and $n$ in the design, and the EWC test with $B=2m$ behaves like the fixed-$m$ test with $m$ frequencies.
+
+\begin{figure}[tbp]\centering
+\includegraphics[width=\textwidth]{fig2_finite_n.pdf}
+\caption{Size of nominal $5\,\%$ tests at sample size $n$. Top row: $H$ known, exact size (\cref{prop:exactn}). Bottom
+row: $H$ estimated by local Whittle, simulated ($40\,000$ replications; $99\,\%$ intervals smaller than the markers).
+Lines and markers: $H=0.7$; bands: range over $H=0.5,\dots,0.9$; open circles: EWC, $B=2m$. Logarithmic vertical
+axis.}\label{fig:finite}
+\end{figure}
+
+\begin{table}[tbp]\centering\small
+\caption{Exact finite-sample size (\%) of nominal $5\,\%$ tests at their own limit critical value, $H=0.7$.}\label{tab:finite}
+\setlength{\tabcolsep}{4.5pt}\input{tables/tab_finite.tex}%
+\end{table}
+
+\paragraph{Validation} The exact computations were checked against independent Monte Carlo simulation with
+\pthree{val-R} replications per cell, by the circulant-embedding sampler of \citet{DH87}: in
+\pthree{val-n-inside} of \pthree{val-n-cells} cells the exact rate lies inside the $99\,\%$ Wilson interval, and the
+standardised differences have mean \pthree{val-z-mean} and standard deviation \pthree{val-z-sd}, as they should if the
+exact rates are correct (\cref{fig:validation}). A second, larger check comes from the estimated-$H$ study below, whose
+\emph{oracle} rule uses the critical value at the true $H$: over its \pthree{or-n-cells} cells (four models,
+$n=100,\dots,2000$, three levels) the exact rate lies inside the $99\,\%$ interval in \pthree{or-inside-pct}\,\% of them,
+with standardised differences of mean \pthree{or-z-mean}, standard deviation \pthree{or-z-sd} and largest absolute value
+\pthree{or-maxz}. The exact laws also reproduce the published rejection frequencies of \citet[Table~2]{HI17}
+for the AR(1) design with $\phi=0.5$ at $T=64$ and $256$, with largest standardised difference
+\pthree{hi17-t2-maxz} over the \pthree{hi17-t2-n} published cells.
+
+\subsection{When $H$ is estimated}\label{sec:plugin}
+In practice $H$ is unknown. We estimate it by the local Whittle estimator \citep{Rob95} with bandwidth
+$\lfloor n^{0.65}\rfloor$, as in \citet{HI17}, and plug the estimate into the limit critical value; these rates are
+simulated. \Cref{tab:hi17} reproduces Tables~3--5 of \citet{HI17}, Gaussian ARFIMA$(1,\delta,0)$ with
+$(\delta,\phi)\in\{(0,0),(-0.3,0.5),(0.3,-0.5)\}$, with \pthree{hi17-R} replications instead of the published $10\,000$.
+Reading their plug-in rule as linear interpolation in $\delta$ of their printed Table~1 (the \emph{interpolated plug-in};
+estimates outside $[-0.49,0.49]$ take the end values of the table, and our exact plug-in clips $\hat H$ to $[0.01,0.99]$),
+our rates differ from the published ones by
+\pthree{hi17-meandiff}\,pp on average; \pthree{hi17-share-z2}\,\% of the \pthree{hi17-ncells} cells differ by more than
+two joint standard errors, the largest difference being \pthree{hi17-maxdiff}\,pp. The remaining differences are
+attributable to details that the paper does not report (the optimiser of the local Whittle objective, the treatment of
+estimates outside the table, and the ARFIMA generator), and we classify these cells as not reproducible within Monte
+Carlo error rather than as errors.
+
+\Cref{tab:hi17} gives, besides the published rates, the interpolated plug-in (HI table), our exact plug-in, the
+\emph{oracle} rule with the exact critical value at the true $\delta$, and the \emph{naive} rule with $t_{2m}$.
+The decomposition in \cref{tab:hi17} is the first finding of this subsection. With the true $\delta$ (the
+\emph{oracle} column) the fixed-$m$ test is close to nominal, apart from the short-run distortion seen in
+\cref{fig:finite}; with the estimated $\delta$ the size reaches \pthree{hi17-T5-64-16-plugin}\,\% at $T=64$ in
+Table~5. At sample sizes typical of applications the realised rejection rate of a feasible test is thus governed by the
+error of $\hat H$, not by the accuracy of the critical value. The certified values remove the second source of error
+completely; the first can only be reduced by a better estimator of $H$ or by procedures that are robust to it.
+
+The same decomposition holds on the design grid of \cref{fig:finite} (bottom row and \cref{tab:plugin}), with
+\pthree{pl-R} replications per cell and the estimate clipped to $[\frac12,0.99]$ for every test, so that all tests
+assume long memory a priori in the same way, and each test uses the critical values of the known-$H$ case; EWC was
+simulated with $B=4$ and $16$, and tracks HI with $m=B/2$. Under fractional Gaussian noise and ARFIMA$(0,d,0)$ with $H\ge0.6$ the
+feasible tests reject between \pthree{pl-pure-min-100} and \pthree{pl-pure-max-100}\,\% at $n=100$ and between
+\pthree{pl-pure-min-2000} and \pthree{pl-pure-max-2000}\,\% at $n=2000$ (over $H\in\{0.6,0.7,0.8,0.9\}$; \cref{tab:plugin}
+shows $H=0.7$ and $0.9$, the result files all four), against at most \pthree{fn-maxdev-pure}\,pp of
+distortion when $H$ is known. At $H=0.9$ and $n=100$ under fractional Gaussian noise the Bartlett/self-normalised test
+rejects \pthree{pl-fgn-SN-0.9-100}\,\%, the fixed-$m$ test with $m=4$ \pthree{pl-fgn-HI4-0.9-100}\,\% and with $m=16$
+\pthree{pl-fgn-HI16-0.9-100}\,\%. With estimated $H$ the distortion again grows with the number of components. In the
+\pthree{pl-n-pure-cells} pure-memory cells with $H\ge0.6$ the fixed-$m$ test with $m=1$ is less distorted than the
+Bartlett/self-normalised test in \pthree{pl-share-hi1-le-sn}\,\% of them, EWC with $B=4$ in \pthree{pl-share-ewc4-le-sn}\,\%,
+and the Bartlett/self-normalised test is less distorted than the tests with $m=4$ and $m=16$ in
+\pthree{pl-share-sn-le-hi4}\,\%. The power ranking of \cref{sec:power} thus comes with the opposite ranking in feasible
+size. Positive
+short-run correlation biases the estimate upwards and makes every feasible test conservative (sizes between
+\pthree{pl-ar1p-min} and \pthree{pl-ar1p-max}\,\%); negative correlation does the opposite, up to
+\pthree{pl-ar1m-max-100}\,\% at $n=100$. The clipping matters only near $H=\frac12$: at $H=0.5$, $n=100$, the test with
+$m=4$ rejects \pthree{pl-HI4-H05-trunc}\,\% with the clipped estimate and \pthree{pl-HI4-H05-untrunc}\,\% with the
+unclipped one, because estimates below $\frac12$ select smaller critical values.
+
+\paragraph{Bandwidth} How large the effect is depends on the estimator. With common random numbers, which make the
+differences between bandwidths more precise than independent runs would but do not remove their Monte Carlo error, and the
+bandwidths
+$\lfloor n^{0.5}\rfloor$, $\lfloor n^{0.65}\rfloor$ and $\lfloor n^{0.8}\rfloor$, the feasible sizes of all tests under
+fractional Gaussian noise and ARFIMA$(0,d,0)$ with $H\in\{0.7,0.9\}$ range at $n=100$ over \pthree{bw-50-min-100}--\pthree{bw-50-max-100},
+\pthree{bw-65-min-100}--\pthree{bw-65-max-100} and \pthree{bw-80-min-100}--\pthree{bw-80-max-100}\,\%, and at $n=2000$
+over \pthree{bw-50-min-2000}--\pthree{bw-50-max-2000}, \pthree{bw-65-min-2000}--\pthree{bw-65-max-2000} and
+\pthree{bw-80-min-2000}--\pthree{bw-80-max-2000}\,\%. The widest bandwidth lowers the variance of $\hat H$ enough to bring
+every test within \pthree{bw-80-fgn-maxdev-500}\,pp of nominal under fractional Gaussian noise from $n=500$, but not under
+ARFIMA$(0,d,0)$ (up to \pthree{bw-80-arfima0-max-500}\,\% at $n\ge500$), and wide bandwidths are what short-run dynamics
+penalise through bias \citep{Rob95}. Wherever the distortion exceeds $1$\,pp it grows with the number of components, at
+every bandwidth. The conclusion that the error of $\hat H$, not the critical value, governs the feasible size at
+$n\le500$ therefore holds for each bandwidth; its magnitude is a property of the estimator and should be assessed for the
+estimator actually used. Tests based on memory- and autocorrelation-consistent estimates of the long-run variance
+\citep{Rob05,ADG09} use normal critical values and a bandwidth of their own; their size is governed by that bandwidth
+rather than by a critical value, which is outside the question of this paper, and we do not simulate them.
+
+\begin{table}[tbp]\centering\small
+\caption{Simulated size (\%) of nominal $5\,\%$ tests with $H$ estimated by local Whittle; $40\,000$ replications per
+cell, standard error at most $0.2$\,pp.}\label{tab:plugin}
+\input{tables/tab_plugin.tex}%
+\end{table}
+
+\begin{table}[tbp]\centering\small
+\caption{Simulated size (\%) of the nominal $5\,\%$ fixed-$m$ test of \citet{HI17} in the designs of their Tables 3--5;
+columns as defined in \cref{sec:plugin}.}\label{tab:hi17}
+\input{tables/tab_hi17.tex}%
+\end{table}

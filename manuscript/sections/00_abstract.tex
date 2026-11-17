@@ -1,0 +1,23 @@
+\begin{abstract}
+Self-normalised and fixed-smoothing tests of the mean under long memory have limit laws that depend on the Hurst
+index $H$, and their critical values have come from simulation. We compute these laws exactly with \CosCert, a
+certified computation in cosine coordinates built on two-sided bounds for every eigenvalue of the fractional Brownian
+bridge covariance. It gives certified critical values of the Bartlett/self-normalised statistic for $\frac12\le H\le0.99$
+and of the fixed-$m$ periodogram and equal-weighted cosine statistics, and exact finite-sample rejection rates under
+Gaussian models. The $5\,\%$ critical value grows from \pthree{sn-q-0.50-0.950} at $H=\frac12$ to
+\pthree{sn-q-0.99-0.950} at $H=0.99$, at the rate $1/(1-H)$, and the short-memory value has size
+\pthree{naive-sn-0.90-0.05}\,\% at $H=0.9$. Rescaling by the first moment of the self-normaliser brings the
+fixed-smoothing tests within \pthree{rs-maxerr-090-0.05} points of nominal size for $H\le0.9$, but not the Bartlett test.
+With the correct critical value, finite-sample sizes are near nominal under fractional noise but distorted by short-run
+dynamics; with estimated $H$, nominal $5\,\%$ tests reject \pthree{pl-pure-min-100}--\pthree{pl-pure-max-100}\,\% at
+$n=100$. An audit of \pthree{audit-n-values} published critical values in size units finds most accurate only to their
+Monte Carlo precision; values for strongly antipersistent series match a finite design inferred from them, not the
+limit. Generic approximations to such laws, used within their documented domains, err by up to
+\pthree{e5-approx-maxerr-pp} points in size.
+\end{abstract}
+
+\begin{keyword}
+fractional Brownian motion \sep long memory \sep self-normalisation \sep fixed-$b$ asymptotics \sep critical values
+\sep certified computation \sep generalized chi-square distribution
+\MSC[2020] 62M10 \sep 60G22 \sep 62E15 \sep 65G30
+\end{keyword}

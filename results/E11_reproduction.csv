@@ -1,0 +1,20 @@
+category,quantity,primary,independent,agreement,sources,ok
+enclosure,"$q_p$ of $T_{1/2}$, four levels","certified brackets, $J=16384$",closed form \citep{AP97},all inside,E2_sn_critical_values.json; E0_anchors.json,True
+enclosure,"Cram\'er--von Mises law, three levels","certified bridge engine, $J=4096$",closed-form quantiles,all inside,E0_anchors.json (d),True
+enclosure,"fixed smoothing at $H=\frac12$, $m\le16$, $B\le32$",certified Ruben series,Student $t$ and $F$ laws,all inside,E0_anchors.json (b),True
+enclosure,"T1, T2: fixed smoothing, $H=0.8$",certified Ruben series,"Imhof (three codes), Ruben (double)",all inside; Davies $4.1\times10^{-11}$ outside,E5_methods.csv,True
+enclosure,"T4: $F_{0.75}$ at its $95\,\%$ point","certified, $J=16384$","Imhof, $J=512$, remainder by its mean",inside; error $\le$ $9.5\times10^{-9}$,E5_methods.csv; E2r/H0.75.json,True
+implementation,closed forms at $H=\frac12$ ($T_{1/2}$; Cram\'er--von Mises),characteristic functions (mpmath),Imhof over the explicit eigenvalues,$\ge14.5$; $\ge12.1$ digits,"E0_anchors.json (a, c)",True
+implementation,"T3: exact law of $T_n$, $n=1000$",one eigendecomposition (\cref{prop:exactn}b),"Imhof, Davies, gx2 on the ratio form",$\le$ $1.9\times10^{-11}$,E5_methods.csv,True
+implementation,"naive size of $T_n$, fGn, $n\le128$",series route,$30$-digit Imhof; separate double-precision code,"$6.7\times10^{-12}$; $3.6\times10^{-5}$\,pp",E10_matched_example.csv,True
+implementation,"local power at $H=\frac12$, fixed smoothing",noncentral Imhof (\cref{prop:power}),noncentral Student $t$,"$\le$ $2.3\times10^{-13}$, 610 cells",E7_power_H0.50.csv; E7c_nct_check.json,True
+asymptotic,$q_{0.95}$ at $H=0.99$,certified limit,"exact law, fGn, $n=128$","size $5.000039$\,\%",E2_sn_critical_values.json; E10_matched_example.csv,True
+asymptotic,"naive size at $H=0.9$, $0.99$",certified limits,"exact law, fGn, $n=128$","$6.9\times10^{-5}$; $9.2\times10^{-6}$\,pp",E2r/J4096; E10_matched_example.csv,True
+asymptotic,"$(1-H)\,q_{0.95}(H)$, $H\to1$","certified, $H=0.98$, $0.99$, extrapolated",$C_{0.95}$ of \cref{prop:edge},"$0.04$\,\% relative",E12_edge_limit.json,True
+probabilistic,finite-sample rates (\cref{sec:finite}),exact laws,"simulation, $R=200\,000$, 192 cells","191 inside $99\,\%$ intervals",E3b_validate_*.csv,True
+probabilistic,"oracle rates, estimated-$H$ study","exact laws, true $H$","simulation, 1\,800 cells","98.9\,\% inside $99\,\%$ intervals",E3b_plugin grid; E3_rates_*.csv,True
+probabilistic,\citet[Table~2]{HI17},exact finite-$T$ laws,their simulation,"max $|z|=2.17$, 64 cells",E3c_hi2017_table2.csv,True
+convergence,Bartlett/SN local power,$J=512$,$J=256$ and $1024$,$\le$ $9.0\times10^{-9}$; $\le$ $1.1\times10^{-9}$,E7b_sn_power_Jladder.json,True
+convergence,enclosure width of $F_H$,"$J=512,\dots,8192$",rate $J^{-1/2-2H}$ (\cref{prop:rate}),slopes within $0.05$,E1_benchmark_H*.json,True
+reproducibility,\citet{HI17} Tables 2--5,stored runs,"re-runs, same seeds",Tables 3--5 bit-identical (720 rows); Table 2 within $1.1\times10^{-15}$,"E3b_hi2017_table{3,4,5}.csv, E3c_hi2017_table2.csv (and .bak16nov)",True
+reproducibility,"certified $q_p(H)$, 300 values",first implementation,final implementation (\cref{app:certificate}),all confirmed; shifts $\le$ $3\times10^{-15}$,E2r/H*.json,True
