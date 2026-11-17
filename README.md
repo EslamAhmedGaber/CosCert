@@ -3,7 +3,9 @@
 Reproducibility companion for *CosCert: certified critical values and exact size for long-memory tests of the mean*
 (E. Ahmed, M.A. El-Beltagy, A. Etman, S.M. Elnady).
 
-This is a research manuscript companion. No submission or publication status is asserted here.
+Public code, numerical results, and manuscript sources for the research manuscript.
+
+Repository: https://github.com/EslamAhmedGaber/CosCert
 
 | Folder | Content |
 |---|---|
@@ -33,13 +35,13 @@ carry the number of replications and the seed. Local absolute paths in `results/
 placeholders such as `<conda>` in this archive, and
 `results/SHA256SUMS.txt` was recomputed for the archived files.
 
-## Repository preparation and verification (17 November 2026)
+## Reproducibility and verification (17 November 2026)
 
 The release copy includes the two literature ledgers and the four historical
 `results/*.bak16nov` CSV files used by the E11 reproducibility comparison.
 These historical CSV files are intentional research inputs.
 
-Fresh local verification: 34 tests passed; the table generator wrote 617 number
+Verification recorded on 17 November 2026: 34 tests passed; the table generator wrote 617 number
 macros, with 224 used in the manuscript, zero undefined keys, no missing inputs,
 and all printed consistency checks passing. This reruns tests and regenerates
 tables from stored results; it does not rerun every production experiment.
@@ -47,9 +49,3 @@ tables from stored results; it does not rerun every production experiment.
 The paper's corrected SN certificate uses `cdf_T_certified_tilt`; the legacy
 `cdf_T_certified` / `cdf_X_certified` routines still need the same rounding
 review and are not covered by this release verification.
-
-To create and upload the private repository using the saved Windows Git Credential
-Manager login, run `python create_github_repo.py` from a normal terminal.
-The script verifies the account and remote commit and prints the actual URL on
-success. No repository creation or upload has yet been verified in this copy.
-Do not claim public code availability until the repository is actually public.

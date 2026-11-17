@@ -11,4 +11,16 @@ __pycache__/
 *.out
 *.synctex.gz
 manuscript/main.pdf
+
+# Local setup, assistant handoffs, and credentials are not release artifacts.
+MAIN_ASSISTANT_HANDOFF.md
+create_github_repo.py
 repo_creation_receipt.json
+AGENTS.md
+CLAUDE.md
+.codex/
+.claude/
+.agents/
+.env
+.env.*
+!.env.example
