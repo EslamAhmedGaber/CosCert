@@ -246,6 +246,8 @@ class Block:
         lam, Q = np.linalg.eigh(Amid)
         order = np.argsort(lam)[::-1]
         lam, Q = lam[order], Q[:, order]
+        if not lam[-1] > 0:      # Lemma 13 (manuscript) needs l >= 0: then |1 + zeta l_j| >= 1 for Re zeta >= 0
+            raise ValueError(f"head eigenvalue estimate {lam[-1]:.3e} is not positive")
         self.lam = lam
         Qa = arb_mat(n, n, Q.ravel().tolist())
         Qi = Qa.inv()

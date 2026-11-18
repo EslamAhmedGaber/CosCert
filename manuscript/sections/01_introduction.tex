@@ -23,7 +23,7 @@ in the following sense. For the Bartlett/self-normalised limit
 $T_H=B_H(1)^2\big/\int_0^1\Bt(r)^2\dd r$, with $\Bt$ the pathwise bridge of fractional Brownian motion, we give
 critical values on $\frac12\le H\le0.99$ together with machine-checked enclosures (\cref{sec:cv,sec:computation}). The
 fixed-smoothing limits are finite-dimensional ratio laws, which we evaluate with certified enclosures for every
-$0<H<1$. Under Gaussian data with fractional Gaussian noise or ARFIMA dependence the finite-sample laws of all three
+$0<H<1$ (\cref{prop:fixedcert}). Under Gaussian data with fractional Gaussian noise or ARFIMA dependence the finite-sample laws of all three
 statistics are again ratios of Gaussian quadratic forms, which we evaluate exactly at $n$ up to $2000$
 (\cref{sec:finite}). Monte Carlo enters only where it must: to validate the exact computations independently and to
 study tests that plug in an estimate of $H$.
@@ -49,7 +49,7 @@ practically the same limit power at every $H$ (\cref{sec:power}).
 \begin{enumerate}
 \item[(C1)] Certified critical values of $T_H$ at six levels and of the fixed-$m$ and EWC limits at three levels, tabulated
 for $\frac12\le H\le0.99$, with enclosures that hold under the stated arithmetic (\cref{sec:cv,sec:computation},
-\cref{thm:certificate}); the fixed-smoothing certificate also applies for $0<H<\frac12$ and is used there in the audit,
+\cref{thm:certificate}); the fixed-smoothing certificate (\cref{prop:fixedcert}) also applies for $0<H<\frac12$ and is used there in the audit,
 and the critical values grow at the rate $1/(1-H)$ (\cref{prop:edge}).
 \item[(C2)] Exact finite-sample rejection rates under Gaussian long-memory models, validated against independent
 Monte Carlo, and Monte Carlo rejection rates of the feasible plug-in tests (\cref{sec:finite}).

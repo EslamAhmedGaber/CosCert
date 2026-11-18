@@ -10,23 +10,59 @@ lists every error source, its bound and how the bound is evaluated.
 splits into an odd block $A_O$ and the block of $(Z,\text{even coordinates})$ with Schur structure
 $(1,g^\top;g,A_E)$, so that, for $z=\vartheta+\mathrm it$ and $\zeta=2cz$,
 \[\mathcal M(z)^{-2}=\det(I-2zK)=\det(I+\zeta A_O)\det(I+\zeta A_E)\,(1-2z\lambda_+)\,\rho(z)\qquad(\cref{lem:branch,lem:interlace}).\]
-Each log-determinant is split into a head of $h$ coordinates and a tail,
-$\log\det(I+\zeta A)=\log\det(I+\zeta A_{hh})+\log\det(I+\zeta S)$ with the Schur complement $S=A_{tt}-\zeta A_{th}(I+\zeta A_{hh})^{-1}A_{ht}$.
-\emph{Head.} An approximate eigenvector matrix $Q$ is computed in floating point and $F=Q^{-1}A_{hh}Q-\operatorname{diag}(\ell)$
-is formed in ball arithmetic; if $|\zeta|\,\|F\|_F<\frac12$ then
-$|\log\det(I+\zeta A_{hh})-\sum_i\log(1+\zeta \ell_i)|\le h|\zeta|\|F\|_F/(1-|\zeta|\|F\|_F)$. The approximate eigenvectors only need to make $F$ small: the similarity is exact in ball arithmetic, so no
-orthogonality of $Q$ is required. For the eigenvalue bounds of the truncation, Gershgorin's theorem is applied to
-$\operatorname{diag}(\ell)+F$, which is exactly similar to $A_{hh}$ and has a real spectrum: a connected union of $k$ discs contains exactly
-$k$ eigenvalues, so sorted lower bounds follow cluster by cluster \citep[Theorem~6.1.1]{HJ13}; by Cauchy's interlacing
-theorem they bound the leading eigenvalues of the full odd and even blocks from below, and the even block, which is
-coupled to $Z$ by a rank-one term, loses its largest bound (\cref{lem:interlace}). \emph{Tail.} With the coupling $W=A_{th}^\top A_{th}$ and
-$\|A_{tt}\|_2\le\min\big(\|A_{tt}\|_F,\ \cH(\ell_0\pi)^{-1-2H}\big)$, $\ell_0$ the first tail mode (\cref{thm:eig}), one has
-$\|S\|_2\le\|A_{tt}\|_2+|\zeta|\tr W$, and if $|\zeta|\|S\|_2<\frac12$,
+Each block is split into a head of its first $h$ coordinates and a tail, $A=(A_{hh},A_{ht};A_{th},A_{tt})$, and evaluated
+with \cref{lem:logdet}, in which $\log\det(I+\zeta M)=\sum_i\log(1+\zeta\mu_i)$ over the eigenvalues $\mu_i$ of $M$, with
+principal logarithms, and $\|\cdot\|_*$ is the trace norm.
+
+\begin{lemma}[Head and tail]\label[lemma]{lem:logdet}
+Let $A$ be real symmetric positive semi-definite, partitioned as above, $\operatorname{Re}\zeta\ge0$, $W=A_{th}^\top A_{th}$,
+$S=A_{tt}-\zeta A_{th}(I+\zeta A_{hh})^{-1}A_{ht}$, $s_2=\|A_{tt}\|_2+|\zeta|\tr W$ and $s_F=\|A_{tt}\|_F+|\zeta|\tr W$. Let $Q$ be
+invertible, $\ell\in[0,\infty)^h$, $F=Q^{-1}A_{hh}Q-\operatorname{diag}(\ell)$ and $\epsilon_F=|\zeta|\|F\|_F$, and suppose
+$\epsilon_F<\frac12$ and $|\zeta|s_2<\frac12$. Then:
+\emph{(a)} $\log\det(I+\zeta A)=\log\det(I+\zeta A_{hh})+\log\det(I+\zeta S)$ and
+$\big|\log\det(I+\zeta A_{hh})-\sum_{i\le h}\log(1+\zeta\ell_i)\big|\le h\epsilon_F/(1-\epsilon_F)$;
+\emph{(b)} for $u,v\in\mathbb C^h$,
+\begin{gather*}
+\Big|u^\top(I+\zeta A_{hh})^{-1}v-\sum_{j\le h}\frac{(Q^\top u)_j(Q^{-1}v)_j}{1+\zeta\ell_j}\Big|\le\frac{\epsilon_F\,\|Q^\top u\|\,\|Q^{-1}v\|}{1-\epsilon_F},\\
+\Big|\tr\big((I+\zeta A_{hh})^{-1}W\big)-\sum_{j\le h}\frac{(Q^{-1}WQ)_{jj}}{1+\zeta\ell_j}\Big|\le\frac{\epsilon_F\,\|Q\|_F\|Q^{-1}\|_F\tr W}{1-\epsilon_F};
+\end{gather*}
+\emph{(c)} $\|S\|_2\le s_2$, $\|S\|_F\le s_F$, $\tr S=\tr A_{tt}-\zeta\tr\big((I+\zeta A_{hh})^{-1}W\big)$ and
 \begin{gather*}\log\det(I+\zeta S)=\zeta\tr S-\tfrac12\zeta^2\|A_{tt}\|_F^2+E,\\
-|E|\le\tfrac12|\zeta|^2\big(2|\zeta|\|A_{tt}\|_2\tr W+|\zeta|^2(\tr W)^2\big)+\frac{|\zeta|^3\|S\|_2\,\|S\|_F^2}{3(1-|\zeta|\|S\|_2)},\end{gather*}
-with $\tr S$ evaluated through the diagonal of $Q^{-1}WQ$ and $\tr A_{tt}$, $\|A_{tt}\|_F^2$ summed with rounding bounds.
-The head size $h\in\{8,16,32,64,128\}$ is chosen per quadrature node as the smallest one that meets both conditions and
-gives an enclosure radius below $10^{-12}$.
+|E|\le\tfrac12|\zeta|^2\big(2|\zeta|\|A_{tt}\|_2\tr W+|\zeta|^2(\tr W)^2\big)+\frac{|\zeta|^3s_2s_F^2}{3(1-|\zeta|s_2)};\end{gather*}
+\emph{(d)} for $g=(g_h,g_t)$ and $e=g_t-\zeta A_{th}(I+\zeta A_{hh})^{-1}g_h$, one has $\|e\|\le\|g_t\|+|\zeta|(\tr W)^{1/2}\|g_h\|$ and
+\[g^\top(I+\zeta A)^{-1}g=g_h^\top(I+\zeta A_{hh})^{-1}g_h+e^\top e+E_g,\qquad|E_g|\le\frac{|\zeta|s_2\|e\|^2}{1-|\zeta|s_2}.\]
+\end{lemma}
+
+\begin{proof}
+Since $A_{hh}$ is positive semi-definite, $\ell\ge0$ and $\operatorname{Re}\zeta\ge0$, the normal matrices $I+\zeta A_{hh}$ and
+$I+\zeta D$, $D=\operatorname{diag}(\ell)$, have eigenvalues of modulus at least $1$, so their inverses have spectral norm at
+most $1$. Put $X=\zeta(I+\zeta D)^{-1}F$; then $\|X\|_2\le\epsilon_F$, $(I+\zeta A_{hh})^{-1}=Q(I+X)^{-1}(I+\zeta D)^{-1}Q^{-1}$,
+$(I+X)^{-1}=I-X(I+X)^{-1}$ and $\|X(I+X)^{-1}\|_2\le\epsilon_F/(1-\epsilon_F)$, which gives~(b) with $|\tr(MN)|\le\|M\|_2\|N\|_*$ and
+$\|Q^{-1}WQ\|_*\le\|Q^{-1}\|_F\|Q\|_F\tr W$. \emph{(a)} The Schur complement gives $\det(I+\zeta A)=\det(I+\zeta A_{hh})\det(I+\zeta S)$,
+and $\det(I+\zeta A_{hh})=\det(I+\zeta D)\det(I+X)$, where every eigenvalue $\mu$ of $X$ has $|\mu|\le\epsilon_F<\frac12$ and
+$|\log(1+\mu)|\le|\mu|/(1-|\mu|)$. Both identities hold for the principal logarithms, not only modulo $2\pi\mathrm i$:
+replacing $\zeta$ by $s\zeta$, $0\le s\le1$, preserves the hypotheses, every term is continuous in $s$, and all vanish at
+$s=0$. \emph{(c)} With $P=A_{th}(I+\zeta A_{hh})^{-1}A_{ht}$, $\|P\|_F\le\|P\|_*\le\|A_{th}\|_F^2=\tr W$, which gives the norm bounds
+and the trace. As $|\zeta|\|S\|_2<\frac12$, $\log\det(I+\zeta S)=\sum_{k\ge1}(-1)^{k+1}\zeta^k\tr(S^k)/k$, and Schur's inequality
+gives $|\tr S^k|\le\|S\|_2^{k-2}\|S\|_F^2$ for $k\ge2$, which bounds the terms $k\ge3$ by the last term of the bound on $|E|$;
+finally $\tr S^2=\|A_{tt}\|_F^2-2\zeta\tr(A_{tt}P)+\zeta^2\tr P^2$ with $|\tr(A_{tt}P)|\le\|A_{tt}\|_2\tr W$ and $|\tr P^2|\le(\tr W)^2$.
+\emph{(d)} By the block inverse, $g^\top(I+\zeta A)^{-1}g=g_h^\top(I+\zeta A_{hh})^{-1}g_h+e^\top(I+\zeta S)^{-1}e$, and
+$(I+\zeta S)^{-1}=I-\zeta S(I+\zeta S)^{-1}$ with $\|(I+\zeta S)^{-1}\|_2\le(1-|\zeta|s_2)^{-1}$.
+\end{proof}
+
+In the computation $Q$ is an approximate eigenvector matrix of the midpoint of $A_{hh}$, computed in floating point, $\ell$
+are its floating-point eigenvalues (positive for every $H=0.50,\dots,0.99$; the code stops if one is not), and $F$ is formed
+in ball arithmetic, so the similarity is exact and no orthogonality of $Q$ is required; $\operatorname{Re}\zeta=2c\vartheta>0$.
+Part~(a) gives the head log-determinants, (b) and~(c) the tail, and (b) and~(d), with $g$ split in the same way, the
+rank-one term $g^\top(I+\zeta A_E)^{-1}g$ of $U$ below. For the eigenvalue bounds of the truncation, Gershgorin's theorem is
+applied to $\operatorname{diag}(\ell)+F$, which is exactly similar to $A_{hh}$ and has a real spectrum: a connected union of $k$
+discs contains exactly $k$ eigenvalues, so sorted lower bounds follow cluster by cluster \citep[Theorem~6.1.1]{HJ13}; by
+Cauchy's interlacing theorem they bound the leading eigenvalues of the full odd and even blocks from below, and the even
+block, which is coupled to $Z$ by a rank-one term, loses its largest bound (\cref{lem:interlace}). In~(c),
+$\|A_{tt}\|_2\le\min\big(\|A_{tt}\|_F,\ \cH(k_0\pi)^{-1-2H}\big)$ with $k_0$ the first tail mode (\cref{thm:eig}), and $\tr A_{tt}$,
+$\|A_{tt}\|_F^2$ and $\tr W$ are summed with rounding bounds. The head size $h\in\{8,16,32,64,128\}$ is chosen per
+quadrature node as the smallest one that meets both conditions of \cref{lem:logdet} and gives an enclosure radius below
+$10^{-12}$.
 
 \paragraph{Positive eigenvalue} Put $U(\zeta)=1-\zeta g^\top(I+\zeta A_E)^{-1}g$, so that the function of
 \cref{lem:interlace} is $u(z)=U(2cz)$. Then $\lambda_+$ is the unique root in $(0,1)$ of $U(c/\lambda)=\lambda$, equivalently
@@ -87,8 +123,9 @@ evaluation points $cs_{\mathrm{lo}}$, $cs_{\mathrm{hi}}$ & monotonicity of $P(X_
 Gram entries, head blocks & closed forms (\cref{prop:coords}) & balls\\
 Gram entries, tail blocks & entrywise bounds & standard model\\
 tail traces, Frobenius norms, coupling & summation bounds $\gamma_n$ & standard model\\
-head log-determinant & exact similarity, perturbation bound & balls\\
-tail log-determinant & series bound with Schur complement & balls\\
+head log-determinant & exact similarity, perturbation bound, \cref{lem:logdet}(a) & balls\\
+tail log-determinant & series bound with Schur complement, \cref{lem:logdet}(b), (c) & balls\\
+rank-one term $g^\top(I+\zeta A_E)^{-1}g$ & head similarity, tail Neumann series, \cref{lem:logdet}(b), (d) & balls\\
 positive eigenvalue $\lambda_+$ & sign change of $U(c/\lambda)-\lambda$ & balls\\
 eigenvalue lower bounds $\nu_i$ & Gershgorin clusters, Cauchy interlacing & balls\\
 lattice period $L$ & $L=2\pi/\Delta$ for the binary $\Delta$ & balls\\
@@ -98,27 +135,39 @@ quantile bracket & enclosures at the two binary endpoints & balls\\\bottomrule
 \end{tabular}
 \end{table}
 
-\paragraph{Fixed-smoothing laws} For the fixed-$m$ and EWC limits, $P(\tau_{H,m}^2\le c)=P(X_c\le0)$, where $X_c$ is a
-quadratic form in independent standard normal variables with exactly one positive weight, for every $0<H<1$, $m$, $B$
-and $c>0$: the covariance $\Sigma$ of $(Z,\text{components})$ is positive definite and $e_1e_1^\top-c\operatorname{diag}(0,M)$, with
-$M$ positive definite, has inertia $(1,k,0)$, which the congruence by $\Sigma^{1/2}$ preserves (Sylvester's law of inertia). The covariance of $(Z,\text{components})$ is assembled from Gram entries in ball
-arithmetic; the weights, the eigenvalues of a $(2m+1)$- or $(B+1)$-dimensional matrix, are enclosed by an exact
-similarity transformation in ball arithmetic followed by Gershgorin's theorem on clusters of discs (a connected union of
-$k$ discs contains exactly $k$ eigenvalues). Write the
-form as $\theta_+Y_0^2-\sum_{i=1}^ra_iY_i^2$ with $\theta_+>0$, $a_i>0$ and $\beta=\min_ia_i$. \Citet{Rub62} expands
-$\sum_ia_iY_i^2$ as a mixture of $\beta\chi^2_{r+2k}$ laws with weights $c_k\ge0$, $\sum_kc_k=1$, the coefficients of
-$\prod_i(\beta/a_i)^{1/2}(1-\gamma_ix)^{-1/2}$, $\gamma_i=1-\beta/a_i\in[0,1)$. Since $Y_0^2/(Y_0^2+\chi^2_\nu)$ has the
-Beta$(\frac12,\frac\nu2)$ law,
-\[F(0)=P(X_c\le0)=\sum_{k\ge0}c_k\,I_\upsilon\big(\tfrac12,\tfrac r2+k\big),\qquad \upsilon=\frac{\beta}{\theta_++\beta},\]
-with $I_\upsilon$ the regularised incomplete Beta function, evaluated with
-$I_\upsilon(\frac12,b+1)=I_\upsilon(\frac12,b)+\upsilon^{1/2}(1-\upsilon)^b/\{b\,B(\frac12,b)\}$. The coefficients are computed in ball arithmetic
-as a power series; $I_\upsilon(\frac12,b)$ increases with $b$, so after the terms $k\le K$ the omitted part lies between
-$(1-\sum_{k\le K}c_k)\,I_\upsilon(\frac12,\frac r2+K+1)$ and $1-\sum_{k\le K}c_k$, which gives both ends of the enclosure. The
-probability decreases in $\theta_+$ and increases in each $a_i$ (pathwise, the event
-$\{\theta_+Y_0^2\le\sum_ia_iY_i^2\}$ grows with each $a_i$ and shrinks as $\theta_+$ grows), so the lower end of the enclosure is evaluated
-with $\theta_+$ at the upper end of its interval and every $a_i$ at the lower end of its interval, and the upper end the
-other way round. Every one of the \pthree{fx-n-cells} critical values was certified with the tightest bracket tried,
-$[q(1-10^{-9}),q(1+10^{-9})]$ for the squared statistic.
+\paragraph{Fixed-smoothing laws} The limits $\tau_{H,m}$ and $t_{H,B}$ in \eqref{eq:limits} are $Z/(w\sum_{i=1}^kV_i^2)^{1/2}$
+with $(V_1,\dots,V_k)=(C_1,S_1,\dots,C_m,S_m)$, $k=2m$, $w=1/m$, or $(V_1,\dots,V_k)=(\Lambda_1,\dots,\Lambda_B)$, $k=B$, $w=1/B$;
+let $\Sigma$ be the covariance of $(Z,V_1,\dots,V_k)$.
+
+\begin{proposition}[Certified fixed-smoothing laws]\label[proposition]{prop:fixedcert}
+Let $0<H<1$ and $c>0$. Then $P\big(Z^2\le cw\sum_iV_i^2\big)=F:=P\big(\theta_+Y_0^2\le\sum_{i=1}^ka_iY_i^2\big)$ for independent
+standard normal $Y_0,\dots,Y_k$, where $\theta_+>0$ and $-a_1,\dots,-a_k<0$ are the eigenvalues of
+$\Sigma^{1/2}\big(e_1e_1^\top-cw\operatorname{diag}(0,I_k)\big)\Sigma^{1/2}$. Let $\beta=\min_ia_i$, $\upsilon=\beta/(\theta_++\beta)$
+and let $\varpi_j\ge0$ be the coefficients of $\prod_i(\beta/a_i)^{1/2}(1-\gamma_ix)^{-1/2}$, $\gamma_i=1-\beta/a_i\in[0,1)$, so
+that $\sum_j\varpi_j=1$. Then $F=\sum_{j\ge0}\varpi_j\,I_\upsilon\big(\tfrac12,\tfrac k2+j\big)$, with $I_\upsilon$ the regularised
+incomplete Beta function, and for every $K\ge0$, with $F_K=\sum_{j\le K}\varpi_jI_\upsilon(\frac12,\frac k2+j)$ and
+$\bar\varpi_K=1-\sum_{j\le K}\varpi_j$,
+\[F_K+\bar\varpi_K\,I_\upsilon\big(\tfrac12,\tfrac k2+K+1\big)\le F\le F_K+\bar\varpi_K.\]
+$F$ decreases in $\theta_+$ and increases in each $a_i$; hence, if $\theta_+\in[\theta^-,\theta^+]$ and $a_i\in[a_i^-,a_i^+]$
+with $a_i^->0$, the lower bound evaluated at $(\theta^+,a^-)$ and the upper bound evaluated at $(\theta^-,a^+)$ enclose~$F$.
+\end{proposition}
+
+\begin{proof}
+$\Sigma$ is the Gram matrix of linearly independent functions in the inner product of $B_H$, hence positive definite, and
+$e_1e_1^\top-cw\operatorname{diag}(0,I_k)$ has inertia $(1,k,0)$, which the congruence by $\Sigma^{1/2}$ preserves (Sylvester's
+law of inertia); diagonalising gives the first identity. \Citet{Rub62} expands $\sum_ia_iY_i^2$ as a mixture of
+$\beta\chi^2_{k+2j}$ laws with weights $\varpi_j$, and since $Y_0^2/(Y_0^2+\chi^2_\nu)$ has the Beta$(\frac12,\frac\nu2)$ law,
+$P(\theta_+Y_0^2\le\beta\chi^2_{k+2j})=I_\upsilon(\frac12,\frac k2+j)$. As $I_\upsilon(\frac12,b)$ increases with $b$ and does not
+exceed $1$, the omitted terms lie between $\bar\varpi_KI_\upsilon(\frac12,\frac k2+K+1)$ and $\bar\varpi_K$. Pathwise, the event
+$\{\theta_+Y_0^2\le\sum_ia_iY_i^2\}$ grows with each $a_i$ and shrinks as $\theta_+$ grows.
+\end{proof}
+
+In the computation $\Sigma$ is assembled from Gram entries in ball arithmetic (\cref{prop:coords,prop:continuation}); the
+weights, the eigenvalues of a $(k+1)$-dimensional matrix, are enclosed by an exact similarity transformation in ball
+arithmetic followed by Gershgorin's theorem on clusters of discs; the $\varpi_j$ are computed in ball arithmetic as a power
+series, and $I_\upsilon$ by $I_\upsilon(\frac12,b+1)=I_\upsilon(\frac12,b)+\upsilon^{1/2}(1-\upsilon)^b/\{b\,B(\frac12,b)\}$. Every one of the
+\pthree{fx-n-cells} critical values was certified with the tightest bracket tried, $[q(1-10^{-9}),q(1+10^{-9})]$ for the
+squared statistic.
 
 \paragraph{Validation} At $H=\frac12$, where $T_{1/2}$ has a closed-form law \citep{AP97}, the certified quantiles at
 $J=512$ and $4096$ enclose the exact values, and the computed ones agree with them to

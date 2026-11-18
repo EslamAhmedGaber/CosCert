@@ -492,9 +492,8 @@ if len(A) == 5:
     L.append(r"\end{longtable}"); open(os.path.join(TAB, "tab_audit_half.tex"), "w").write("\n".join(L) + "\n")
     hdr = r"id & $H$ & $\alpha$ & published & exact & size (\%) & $z$ & design (\%) & class\\\midrule"
     L = [r"\begin{longtable}{@{}lrrrrrrrc@{}}",
-         r"\caption{Audit for $H\ne\frac12$: every value. True size: certified limit size, except McElroy--Politis at $\beta<0$, where it is"
-         r" the exact size under their own $1000$-step fGn design. Design size: exact size under the source's finite design"
-         r" (Hualde--Iacone $\delta<0$: stationary ARFIMA$(0,\delta,0)$, $T=10\,000$). Class as in \cref{tab:audit}.}\label{tab:auditfull}\\\toprule",
+         r"\caption{Audit for $H\ne\frac12$: every value, with its true size and design size (defined in the text); class as in"
+         r" \cref{tab:audit}.}\label{tab:auditfull}\\\toprule",
          hdr + r"\endfirsthead", r"\caption[]{(continued)}\\\toprule " + hdr + r"\endhead",
          r"\midrule\multicolumn{9}{r@{}}{\footnotesize\itshape continued on the next page}\\\endfoot", r"\bottomrule\endlastfoot"]
     for part in ("hi_neg", "hi", "mp_neg", "mp"):

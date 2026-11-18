@@ -88,7 +88,7 @@ half-widths; shaded: double-precision floor. (b)~Wall-clock time including each 
 Three conclusions follow. First, on the low-rank targets T1 and T2 every exact inversion method, Imhof's integral in
 three implementations (SciPy, the R package of \citet{DL10}, and the \texttt{imhof} and \texttt{auto} modes of
 \citet{Das25}), Davies' algorithm, Ruben's series and our tilted Bromwich rule, has error at most
-\pthree{e5-T12-exact-maxerr} in probability at a cost below \pthree{e5-T12-exact-maxs}\,s, and the certified enclosure,
+\pthree{e5-T12-exact-maxerr} in probability at a cost below \pthree{e5-T12-exact-maxs}\,s, and the certified enclosure of \cref{prop:fixedcert},
 of width \pthree{e5-T12-cert-width}, costs \pthree{e5-T12-cert-s}\,s. Second, the approximations are not accurate enough
 for critical values. At the $5\,\%$ level the saddlepoint approximation of \citet{Kuo99} errs by up to
 \pthree{e5-lr-err-pp}\,pp in size, HBE by \pthree{e5-hbe-err-pp}, the saddlepoint option of survey by

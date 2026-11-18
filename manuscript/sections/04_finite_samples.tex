@@ -4,7 +4,7 @@
 Let $x=(x_1,\dots,x_n)^\top\sim N(\mu\mathbf 1,\Gamma_n)$ with a positive definite Toeplitz covariance $\Gamma_n$, and
 let $y=x-\mu_0\mathbf 1$. Each of the three statistics is a ratio $(a^\top y)^2/y^\top My$ with $a=n^{-1/2}\mathbf 1$ and a
 positive semi-definite $M$ with $M\mathbf 1=0$, so that the denominator does not depend on $\mu_0$: for $T_n$,
-$M=n^{-2}D^\top D$ with $D$ the matrix that maps $x$ to the demeaned partial sums $(S_k)$; for $\tau_{n,m}^2$ and $t_{n,B}^2$, $M$ has rank $2m$
+$M=n^{-2}D^\top D$ with $D$ the matrix that maps $x$ to the demeaned partial sums $(\hat S_k)$; for $\tau_{n,m}^2$ and $t_{n,B}^2$, $M$ has rank $2m$
 or $B$ and is spanned by the Fourier or cosine vectors in \eqref{eq:tauHI}--\eqref{eq:tEWC}.
 
 \begin{proposition}[Exact finite-sample laws]\label[proposition]{prop:exactn}
@@ -75,7 +75,7 @@ with standardised differences of mean \pthree{or-z-mean}, standard deviation \pt
 for the AR(1) design with $\phi=0.5$ at $T=64$ and $256$, with largest standardised difference
 \pthree{hi17-t2-maxz} over the \pthree{hi17-t2-n} published cells.
 
-\subsection{When $H$ is estimated}\label{sec:plugin}
+\subsection{When \texorpdfstring{$H$}{H} is estimated}\label{sec:plugin}
 In practice $H$ is unknown. We estimate it by the local Whittle estimator \citep{Rob95} with bandwidth
 $\lfloor n^{0.65}\rfloor$, as in \citet{HI17}, and plug the estimate into the limit critical value; these rates are
 simulated. \Cref{tab:hi17} reproduces Tables~3--5 of \citet{HI17}, Gaussian ARFIMA$(1,\delta,0)$ with

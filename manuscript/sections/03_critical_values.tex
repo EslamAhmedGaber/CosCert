@@ -32,7 +32,7 @@ Bartlett/self-normalised value is shown as $\sqrt{q_{0.95}(H)/q_{0.95}(\frac12)}
 
 \subsection{Fixed-smoothing statistics}
 The fixed-$m$ and EWC limits are finite-dimensional, so their quantiles can be certified at every $0<H<1$
-(\cref{prop:continuation}). \Cref{tab:fixedcv} gives two-sided $5\,\%$ values; \cref{app:tables} gives the
+(\cref{prop:continuation,prop:fixedcert}). \Cref{tab:fixedcv} gives two-sided $5\,\%$ values; \cref{app:tables} gives the
 \pthree{fx-n-cells} certified values for $m=1,\dots,16$, $B\in\{1,2,3,4,6,8,12,16,24,32\}$, $\alpha\in\{0.10,0.05,0.01\}$
 and $H=0.50,0.51,\dots,0.99$. At $H=\frac12$ every enclosure contains the Student-$t$ value with $2m$ or $B$ degrees of
 freedom, which validates the computation against an independent closed form.
@@ -91,10 +91,10 @@ collapses at rate $1-H$.
 \begin{proposition}[Growth as $H\uparrow1$]\label[proposition]{prop:edge}
 Let $\varphi(x)=x^2\log x$ ($\varphi(0)=0$) and
 $k_1(r,s)=\varphi(|r-s|)-\varphi(r)-\varphi(s)+s\{\varphi(r)-\varphi(1-r)\}+r\{\varphi(s)-\varphi(1-s)\}$, which is
-$-\partial_H\Cov(\Bt(r),\Bt(s))$ at $H=1$. As $H\uparrow1$, $(1-H)\,T_H\Rightarrow Z^2/\!\int_0^1G^2$, where $G$ is a
-centred Gaussian process with covariance $k_1$, independent of $Z$, and $\int_0^1\E G(r)^2\dd r=\frac7{36}$. Hence
-$(1-H)\,q_p(H)\to C_p$, the $p$-quantile of $Z^2/\!\int_0^1G^2$, for every $0<p<1$. The same holds for $\tau_{H,m}^2$
-and $t_{H,B}^2$, for every $m\ge1$ and $B\ge1$, with the corresponding quadratic form in $G$; in particular
+$-\partial_H\Cov(\Bt(r),\Bt(s))$ at $H=1$. As $H\uparrow1$, $(1-H)\,T_H\Rightarrow Z^2/\!\int_0^1\mathcal G^2$, where $\mathcal G$ is a
+centred Gaussian process with covariance $k_1$, independent of $Z$, and $\int_0^1\E\mathcal G(r)^2\dd r=\frac7{36}$. Hence
+$(1-H)\,q_p(H)\to C_p$, the $p$-quantile of $Z^2/\!\int_0^1\mathcal G^2$, for every $0<p<1$. The same holds for $\tau_{H,m}^2$
+and $t_{H,B}^2$, for every $m\ge1$ and $B\ge1$, with the corresponding quadratic form in $\mathcal G$; in particular
 $\lim_{H\uparrow1}\rho_{\EWC,B}(H)/(1-H)\ge h_B/B$ and $\lim_{H\uparrow1}\rho_{\HI,m}(H)/(1-H)\ge h_m/(4m)$, where
 $h_j=\sum_{i\le j}1/i$.
 \end{proposition}

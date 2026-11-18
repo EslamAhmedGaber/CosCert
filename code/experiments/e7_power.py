@@ -5,6 +5,7 @@ In the limit the numerator Z = B_H(1) becomes Z + c while every self-normaliser 
 A = diag(1, -q w, ..), L = chol(Sigma), L'AL = P Lambda P':  Q = sum_i lambda_i (w_i + delta_i)^2 exactly
 (delta = Lambda^-1 P'L'A mu; the constant mu'A mu - sum b_i^2/lambda_i vanishes identically), so power = P(Q > 0)
 is a noncentral weighted chi-square probability evaluated by Imhof's (1961) noncentral formula.
+Paper notation (Proposition 8): the vector xi here is V there, and lambda_i, w_i, delta_i are Theta_ii, xi_i, psi_i.
   HI fixed-m, EWC: exact finite-dimensional ('exact').
   SN (T_H): Galerkin J = 512 sine coordinates of the bridge + mean-remainder shift ('computed', null error ~2e-10, E5 T4).
 Checks: c = 0 reproduces the nominal level; at H = 1/2 the HI/EWC power equals the noncentral-t power (scipy.stats.nct).

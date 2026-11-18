@@ -108,14 +108,14 @@ $\lim_{J\to\infty}\limsup_{\varepsilon\to0}P(\sum_{k>J}g_{k,\varepsilon}^2>\eta)
 for every $\eta>0$, which is the condition of the approximation theorem for weak convergence
 \citep[Theorem~3.2]{Bil99}; hence $(Z,D_{\SN}/\varepsilon)\Rightarrow(Z,D^*)$ with $D^*=\sum_kg_k^2$, a series of nonnegative
 terms that converges almost surely by monotone convergence ($\E D^*=\sum_k\kappa_{kk}<\infty$) and has the law of
-$\int_0^1G^2$. Since $\E D^*=\frac7{36}>0$, some $g_k$ has positive variance, so $D^*>0$ almost surely, and
+$\int_0^1\mathcal G^2$. Since $\E D^*=\frac7{36}>0$, some $g_k$ has positive variance, so $D^*>0$ almost surely, and
 the continuous mapping theorem gives $\varepsilon T_H=Z^2/(D_{\SN}/\varepsilon)\Rightarrow Z^2/D^*$. As $Z$ is independent
 of $D^*$ and $Z^2$ has a positive density, $Z^2/D^*$ has a continuous, strictly increasing distribution function on
 $(0,\infty)$, so its quantiles are the limits of those of $\varepsilon T_H$.
 
 The fixed-smoothing self-normalisers are finite sums of squares of the $\Lambda_j$, or of $C_j=\Lambda_{2j}/\sqrt2$ and
 $S_j=\Sigma_{2j}/\sqrt2$ (\cref{prop:coords}), whose $Z$-terms vanish as above, so $D_P/\varepsilon$ converges jointly with $Z$, without a tail
-argument, to a finite quadratic form $D_P^*$ in $G$, and $\E D_P^*$ is $\E_{1/2}D_P$ times
+argument, to a finite quadratic form $D_P^*$ in $\mathcal G$, and $\E D_P^*$ is $\E_{1/2}D_P$ times
 $\lim_{H\uparrow1}\rho_P(H)/(1-H)$, which exists by the uniform convergence of the kernels. This limit is positive.
 Taking $x=e_k$ in the lower bound of the proof of \cref{thm:eig} gives
 $G_{kk}=(k\pi)^2M_{kk}\ge\frac12\cH(k\pi)^{1-2H}$, and $\cH/(1-H)=\Gamma(2H+1)\sin(\pi(1-H))/(1-H)\to2\pi$, so
@@ -138,12 +138,12 @@ $g=\Gamma_n^{1/2}a$, $N=\Gamma_n^{1/2}M\Gamma_n^{1/2}$ (matrix determinant lemma
 \emph{\Cref{prop:fgn}.} By stationarity of increments and self-similarity,
 $(B_H(t))_{t\le n}\overset d=(n^HB_H(t/n))_{t\le n}$, so $(x_t)_{t\le n}\overset d=(n^H(B_H(t/n)-B_H((t-1)/n)))_{t\le n}$.
 The three statistics are ratios of quadratic forms of equal degree, so the factor $n^H$ cancels. For $T_n$,
-$\bar x=B_H(n)/n$ and $S_k=B_H(k)-\frac knB_H(n)\overset d=n^H\Bt(k/n)$, which gives the stated form. \qed
+$\bar x=B_H(n)/n$ and $\hat S_k=B_H(k)-\frac knB_H(n)\overset d=n^H\Bt(k/n)$, which gives the stated form. \qed
 
-\emph{\Cref{prop:power}.} With $\xi=c\,e_1+L\eta$, $\eta\sim N(0,I)$, the quadratic form is
-$\eta^\top L^\top AL\eta+2c\,e_1^\top AL\eta+c^2e_1^\top Ae_1$. Diagonalising $L^\top AL=P\Theta P^\top$ and completing
-squares gives
-\[\sum_i\Theta_{ii}(w_i+\delta_i)^2+c^2\big(e_1^\top Ae_1-e_1^\top AL(L^\top AL)^{-1}L^\top Ae_1\big),\]
+\emph{\Cref{prop:power}.} With $V=c\,e_1+L\eta$, $\eta\sim N(0,I)$, the quadratic form $V^\top AV$ is
+$\eta^\top L^\top AL\eta+2c\,e_1^\top AL\eta+c^2e_1^\top Ae_1$. Diagonalising $L^\top AL=P\Theta P^\top$, writing $\xi=P^\top\eta\sim N(0,I)$ and
+completing squares gives
+\[\sum_i\Theta_{ii}(\xi_i+\psi_i)^2+c^2\big(e_1^\top Ae_1-e_1^\top AL(L^\top AL)^{-1}L^\top Ae_1\big),\]
 and the constant vanishes because $L$ is invertible: $L(L^\top AL)^{-1}L^\top=A^{-1}$. \qed
 
 \subsection{The branch of the square root}
@@ -232,7 +232,8 @@ $|s|$; keeping only the factors in the index set $I$ of certified eigenvalue mag
 $s_K=(K-\frac12)\Delta$, gives the majorant $e^{-\vartheta x}(1-2\vartheta)^{-1/2}s^{-1}\prod_{i\in I}(2sc\,\nu_i)^{-1/2}$ for
 $s\ge s_K$ (each remaining factor is at most one and $\lambda_+\le1$); it decreases in $s$, so the omitted terms
 $\frac\Delta\pi\sum_{k\ge K}|\psi(s_k)|$ are at most its integral over $[s_K,\infty)$, which is finite when $I\ne\emptyset$, of $|\psi|$ and gives the bound $\epsilon_K$, so $|S_\Delta(x)-S_{\Delta,K}(x)|\le\epsilon_K$. All quantities are evaluated in ball
-arithmetic (\cref{app:certificate}), the eigenvalue lower bounds by Gershgorin clusters and Cauchy interlacing. \qed
+arithmetic (\cref{app:certificate}): the log-determinants and the rank-one term with \cref{lem:logdet}, the eigenvalue lower
+bounds by Gershgorin clusters and Cauchy interlacing. \qed
 
 \subsection{Proof of \texorpdfstring{\cref{prop:rate}}{the width proposition}}
 \emph{Remainder interval.} $\bar\mu_J\le\bar c_J$ and $\tau_J\ge4\bar c_Jt\ge4\bar\mu_Jt$ give $\tau_J\ge2\sqrt{\bar\mu_J\tau_Jt}$,
