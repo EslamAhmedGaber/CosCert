@@ -862,16 +862,17 @@ if need(bool(E0d) and SN, "E11 inputs"):
               rf"slopes within {_m(float(NUM['e1-slope-maxdev']), 2)}", "E1_benchmark_H*.json")
     # --- reproducibility
     same, nrow = [], 0
+    STORED = os.path.join(RES, "stored_runs_16nov")      # outputs of 16 Nov, compared with the current re-runs
     for tb in ("3", "4", "5"):
-        f = os.path.join(RES, f"E3b_hi2017_table{tb}.csv")
-        if os.path.exists(f + ".bak16nov"):
-            A_, B_ = pd.read_csv(f + ".bak16nov"), pd.read_csv(f); same.append(A_.equals(B_)); nrow += len(B_)
-    f2 = os.path.join(RES, "E3c_hi2017_table2.csv")
-    if need(len(same) == 3 and os.path.exists(f2 + ".bak16nov"), "E11 reruns"):
-        A_, B_ = pd.read_csv(f2 + ".bak16nov"), pd.read_csv(f2)
+        f = f"E3b_hi2017_table{tb}.csv"
+        if need(os.path.exists(os.path.join(STORED, f)) and os.path.exists(os.path.join(RES, f)), f"E11 rerun {f}"):
+            A_, B_ = pd.read_csv(os.path.join(STORED, f)), pd.read_csv(os.path.join(RES, f)); same.append(A_.equals(B_)); nrow += len(B_)
+    f2 = "E3c_hi2017_table2.csv"
+    if need(len(same) == 3 and os.path.exists(os.path.join(STORED, f2)) and os.path.exists(os.path.join(RES, f2)), "E11 reruns"):
+        A_, B_ = pd.read_csv(os.path.join(STORED, f2)), pd.read_csv(os.path.join(RES, f2))
         add11("reproducibility", r"\citet{HI17} Tables 2--5", "stored runs", "re-runs, same seeds",
               rf"Tables 3--5 bit-identical ({nrow} rows); Table 2 within {_s(float((A_.exact_rate - B_.exact_rate).abs().max()), 1)}",
-              "E3b_hi2017_table{3,4,5}.csv, E3c_hi2017_table2.csv (and .bak16nov)", all(same))
+              "E3b_hi2017_table{3,4,5}.csv, E3c_hi2017_table2.csv; stored_runs_16nov/", all(same))
     E2rf = sorted(glob.glob(os.path.join(RES, "E2r", "H*.json")))
     if need(len(E2rf) == len(SN), "E2r complete"):
         okb, nb, dmax = 0, 0, 0.0
@@ -930,3 +931,8 @@ for k in MISSING:
     print("  missing input:", k)
 for c, ok in CHECKS:
     print("  CHECK", "ok " if ok else "FAIL", c)
+# A complete rebuild needs every input, every key and every check: anything less is an error, not a warning.
+if (MISSING or undef or not all(ok for _, ok in CHECKS)) and "--allow-incomplete" not in sys.argv:
+    print(f"make_numbers FAILED: {len(MISSING)} missing input(s), {len(undef)} undefined key(s), "
+          f"{sum(not ok for _, ok in CHECKS)} failed check(s)")
+    sys.exit(1)

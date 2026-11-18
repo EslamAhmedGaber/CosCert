@@ -16,5 +16,5 @@ probabilistic,"oracle rates, estimated-$H$ study","exact laws, true $H$","simula
 probabilistic,\citet[Table~2]{HI17},exact finite-$T$ laws,their simulation,"max $|z|=2.17$, 64 cells",E3c_hi2017_table2.csv,True
 convergence,Bartlett/SN local power,$J=512$,$J=256$ and $1024$,$\le$ $9.0\times10^{-9}$; $\le$ $1.1\times10^{-9}$,E7b_sn_power_Jladder.json,True
 convergence,enclosure width of $F_H$,"$J=512,\dots,8192$",rate $J^{-1/2-2H}$ (\cref{prop:rate}),slopes within $0.05$,E1_benchmark_H*.json,True
-reproducibility,\citet{HI17} Tables 2--5,stored runs,"re-runs, same seeds",Tables 3--5 bit-identical (720 rows); Table 2 within $1.1\times10^{-15}$,"E3b_hi2017_table{3,4,5}.csv, E3c_hi2017_table2.csv (and .bak16nov)",True
+reproducibility,\citet{HI17} Tables 2--5,stored runs,"re-runs, same seeds",Tables 3--5 bit-identical (720 rows); Table 2 within $1.1\times10^{-15}$,"E3b_hi2017_table{3,4,5}.csv, E3c_hi2017_table2.csv; stored_runs_16nov/",True
 reproducibility,"certified $q_p(H)$, 300 values",first implementation,final implementation (\cref{app:certificate}),all confirmed; shifts $\le$ $3\times10^{-15}$,E2r/H*.json,True

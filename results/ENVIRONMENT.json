@@ -1,5 +1,5 @@
 {
- "recorded": "2026-11-17 15:45",
+ "recorded": "2026-11-17 20:13",
  "python": "3.12.14",
  "implementation": "CPython",
  "platform": "Windows-10-10.0.19041-SP0",
@@ -37,6 +37,6 @@
   "OPENBLAS_NUM_THREADS": "1",
   "NUMEXPR_NUM_THREADS": "1"
  },
- "tex": "This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.4.15)  17 NOV 2026 15:44",
+ "tex": "This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.4.15)  17 NOV 2026 20:12",
  "note": "E0(d), E2r, E3c, E5 and E7b pinned OpenMP/BLAS to one thread; the other runs used library defaults. Results do not depend on the thread count beyond floating-point rounding, and certified enclosures are unaffected."
 }

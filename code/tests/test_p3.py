@@ -250,3 +250,12 @@ def test_certified_cvm_law_contains_closed_form():
     r = s.cdf_Wfull(x, certified=True)
     F = float(lw.cdf_cvm_fast(x))
     assert r["lo"] <= F <= r["hi"] and r["hi"] - r["lo"] < 0.02
+
+
+def test_legacy_certified_names_are_disabled():
+    """The untilted cdf_X_certified / cdf_T_certified did not meet the certification standard and must not be selectable."""
+    from p3 import certify as cf
+    for name in ("cdf_X_certified", "cdf_T_certified"):
+        with pytest.raises(NotImplementedError, match="_tilt"):
+            getattr(cf.BridgeSystem, name)(None, 1.0)
+    assert callable(getattr(cf.BridgeSystem, "cdf_T_certified_tilt"))

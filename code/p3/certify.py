@@ -537,54 +537,15 @@ class BridgeSystem:
         return {"point": F[1], "lo": lo, "hi": hi, **info}
 
     # ---------------- certified CDF of X_J (ball arithmetic)
-    def cdf_X_certified(self, c, xs, eps_alias=1e-18, eps_trunc=1e-16):
-        c_a = arb(float(c))
-        L = self.choose_L(c, xs, eps_alias)
-        Delta = 2 * math.pi / L
-        K = self.choose_K(c, Delta, eps_trunc)
-        D_a = arb(Delta)
-        # validity of the Schur expansions on the whole range s <= u_K
-        uK = (K + 0.5) * Delta
-        azmax = 2 * uK * c * (1 + 1e-12)
-        for blk in (self.odd, self.even):
-            if not azmax * blk.nF < 0.5 or not azmax * (blk.nAtt + azmax * blk.trW) < 0.5:
-                raise ValueError("head too small for the required frequency range")
-        sums = [acb(0) for _ in xs]
-        xs_a = [arb(float(x)) for x in xs]
-        for k in range(K):
-            s = (k + arb(0.5)) * D_a
-            z = acb(0, 2 * s * c_a)
-            az = fup(2 * s * c_a)
-            LO, _ = self.odd.terms(z, az)
-            LE, gm = self.even.terms(z, az)
-            w = 1 - z * gm
-            if not w.real > 0 or not (1 / w).real > 0:
-                raise ValueError("branch check failed: Re(1 - z gamma) not positive")
-            logphi = -(LO + LE) / 2 - w.log() / 2 - (1 / w - acb(0, 2 * s)).log() / 2
-            ph = logphi.exp()
-            for i, xa in enumerate(xs_a):
-                e = acb(0, -s * xa).exp() if xs[i] != 0 else acb(1)
-                sums[i] += (ph * e).imag / (k + arb(0.5))
-        tb = self.trunc_bound(c, (K - 0.5) * Delta)      # already contains the factor 1/pi
-        out = []
-        for i, x in enumerate(xs):
-            Sx = arb(0.5) - sums[i].real / arb.pi()
-            Sx = Sx + arb(0, math.nextafter(tb, INF))        # omitted terms k >= K (|Im[...]| <= |phi|)
-            up_alias = math.erfc(math.sqrt(max(x + L, 0) / 2)) * (1 + 1e-9)
-            lo_alias = self.lower_tail_bound(c, L - x)
-            lo = flo(Sx) - up_alias
-            hi = fup(Sx) + lo_alias
-            out.append((lo, hi))
-        return out, {"L": L, "Delta": Delta, "K": K, "trunc": tb}
+    # The untilted route that used to be exposed here as cdf_X_certified / cdf_T_certified assembled part of its scalar
+    # bound in ordinary floating point (threshold products, an erfc alias bound with a heuristic factor, endpoint
+    # arithmetic) and therefore did not meet the certification standard of the paper. It produced no reported number and
+    # was removed on 17 Nov 2026 (the old code is in the repository history). The certified route is the tilted one below.
+    def cdf_X_certified(self, *args, **kwargs):
+        raise NotImplementedError("BridgeSystem.cdf_X_certified was removed (not certified); use cdf_X_certified_tilt")
 
-    def cdf_T_certified(self, c, t=25.0):
-        rem = self.remainder(t)
-        xs = [c * rem["s_lo"], c * rem["s_hi"]]
-        (Flo, Fhi), info = self.cdf_X_certified(c, xs)
-        lo = Flo[0] - (rem["p_fail"] if rem["lo_uses_tail"] else 0.0)
-        hi = Fhi[1] + rem["p_fail"]
-        return {"lo": lo, "hi": hi, "width": hi - lo, "X_radius": max(Flo[1] - Flo[0], Fhi[1] - Fhi[0]) / 2, **info,
-                "s_lo": rem["s_lo"], "s_hi": rem["s_hi"], "tau": float(rem["tau"].mid())}
+    def cdf_T_certified(self, *args, **kwargs):
+        raise NotImplementedError("BridgeSystem.cdf_T_certified was removed (not certified); use cdf_T_certified_tilt")
 
 
 # ============================================================================ tilted Bromwich inversion (production path)

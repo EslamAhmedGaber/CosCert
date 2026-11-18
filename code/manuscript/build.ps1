@@ -9,6 +9,7 @@ $env:PATH = "C:\texlive\2025\bin\windows;" + $env:PATH
 $env:TEXMFVAR = $tv; $env:TEXMFCACHE = $tv; $env:TEXMFCONFIG = "$tv\config"; $env:TEXMFHOME = "$tv\home"
 & $Python -W ignore (Join-Path $PSScriptRoot "make_numbers.py") 2>&1 | Out-File -Encoding utf8 (Join-Path $MS "build_numbers.log")
 "make_numbers exit: $LASTEXITCODE"
+if ($LASTEXITCODE -ne 0) { "make_numbers failed (see manuscript\build_numbers.log); build stopped"; exit 1 }
 Set-Location $MS
 foreach ($step in @("xelatex", "bibtex", "xelatex", "xelatex")) {
     if ($step -eq "bibtex") { bibtex main | Out-File -Encoding utf8 build_bibtex.log }

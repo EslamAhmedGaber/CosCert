@@ -13,8 +13,9 @@ filled: $T=64$, open: $T=256$.}\label{fig:validation}
 \texttt{finite\_n.py} (exact finite-sample laws, circulant-embedding sampler, local Whittle estimator),
 \texttt{laws.py} (Imhof, Ruben and reference laws). \texttt{code/experiments}: one driver per experiment
 (\cref{tab:experiments}); \texttt{code/figures}: one script per figure, all typeset with the preamble of this manuscript;
-\texttt{code/manuscript/make\_numbers.py} writes every number and table in this paper from the result files, so that no
-number in the text is typed by hand.
+\texttt{code/manuscript/make\_numbers.py} writes every number and table in this paper from the result files and the ledgers
+of published values (\texttt{literature}), so that no number is typed by hand, and stops with an error if an input is
+missing or a check fails.
 
 \begin{table}[h]\centering\footnotesize
 \caption{Experiments and the scripts that produce them.}\label{tab:experiments}
@@ -31,12 +32,11 @@ certified enclosure confirms both. Every cell is computed by \texttt{make\_numbe
 \input{tables/tab_reproduction.tex}%
 \end{table}
 
-\paragraph{Software} Python 3.12 with NumPy, SciPy, mpmath and python-flint (Arb) for all computations; R 4.5 with
+\paragraph{Software} All files are in the repository \url{https://github.com/EslamAhmedGaber/CosCert} and in the supplementary
+archive. Python 3.12 with NumPy, SciPy, mpmath and python-flint (Arb) for all computations; R 4.5 with
 CompQuadForm, momentchi2 and survey, and the Python package gx2, for the comparison of \cref{sec:methods}; XeLaTeX
-(TeX Live 2025) with Latin Modern fonts for the manuscript and the figures. Run times refer to one Windows machine with
-12 logical cores. The versions of every package are recorded in \texttt{ENVIRONMENT.json}, and the SHA-256 checksums of
-all result files in \texttt{SHA256SUMS.txt}; the timing runs of \cref{sec:methods} pin the linear-algebra libraries to
-one thread.
+(TeX Live 2025) with Latin Modern fonts for the manuscript and the figures. The versions of every package are recorded
+in \texttt{ENVIRONMENT.json}, and the SHA-256 checksums of all result files in \texttt{SHA256SUMS.txt}.
 
 \paragraph{Numerical safeguards} The exact finite-sample laws diagonalise the positive semi-definite matrix of
 \cref{prop:exactn}(b) in double precision; over the \pthree{clip-ncells} design cells, rounding produced at most
