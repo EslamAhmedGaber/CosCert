@@ -1,22 +1,22 @@
 \begin{abstract}
-At Hurst index $H=0.9$, the short-memory cutoff for a nominal $5\,\%$ Bartlett self-normalised test of a
-time-series mean gives a limiting rejection rate of \pthree{naive-sn-0.90-0.05}\,\% under the null.
-\CosCert{} computes critical values for this test and for the fixed-$m$ periodogram and equal-weighted cosine tests.
-Eigenvalue bounds for the fractional Brownian bridge and adaptive quadrature in complex ball arithmetic
-give deterministic enclosures for Bartlett probabilities. We certify all \pthree{e2q-n-brackets} tabulated Bartlett
-critical values across six levels and \pthree{e2q-n-H} values of $H$. The $5\,\%$ critical value rises from
-\pthree{sn-q-0.50-0.950} at $H=0.5$ to \pthree{sn-q-0.99-0.950} at $H=0.99$.
-At $H=0.75$, one probability evaluation near the 95th percentile takes \pthree{e5-T4-cert-s}\,s including setup,
-a \pthree{e5-T4-speedup}-fold speedup over the midpoint benchmark.
-Rescaling Student-$t$ cutoffs keeps the limiting size of the fixed-smoothing tests within
+We certify critical values for three tests of a time-series mean under long memory and derive their exact
+finite-sample rejection probabilities for Gaussian samples with specified covariance.
+Our method, \CosCert{}, combines eigenvalue bounds for the fractional Brownian bridge with adaptive quadrature
+in complex ball arithmetic to enclose Bartlett probabilities. Across \pthree{e2q-n-H} Hurst indices
+from $H=0.5$ to $0.99$, we certify \pthree{e2q-n-brackets} critical values for the Bartlett self-normalised test
+and \pthree{fx-n-cells} for the fixed-$m$ periodogram and equal-weighted cosine tests.
+At $H=0.9$, the short-memory cutoff raises the limiting rejection rate of a nominal $5\,\%$ Bartlett test
+to \pthree{naive-sn-0.90-0.05}\,\%. At $H=0.75$, a certified probability near the 95th percentile takes
+\pthree{e5-T4-cert-s}\,s including setup, a \pthree{e5-T4-speedup}-fold speedup over the midpoint benchmark.
+For the fixed-smoothing tests, a closed-form rescaling of Student-$t$ cutoffs keeps limiting size within
 \pthree{rs-maxerr-090-0.05} percentage points of $5\,\%$ on the grid through $H=0.9$.
-In simulations with estimated memory, plug-in tests reject up to \pthree{pl-pure-max-100}\,\% of the time at $n=100$
-under pure long memory. For the four-frequency periodogram test, using an upper confidence bound for $H$ gives
-rejection rates at most \pthree{comp-hi4-up-n500-max}\,\% in the $n=500$ designs.
-For the Nile minima, calibrated intervals are \pthree{emp-ratio-min}--\pthree{emp-ratio-max} times as wide as
-short-memory intervals, whose coverage under the fitted Gaussian model falls to \pthree{emp-cover-nv-min}\,\%.
-Of \pthree{audit-n-values} published critical values, \pthree{audit-n-AB} yield rejection rates within three
-Monte Carlo standard errors of nominal size.
+In simulations under pure long memory, plug-in tests reject up to \pthree{pl-pure-max-100}\,\% of true nulls
+at $n=100$. Using an upper confidence bound for $H$, the four-frequency periodogram test rejects at most
+\pthree{comp-hi4-up-n500-max}\,\% in the $n=500$ designs. Of \pthree{audit-n-values} published critical values,
+\pthree{audit-n-AB} give rejection rates within three Monte Carlo standard errors of nominal size.
+Under the fitted Gaussian model for annual Nile minima, coverage of nominal $95\,\%$ short-memory intervals
+falls to \pthree{emp-cover-nv-min}\,\%. With the fitted cutoffs, all five \CosCert{} intervals attain coverage
+within $0.01$ percentage points of $95\,\%$.
 \end{abstract}
 
 \begin{keyword}
