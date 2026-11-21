@@ -55,7 +55,7 @@ $\int_0^1\!\int_0^1\sin(k\pi r)\sin(l\pi s)R(r,s)\dd r\dd s$; similarly for $\Si
 $H$ with $0<\operatorname{Re}H<1$ and $r,s\in(0,1]$, $r\ne s$, the map $H\mapsto R(r,s)$ is holomorphic and
 $|R(r,s)|\le\frac32$, because $|x^{2H}|=x^{2\operatorname{Re}H}\le1$ on $(0,1]$. By dominated convergence and Morera's
 theorem the covariances are holomorphic in the strip, hence real-analytic on $(0,1)$. On the other side, the Kummer
-series ${}_1F_1(b;b+1;z)=\sum_{n\ge0}\frac{b}{b+n}\frac{z^n}{n!}$ is holomorphic in $b$ away from
+series ${}_1F_1(b;b+1;z)=1+\sum_{n\ge1}\frac{b}{b+n}\frac{z^n}{n!}$ is holomorphic in $b$ away from
 $b\in\{-1,-2,\dots\}$, i.e.\ for $\operatorname{Re}H>0$; so $p_k(H)$, $r_k(H)$ and the rational expressions of
 \cref{prop:coords}(c)--(d) are real-analytic on $(0,1)$. The two real-analytic functions agree on $(\frac12,1)$, hence
 on $(0,1)$ by the identity theorem. \qed
@@ -63,8 +63,7 @@ on $(0,1)$ by the identity theorem. \qed
 \subsection{Proof of \texorpdfstring{\cref{thm:eig}}{Theorem 3}}
 In the basis $(e_k)$ the operator $K_{\mathrm{br}}$ has the matrix $M_{kl}=\E\big[\int\Bt e_k\int\Bt e_l\big]=G_{kl}/(k\pi\,l\pi)$
 by \cref{prop:coords}. \Citet[Lemma~3, two-sided weighted cosine inequality]{AhmedCosChaos} states, for $\frac12\le H<1$ and real square-summable
-$(a_k)_{k\ge1}$, $\frac12\sum_kw_ka_k^2\le\sum_{k,l}a_ka_lG_{kl}\le\sum_kw_ka_k^2$ with $w_k=\cH(k\pi)^{1-2H}$ (the
-case $T=1$; the inequality is stated for finite sums and extends to $\ell^2$ by continuity of both sides). Put
+$(a_k)_{k\ge1}\in\ell^2$, $\frac12\sum_kw_ka_k^2\le\sum_{k,l}a_ka_lG_{kl}\le\sum_kw_ka_k^2$ with $w_k=\cH(k\pi)^{1-2H}$ (for $T=1$). Put
 $a_k=x_k/(k\pi)$: then $\frac12x^\top Dx\le x^\top Mx\le x^\top Dx$ for all $x\in\ell^2$, with
 $D=\operatorname{diag}(d_k)$, $d_k=\cH(k\pi)^{-1-2H}$ decreasing. By the Courant--Fischer min--max characterisation of the
 eigenvalues of the compact positive operators $M$ and $D$, $\frac12d_k\le\lambda_k(M)\le d_k$. The covariance of
@@ -75,7 +74,7 @@ are at most $\bar c_J=d_{J+1}$. Finally $\E R_J=\sum_{k>J}M_{kk}=\tr K_{\mathrm{
 $\tr K_{\mathrm{br}}=\int_0^1\Var\Bt(r)\dd r=\int_0^1\big(r^{2H}-r(r^{2H}+1-(1-r)^{2H})+r^2\big)\dd r
 =\frac2{(2H+1)(2H+2)}-\frac16$, using $\int_0^1r(1-r)^{2H}\dd r=\frac1{(2H+1)(2H+2)}$. \qed
 
-\subsection{Proof of \texorpdfstring{\cref{prop:rho}}{Proposition 4}}
+\subsection{Proof of \texorpdfstring{\cref{prop:rho}}{the first-moment proposition}}
 $\E D_{\SN}=\tr K_{\mathrm{br}}$, which is $\frac16$ at $H=\frac12$; $\E D_{\HI,m}=m^{-1}\sum_j(\E C_j^2+\E S_j^2)
 =(2m)^{-1}\sum_j(G_{2j,2j}+\Cov(\Sigma_{2j},\Sigma_{2j}))$ and $\E D_{\EWC,B}=B^{-1}\sum_jG_{jj}$, both equal to one at
 $H=\frac12$ where $G$ and the sine Gram matrix are identities. Analyticity follows from \cref{prop:continuation}. As
@@ -123,7 +122,7 @@ $\lim_{H\uparrow1}G_{kk}/(1-H)\ge1/k$. Hence $\lim\rho_{\EWC,B}/(1-H)\ge B^{-1}\
 nonnegative cosine terms $G_{2j,2j}/(2m)$ of $\rho_{\HI,m}$, $\lim\rho_{\HI,m}/(1-H)\ge(2m)^{-1}\sum_{j\le m}1/(2j)$. So some
 summand of $D_P^*$ has positive variance, $D_P^*>0$ almost surely, and the argument above applies. \qed
 
-\subsection{Proofs of \texorpdfstring{\cref{prop:exactn,prop:fgn,prop:power}}{Propositions 5--7}}
+\subsection{Proofs of \texorpdfstring{\cref{prop:exactn,prop:fgn,prop:power}}{finite-sample laws and local power}}
 \emph{\Cref{prop:exactn}.} All statistics are invariant under $x\mapsto x+\kappa\mathbf 1$ in the denominator and depend
 on $\bar x-\mu_0$ in the numerator, so under $H_0$ we may take $x=\Gamma_n^{1/2}\xi$. Then
 $\{\text{statistic}\le c\}=\{\xi^\top\Gamma_n^{1/2}(aa^\top-cM)\Gamma_n^{1/2}\xi\le0\}$, and the spectral theorem gives the
@@ -147,30 +146,36 @@ completing squares gives
 and the constant vanishes because $L$ is invertible: $L(L^\top AL)^{-1}L^\top=A^{-1}$. \qed
 
 \subsection{The branch of the square root}
-The characteristic function of a generalized chi-square variable is a product of inverse square roots, and the inversion
+The characteristic function of a generalised chi-square variable is a product of inverse square roots, and the inversion
 integral is evaluated off the real axis. The following argument shows that the principal branch is the correct one on
-the whole strip used, without locating any eigenvalue.
+the whole strip used---and in fact on the larger slit domain visited by complex ball quadrature---without locating any
+eigenvalue.
 
 \begin{lemma}[Branch]\label[lemma]{lem:branch}
 Let $s\in\mathbb R^N\setminus\{0\}$, let $B\in\mathbb R^{N\times N}$ be symmetric positive semi-definite, $K=ss^\top-B$ and
-$\xi\sim N(0,I_N)$. On the strip $\Omega=\{z\in\mathbb C:0\le\operatorname{Re}z<1/(2|s|^2)\}$ put
-\[r(z)=1-2z\,s^\top(I+2zB)^{-1}s .\]
-Then $\operatorname{Re}(1+2zb)>0$ for every eigenvalue $b$ of $B$, $r(z)\notin(-\infty,0]$, and
+$\xi\sim N(0,I_N)$. Put
+\[\Omega=\{z\in\mathbb C:0\le\operatorname{Re}z<1/(2|s|^2)\},\qquad
+\Omega_{\mathrm{ext}}=\Omega\cup\{z\in\mathbb C:\operatorname{Im}z>0\}\]
+and $r(z)=1-2z\,s^\top(I+2zB)^{-1}s$.
+Then $1+2zb\notin(-\infty,0]$ for every eigenvalue $b$ of $B$ and every $z\in\Omega_{\mathrm{ext}}$ (with $\operatorname{Re}(1+2zb)>0$ on $\Omega$), $r(z)\notin(-\infty,0]$ on $\Omega_{\mathrm{ext}}$, and
 \[\E e^{z\,\xi^\top K\xi}=\det(I+2zB)^{-1/2}\,r(z)^{-1/2}\qquad(z\in\Omega),\]
-with the principal branch in each factor $(1+2zb_j)^{-1/2}$ and in $r(z)^{-1/2}$.
+where the right-hand side extends holomorphically with principal branches throughout the interior of $\Omega_{\mathrm{ext}}$.
 \end{lemma}
 \begin{proof}
 In an orthonormal eigenbasis of $B$, with eigenvalues $b_j\ge0$ and coordinates $s_j$ of $s$,
-$r(z)=1-\sum_js_j^2\,2z/(1+2zb_j)$, and $\operatorname{Re}(1+2zb_j)=1+2\vartheta b_j>0$ for $z=\vartheta+\mathrm it$. Since
+$r(z)=1-\sum_js_j^2\,2z/(1+2zb_j)$. For $z=\vartheta+\mathrm it\in\Omega_{\mathrm{ext}}$, either $\vartheta\ge0$ (giving
+$\operatorname{Re}(1+2zb_j)=1+2\vartheta b_j\ge1>0$) or $t>0$ (giving $\operatorname{Im}(1+2zb_j)=2tb_j\ge0$, and
+$1+2zb_j=1>0$ if $b_j=0$), so $1+2zb_j\notin(-\infty,0]$ throughout $\Omega_{\mathrm{ext}}$. Since
 $2z(1+2\bar zb_j)=2z+4|z|^2b_j$ has imaginary part $2t$,
 \[\operatorname{Im}r(\vartheta+\mathrm it)=-2t\sum_j\frac{s_j^2}{|1+2zb_j|^2},\]
-which is non-zero for $t\ne0$. For $t=0$, $2\vartheta/(1+2\vartheta b_j)\le2\vartheta$ gives $r(\vartheta)\ge1-2\vartheta|s|^2>0$.
-Hence $r$ omits $(-\infty,0]$ on $\Omega$, the principal roots are continuous on $\Omega$ and holomorphic in its interior,
-and so is their product $\Phi$. By the matrix determinant lemma $\det(I-2zK)=\det(I+2zB)\,r(z)$, so
-$\Phi^2=\det(I-2zK)^{-1}$. The largest eigenvalue of $K$ is at most $|s|^2$ (Weyl's inequality, since $-B\preceq0$), so
-$\E e^{z\xi^\top K\xi}$ exists on $\Omega$, is continuous there and holomorphic in the interior, and is also a square root of
-$\det(I-2zK)^{-1}$; it equals $\Phi(0)=1$ at $z=0$. Two continuous square roots of the same non-vanishing function on the
-connected set $\Omega$ that agree at one point coincide.
+which is strictly negative for $t>0$ and strictly positive for $t<0$ (as $s\ne0$). For $t=0$ and
+$0\le\vartheta<1/(2|s|^2)$, $2\vartheta/(1+2\vartheta b_j)\le2\vartheta$ gives $r(\vartheta)\ge1-2\vartheta|s|^2>0$.
+Hence $r$ omits $(-\infty,0]$ on all of $\Omega_{\mathrm{ext}}$, the principal roots are continuous on $\Omega_{\mathrm{ext}}$
+and holomorphic in its interior, and so is their product $\Phi$. By the matrix determinant lemma
+$\det(I-2zK)=\det(I+2zB)\,r(z)$, so $\Phi^2=\det(I-2zK)^{-1}$. The largest eigenvalue of $K$ is at most $|s|^2$ (Weyl's
+inequality, since $-B\preceq0$), so $\E e^{z\xi^\top K\xi}$ exists on $\Omega$, is continuous there and holomorphic in
+its interior, and is also a square root of $\det(I-2zK)^{-1}$; it equals $\Phi(0)=1$ at $z=0$. Two continuous square
+roots of the same non-vanishing function on the connected set $\Omega$ that agree at one point coincide.
 \end{proof}
 
 In \cref{thm:certificate}, $X_J=\xi^\top K\xi$ in law with $s=\Sigma_J^{1/2}e_1$ and
@@ -206,7 +211,7 @@ $\frac{\operatorname{Re}\zeta+\alpha|\zeta|^2}{|1+\zeta\alpha|^2}\le\frac1\alpha
 Hence $\operatorname{Re}u\ge1-g^\top A^{-1}g=\Var(Z\mid\Lambda_1,\dots,\Lambda_J)>0$.
 \end{proof}
 
-\subsection{Proof of \texorpdfstring{\cref{thm:certificate}}{Theorem 8}}
+\subsection{Proof of \texorpdfstring{\cref{thm:certificate}}{the certified enclosure}}
 \emph{Remainder.} By \cref{thm:eig}, $R_J\overset d=\sum_i\mu_i\xi_i^2$ with $\sum_i\mu_i=\tau_J$ and
 $0\le\mu_i\le\bar\mu_J$, hence $\sum_i\mu_i^2\le\bar\mu_J\tau_J$. The inequalities of \citet[Lemma~1]{LM00}, which extend
 from finite to convergent sums by monotone limits, give $P(R_J\ge s_{\mathrm{hi}})\le e^{-t}$ and
@@ -217,23 +222,32 @@ $X_J$; a union bound with the two exceptional events, each of probability at mos
 \emph{Inversion.} For $0<\vartheta<\frac12$ the moment generating function $\mathcal M(z)=\E e^{zX_J}$ exists on
 $\operatorname{Re}z=\vartheta$ and is given there by principal roots (\cref{lem:branch}), and for $v\in\mathbb R$, $e^{(\vartheta+\mathrm is)v}/(\vartheta+\mathrm is)=\int_{-\infty}^ve^{(\vartheta+\mathrm is)y}\dd y$.
 Hence $\psi(s)=\mathcal M(\vartheta+\mathrm is)e^{-(\vartheta+\mathrm is)x}/(\vartheta+\mathrm is)$ is the Fourier transform of
-$y\mapsto e^{\vartheta y}P(X_J>x+y)$, and the Poisson summation formula on the shifted lattice $s_k=(k+\frac12)\Delta$ gives
+$y\mapsto e^{\vartheta y}P(X_J>x+y)$. By Fourier inversion and Hermitian symmetry $\psi(-s)=\overline{\psi(s)}$,
+\[P(X_J>x)=\frac1\pi\int_0^\infty\operatorname{Re}\psi(s)\dd s,\]
+which splits into the finite Bromwich integral $I_{s_{\max}}(x)=\frac1\pi\int_0^{s_{\max}}\operatorname{Re}\psi(s)\dd s$
+plus the tail $\frac1\pi\int_{s_{\max}}^\infty\operatorname{Re}\psi(s)\dd s$ with zero aliasing error. For any
+$s_{\max}>0$, every factor $|1-2(\vartheta+\mathrm is)\theta_i|^{-1/2}$ of $|\mathcal M|$ is at most
+$(1-2\vartheta\theta_i)^{-1/2}$ and decreases in $|s|$; keeping only the factors in the index set $I$ of certified
+eigenvalue magnitude bounds $\nu_i$ with $2s_{\max}c\,\nu_i>1$ gives the majorant
+$e^{-\vartheta x}(1-2\vartheta)^{-1/2}s^{-1}\prod_{i\in I}(2sc\,\nu_i)^{-1/2}$ for $s\ge s_{\max}$ (each remaining
+factor is at most one and $\lambda_+\le1$). Integrating this majorant over $[s_{\max},\infty)$ yields the tail bound
+$\epsilon(s_{\max},x)=\frac{2}{\pi|I|}e^{-\vartheta x}(1-2\vartheta)^{-1/2}\prod_{i\in I}(2s_{\max}c\,\nu_i)^{-1/2}$,
+valid whenever $I\ne\emptyset$.
+
+For the cross-check tilted midpoint rule on the shifted lattice $s_k=(k+\frac12)\Delta$, the Poisson summation formula gives
 \[S_\Delta(x):=\frac\Delta\pi\sum_{k\ge0}\operatorname{Re}\psi(s_k)=\sum_{j\in\mathbb Z}(-1)^je^{\vartheta jL}P(X_J>x+jL),\qquad L=\frac{2\pi}\Delta.\]
-The term $j=0$ is $P(X_J>x)$, so $S_\Delta(x)$ approximates the exceedance probability, and the distribution
-function is $1-P(X_J>x)$. (For $\vartheta=0$ the representation reduces to that of \citet{Dav73}; the bound on the lower
-aliases below then fails, and the untilted computation used for the node-count comparison in \cref{sec:computation} bounds them through the
-lower tail of $X_J$ instead.) Since $X_J\le Z^2$, the aliases satisfy
-$\big|\sum_{j\ge1}(-1)^je^{\vartheta jL}P(X_J>x+jL)\big|\le\sum_{j\ge1}e^{\vartheta jL}P(Z^2>x+jL)$, finite for
-$\vartheta<\frac12$, and $\big|\sum_{j\ge1}(-1)^je^{-\vartheta jL}P(X_J>x-jL)\big|\le e^{-\vartheta L}/(1-e^{-\vartheta L})$.
-These are the alias bounds $\epsilon_\Delta^+(x)$ and $\epsilon_\Delta^-$; as both alias sums are bounded only in absolute value, they
-enter the enclosure symmetrically. For the truncation of the series after $K$ terms, every factor
-$|1-2(\vartheta+\mathrm is)\theta_i|^{-1/2}$ of $|\mathcal M|$ is at most $(1-2\vartheta\theta_i)^{-1/2}$ and decreases in
-$|s|$; keeping only the factors in the index set $I$ of certified eigenvalue magnitude bounds $\nu_i$ with $2s_Kc\,\nu_i>1$,
-$s_K=(K-\frac12)\Delta$, gives the majorant $e^{-\vartheta x}(1-2\vartheta)^{-1/2}s^{-1}\prod_{i\in I}(2sc\,\nu_i)^{-1/2}$ for
-$s\ge s_K$ (each remaining factor is at most one and $\lambda_+\le1$); it decreases in $s$, so the omitted terms
-$\frac\Delta\pi\sum_{k\ge K}|\psi(s_k)|$ are at most its integral over $[s_K,\infty)$, which is finite when $I\ne\emptyset$, of $|\psi|$ and gives the bound $\epsilon_K$, so $|S_\Delta(x)-S_{\Delta,K}(x)|\le\epsilon_K$. All quantities are evaluated in ball
-arithmetic (\cref{app:certificate}): the log-determinants and the rank-one term with \cref{lem:logdet}, the eigenvalue lower
-bounds by Gershgorin clusters and Cauchy interlacing. \qed
+The term $j=0$ is $P(X_J>x)$, and the distribution function is $1-P(X_J>x)$. (For $\vartheta=0$ the representation
+reduces to that of \citet{Dav73}; the bound on the lower aliases below then fails, and the untilted computation used for
+the node-count comparison in \cref{sec:computation} bounds them through the lower tail of $X_J$ instead.) Since
+$X_J\le Z^2$, the aliases satisfy
+$\big|\sum_{j\ge1}(-1)^je^{\vartheta jL}P(X_J>x+jL)\big|\le\sum_{j\ge1}e^{\vartheta jL}P(Z^2>x+jL)=:\epsilon_\Delta^+(x)$
+(finite for $\vartheta<\frac12$) and
+$\big|\sum_{j\ge1}(-1)^je^{-\vartheta jL}P(X_J>x-jL)\big|\le e^{-\vartheta L}/(1-e^{-\vartheta L})=:\epsilon_\Delta^-$.
+Since the tail majorant above decreases in $s$, the omitted terms $\frac\Delta\pi\sum_{k\ge K}|\psi(s_k)|$ are at most
+its integral over $[s_{K-1},\infty)$ with $s_{K-1}=(K-\frac12)\Delta$, giving $\epsilon_K=\epsilon(s_{K-1},x)$. All
+quantities are evaluated in ball arithmetic (\cref{app:certificate}): the log-determinants and the rank-one term with
+\cref{lem:logdet}, the eigenvalue lower bounds by Gershgorin clusters and Cauchy interlacing, and the finite Bromwich
+integral by adaptive complex ball quadrature \citep{Joh18}. \qed
 
 \subsection{Proof of \texorpdfstring{\cref{prop:rate}}{the width proposition}}
 \emph{Remainder interval.} $\bar\mu_J\le\bar c_J$ and $\tau_J\ge4\bar c_Jt\ge4\bar\mu_Jt$ give $\tau_J\ge2\sqrt{\bar\mu_J\tau_Jt}$,

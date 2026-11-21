@@ -4,10 +4,10 @@
   EWC (cosine series):    t^2  => Z^2 / (B^-1 sum_{j<=B} Lambda_j^2),     (Z, Lambda) ~ N(0, G_{0..B})
 P(stat^2 <= c) = P(X_c <= 0),  X_c = Y_0^2 - c * scale * sum_{i>=1} Y_i^2  (one positive ratio-form weight, Sylvester).
 
-Certificate: Gram entries in arb (Paper 1 closed cosine Gram; closed sine Gram of the vendored Round 17 code, re-derived
-in the manuscript), the ratio-form weights = eigenvalues of M Sigma enclosed by an exact similarity V^-1 (M Sigma) V
-computed in arb plus Gershgorin clusters (a connected union of k discs holds exactly k eigenvalues), then Ruben's
-Beta mixture in arb with monotone coupling over the weight intervals (laws.ruben_beta_cdf0_arb).
+Certificate: Gram entries in Arb (Proposition 1(c)-(d) and Proposition 2 of the manuscript), the ratio-form weights =
+eigenvalues of M Sigma enclosed by an exact similarity V^-1 (M Sigma) V computed in Arb plus Gershgorin clusters
+(a connected union of k discs holds exactly k eigenvalues), then Ruben's Beta mixture in Arb with monotone coupling
+over the weight intervals (laws.ruben_beta_cdf0_arb_fast; Proposition 14).
 """
 import math
 
@@ -28,14 +28,12 @@ class GramArb:
         Ha = self.Ha
         b = 2 * Ha - 1
         self.b, self.C, self.pi = b, 2 * Ha, arb.pi()
-        self.P, self.R, self.Q = [arb(1)], [arb(0)], [arb(1)]
+        self.P, self.R = [arb(1)], [arb(0)]
         for k in range(1, K + 1):
             z = acb(0, k * self.pi)
             f = z.hypgeom_1f1(b, b + 1)
-            g = z.hypgeom_1f1(b + 1, b + 2)
             self.P.append(f.real)
             self.R.append(f.imag)
-            self.Q.append(g.real)
         self.K = K
 
     def G(self, k, l):
@@ -56,7 +54,8 @@ class GramArb:
             return arb(0)
         Ha, b = self.Ha, self.b
         if i == j:
-            return Ha * (self.P[i] + self.R[i] / (i * self.pi)) - Ha * b / (b + 1) * self.Q[i]
+            # Proposition 1(d): Cov(Sigma_i, Sigma_i) / 2 = H (p_i + (1 + b) r_i / (i pi))
+            return Ha * (self.P[i] + (1 + b) * self.R[i] / (i * self.pi))
         return Ha / self.pi * ((self.R[i] + self.R[j]) / (i + j) - (self.R[i] - self.R[j]) / (i - j))
 
 

@@ -1,10 +1,10 @@
-"""Closed-form covariances of fBm functionals used by Paper 3.
+"""Closed-form covariances of fractional Brownian motion functionals used by CosCert.
 
-Conventions (Type I fBm, Var B_H(1) = 1, 1/2 <= H < 1):
-  h_0 = 1, h_k = sqrt(2) cos(k pi t);  G_kl = E[I_H(h_k) I_H(h_l)]  (Paper 1, Proposition 1; vendored, verified code).
-  S_ij = <sin(i pi .), sin(j pi .)>_H, i, j >= 1 (unnormalised; closed form in the vendored Round 17 code).
+Conventions (Type I fBm, Var B_H(1) = 1, 0 < H < 1):
+  h_0 = 1, h_k = sqrt(2) cos(k pi t);  G_kl = E[I_H(h_k) I_H(h_l)]  (CosChaos, Proposition 1; Proposition 2 for H < 1/2).
+  S_ij = <sin(i pi .), sin(j pi .)>_H, i, j >= 1 (unnormalised; Proposition 1(d) of the CosCert manuscript).
   Pathwise bridge Bt(r) = B_H(r) - r B_H(1); sine basis s_k = sqrt(2) sin(k pi t):
-      V_k := <Bt, s_k> = I_H(h_k)/(k pi)              (Theorem A'),  Cov(V_k, V_l) = G_kl/(k pi l pi),
+      V_k := <Bt, s_k> = I_H(h_k)/(k pi)              (Proposition 1(a)),  Cov(V_k, V_l) = G_kl/(k pi l pi),
       Cov(V_k, B_H(1)) = G_0k/(k pi),                  zero for odd k (parity),  G_kl = 0 for k + l odd.
   Hualde-Iacone fixed-m: C_j = int cos(2 pi j r) dB_H = I_H(h_2j)/sqrt2,  S_j = int sin(2 pi j r) dB_H;
       Cov(C_j, C_k) = G_{2j,2k}/2,  Cov(Z, C_j) = G_{0,2j}/sqrt2,  Cov(S_j, S_k) = S_{2j,2k},  Cov(C, S) = Cov(Z, S) = 0.
@@ -70,7 +70,7 @@ def hs2_fbm(H):
     return ((4 * H + 3) / (4 * H + 1) - 2.0 * _B(2 * H + 1, 2 * H + 1)) / (4.0 * (2 * H + 1))
 
 
-# ---------------------------------------------------------------- the bridge in the sine basis (Theorem A')
+# ---------------------------------------------------------------- the bridge in the sine basis (Proposition 1)
 def bridge_blocks(H, J, G=None):
     """Parity blocks of Y = (Z, V_1..V_J), Z = B_H(1), V_k = <Bt, s_k>.
 
@@ -111,7 +111,7 @@ def hi_fixed_m_cov(H, m, G=None, S=None):
 
 
 def ewc_cov(H, B, G=None):
-    """Covariance of (Z, Lambda_1..Lambda_B) for the EWC (Type II DCT) limit: Paper 1's cosine Gram G_{0..B}."""
+    """Covariance of (Z, Lambda_1..Lambda_B) for the EWC (Type II DCT) limit: closed cosine Gram G_{0..B}."""
     if G is None:
         G = cosine_gram(H, B + 1)
     Sig = G[:B + 1, :B + 1].copy()

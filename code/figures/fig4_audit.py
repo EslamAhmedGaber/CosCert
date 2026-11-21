@@ -44,12 +44,15 @@ def main():
     h["grp"] = h.apply(grp, axis=1)
     order = [r"Lobato", r"Abadir--Paruolo", r"Kiefer--Vogelsang", r"KPSS, $\eta_\mu$", r"KPSS, $\eta_\tau$"]
     col = {g: (F.COL["H05"] if "KPSS" not in g else F.COL["KPSS"]) for g in order}
+    xm = max(0.32, 1.18 * float(h.dev_pp.abs().max()))
     for i, g in enumerate(order[::-1]):
         s = h[h.grp == g]
         if not len(s):
             continue
         se2 = 3 * float(s.mc_se_pp.max())
         a.fill_betweenx([i - 0.32, i + 0.32], -se2, se2, color="#E6E6E6", lw=0, zorder=0)
+        if se2 > xm:
+            a.text(xm * 0.96, i - 0.28, rf"$\pm{se2:.2f}$", fontsize=5.8, color="#666666", ha="right", va="bottom", zorder=2)
         jit = np.linspace(-0.18, 0.18, len(s)) if len(s) > 1 else [0.0]
         a.scatter(s.dev_pp, i + np.asarray(jit), s=12, color=col[g], edgecolor="white", linewidth=0.4, zorder=3)
     a.axvline(0, color=F.COL["REF"], lw=0.6, zorder=1)
@@ -57,7 +60,7 @@ def main():
     a.spines["left"].set_visible(False)
     out_a = int((h.dev_pp.abs() > 3 * h.mc_se_pp).sum())
     a.set_xlabel("size deviation (pp)"); a.set_title(rf"$H=\frac12$: {out_a} of {len(h)} outside $\pm3$ s.e.")
-    xm = max(0.3, 1.15 * float(h.dev_pp.abs().max())); a.set_xlim(-xm, xm)
+    a.set_xlim(-xm, xm)
 
     # (b) Hualde-Iacone ------------------------------------------------------------------------------------------------
     b = ax[1]; hi_all = pd.concat([A["hi_neg"], A["hi"]], ignore_index=True); hi = hi_all[hi_all.H >= 0.2 - 1e-9]
@@ -77,10 +80,10 @@ def main():
     from matplotlib.cm import ScalarMappable
     from matplotlib.colors import ListedColormap, BoundaryNorm
     cm = ListedColormap(cols); nm = BoundaryNorm(np.arange(0.5, len(ms) + 1.5), len(ms))
-    cax = b.inset_axes([0.62, 0.90, 0.34, 0.045])
+    cax = b.inset_axes([0.63, 0.84, 0.33, 0.042])
     cb = fig.colorbar(ScalarMappable(norm=nm, cmap=cm), cax=cax, orientation="horizontal", ticks=[1, 8, 16])
     cb.ax.tick_params(labelsize=F.SIZES[2], length=1.5, pad=1); cb.outline.set_linewidth(0.4)
-    cax.set_title(r"$m$", fontsize=F.SIZES[2], pad=1.5, loc="center")
+    cax.set_title(r"$m$", fontsize=F.SIZES[2], pad=2.0, loc="center")
 
     # (c) Hualde-Iacone at delta <= -0.4: limit law vs the simulated finite design ----------------------------------------
     d3 = ax[2]; hn = A["hi_neg"]

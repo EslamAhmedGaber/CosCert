@@ -4,9 +4,9 @@ Size is only half of the choice. Consider local alternatives $\mu-\mu_0=c\,\sigm
 $\sqrt n(\bar x-\mu_0)/(\sigma n^{H-1/2})\to Z+c$ while every self-normaliser keeps its null limit. In this section $c$ denotes this drift; critical values are written $q$.
 
 \begin{proposition}[Local power of a finite-dimensional statistic]\label[proposition]{prop:power}
-Let the self-normaliser be a finite quadratic form $D_P=\sum_{k=1}^Kw_kV_k^2$ in Gaussian components, let
+Let the self-normaliser be a finite quadratic form $D_P=\sum_{k=1}^Kw_kV_k^2$ with weights $w_k>0$ in Gaussian components, let
 $V=(Z,V_1,\dots,V_K)\sim N(0,\Sigma)$ with $\Sigma$ positive definite, and let
-$A=\operatorname{diag}(1,-q\,w_1,\dots,-q\,w_K)$, where $q$ is the critical value of the squared statistic. Let
+$A=\operatorname{diag}(1,-q\,w_1,\dots,-q\,w_K)$, where $q>0$ is the critical value of the squared statistic. Let
 $\Sigma=LL^\top$, $L^\top AL=P\Theta P^\top$ and $\psi=\Theta^{-1}P^\top L^\top Ae_1c$. Then the limit power at $c$ is the
 noncentral weighted chi-square probability
 \[P\Big(\sum_i\Theta_{ii}(\xi_i+\psi_i)^2>0\Big),\qquad \xi_i\ \text{independent standard normal}.\]
@@ -22,12 +22,12 @@ Student-$t$ power to within \pthree{pw-nct-maxdev} in all \pthree{pw-nct-ncells}
 
 \begin{figure}[tbp]\centering
 \includegraphics[width=\textwidth]{fig3_power.pdf}
-\caption{Limit power and the size--power trade-off. (a)~Power at $H=0.75$ against the local alternative $c$; dashed:
-infeasible $z$-test. (b)~Power at $c=2.8$ against $H$. (c)~Power at $c=2.8$ against exact size at $n=100$ under
-ARFIMA$(1,0.2,0)$, $\phi=0.5$; open circles: EWC, $B=2m$; square: Bartlett/self-normalised test.}\label{fig:power}
+\caption{Limiting local power across memory levels and its relation to finite-sample size.}\label{fig:power}
 \end{figure}
 
-\Cref{fig:power} shows three regularities.
+In \cref{fig:power}, panel~(a) holds $H=0.75$ fixed and the dashed curve gives the oracle $z$-test.
+Panels~(b) and (c) hold $c=2.8$ fixed. Panel~(c) pairs limiting power with exact size at $n=100$
+under ARFIMA$(1,0.2,0)$ with $\phi=0.5$. Open circles denote EWC and the square denotes SN.
 \emph{(i) Power grows with the number of components.} At $H=0.75$ and $c=2.8$ the power is \pthree{pw-HI1-0.75} for
 $m=1$, \pthree{pw-HI4-0.75} for $m=4$ and \pthree{pw-HI16-0.75} for $m=16$, against \pthree{pw-z} for the infeasible
 $z$-test that knows the scale $\sigma$ of the partial sums. The fixed-$m$ test with $m$ frequencies and the EWC test with $B=2m$ cosines have the same power to within
@@ -39,9 +39,7 @@ of the fixed-$m$ test with $m=16$ changes from \pthree{pw-HI16-0.50} to \pthree{
 in the design of \cref{fig:power}c, the finite-sample distortion; this is the size--power trade-off of \citet{LLS21} in the
 long-memory setting.
 
-\paragraph{Which test} With the critical value of the true $H$, the Bartlett/self-normalised test is dominated, in the
-sense of a larger exact finite-sample size distortion together with a lower limit power against local alternatives
-(power at finite $n$ is not computed here): at
+\paragraph{Which test} We compare finite-sample size at known $H$ with limiting power. For example, at
 $n=100$, $H=0.7$ and $\phi=0.5$ the fixed-$m$ test with $m=4$ has size \pthree{fn-arfima1p-HI4-0.70-100}\,\% and power
 \pthree{pw-HI4-0.70}, against \pthree{fn-arfima1p-SN-0.70-100}\,\% and \pthree{pw-SN-0.70} for the former, and the
 fixed-$m$ test with $m=4$ has both the smaller finite-sample size distortion and the higher limit power in

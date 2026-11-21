@@ -1,22 +1,22 @@
-"""Step 7: computational methods on identical targets (protocol P9); revised 17 Nov 2026 (audit items B1-B4).
+"""Computational methods benchmark on four shared Gaussian quadratic-form targets (Section 7).
 
 Targets (each a distribution function P(X <= y) of a Gaussian quadratic form with exactly one positive weight):
   T1  HI fixed-m limit, H = 0.80, m = 8, at the computed two-sided 5% point squared (17 weights; reference: certified enclosure)
   T2  EWC limit, H = 0.80, B = 16, at its computed two-sided 5% point squared (17 weights; reference: certified enclosure)
   T3  exact finite-n SN law, ARFIMA(0, 0.2, 0), n = 1000, at the computed limit 5% point of T_0.7 (1000 weights;
       reference: finite_n.SNExact, computed in double precision and cross-checked by the accurate direct methods)
-  T4  limit law T_H, H = 0.75, at the J = 16384 point q of the pinned record results/E1_benchmark_H0.75.json; reference:
-      that record's certified enclosure, or the enclosure recomputed by the 17 Nov revalidation (results/E2r/H0.75.json)
-      when present. Competitors receive the Galerkin ratio-form eigenvalues for J = 512 and 2048 plus the exact mean of the
+  T4  limit law T_H, H = 0.75, at the J = 16384 point q of results/E1_benchmark_H0.75.json; reference: live certified
+      enclosure from BridgeSystem("0.75", 16384).cdf_T_certified_quad(q) (verified to overlap E1_benchmark_H0.75.json).
+      Competitors receive the Galerkin ratio-form eigenvalues for J = 512 and 2048 plus the exact mean of the
       omitted remainder as a shift y = q tau_J, so their values also carry the Galerkin truncation error of that J.
-Cost accounting (B1). The covariance of the fixed-smoothing coordinates (T1, T2) is a shared input and is excluded for every
+Cost accounting. The covariance of the fixed-smoothing coordinates (T1, T2) is a shared input and is excluded for every
 method; each method is charged its own spectral step (certified: arb weight enclosure; competitors: double Cholesky + eigvalsh).
 T3: competitors are charged Cholesky + eigenvalues of the cutoff-dependent ratio form; finite_n.SNExact is charged its one-off
-setup (Cholesky + one eigh) and its query; first and repeated queries are timed separately, and an amortisation run over
-m cutoffs (competitors redo the eigenvalues at every cutoff) is written to the meta file. T4: every route pays its own Gram build.
-Errors (B4). Against an enclosure [L, U] each value v gets the interval [dist(v, [L, U]), max(|v - L|, |v - U|)] that contains
+setup (Cholesky-free Woodbury + one eigh) and its query; first and repeated queries are timed separately, and an amortisation
+run over m cutoffs (competitors redo the eigenvalues at every cutoff) is written to the meta file. T4: every route pays its own build.
+Errors. Against an enclosure [L, U] each value v gets the interval [dist(v, [L, U]), max(|v - L|, |v - U|)] that contains
 its true error; against the computed T3 reference the plain difference is reported.
-Domains (B2). CompQuadForm::liu is documented for non-negative definite forms; on these indefinite forms it is run, labelled
+Domains. CompQuadForm::liu is documented for non-negative definite forms; on these indefinite forms it is run, labelled
 outside its documented domain, and excluded from comparisons. Gauss-Hermite rows are outer-quadrature diagnostics.
 Threads. OMP/MKL/OpenBLAS/NumExpr threads are pinned to 1 before numpy is imported; versions and hardware are recorded.
 Usage: python e5_methods.py  -> results/E5_methods.csv, results/E5_methods_meta.json
@@ -188,7 +188,7 @@ def monte_carlo(th, y, N, rng):
 
 
 FAMILY = {"Imhof": "numerical inversion", "Bromwich": "numerical inversion", "gx2 imhof": "numerical inversion",
-          "gx2 ifft": "numerical inversion", "gx2 ray": "ray-trace integration", "gx2 pearson": "moment approximation",
+          "gx2 ifft": "numerical inversion", "gx2 ray": "Monte Carlo ray-tracing", "gx2 pearson": "moment approximation",
           "gx2 auto": "numerical inversion", "Ruben": "series expansion", "Lugannani": "saddlepoint approximation",
           "leading-20": "moment approximation", "Monte Carlo": "simulation", "davies": "numerical inversion",
           "CompQuadForm::imhof": "numerical inversion", "liu": "moment approximation", "hbe": "moment approximation",
@@ -221,8 +221,22 @@ def add_row(rows, target, method, v, ref, sec, sec_med, t_spec, domain="document
                      seconds_total=(sec + t_spec) if (sec == sec and t_spec == t_spec) else math.nan, note=note))
 
 
-def run_python_methods(target, th, y, ref, t_spec, rows, rng, allow_ruben):
+SLOW_GX2_KEYS = {
+    ("T3 SN n=1000 ARFIMA(0,0.2,0)", "gx2 ifft (Das 2025)"),
+    ("T4 T_H H=0.75 via Galerkin J=512", "gx2 ifft (Das 2025)"),
+    ("T4 T_H H=0.75 via Galerkin J=2048", "gx2 ray (Das 2025)"),
+}
+
+
+def run_python_methods(target, th, y, ref, t_spec, rows, rng, allow_ruben, cached_slow=None):
     def rec(name, f, reps=3, note=""):
+        if cached_slow and (target, name) in cached_slow:
+            cr = cached_slow[(target, name)]
+            v = float(cr["value"]) if cr["value"] not in ("", "nan", "NaN") else math.nan
+            s = float(cr["seconds_method"]) if cr["seconds_method"] not in ("", "nan", "NaN") else math.nan
+            sm = float(cr["seconds_method_median"]) if cr["seconds_method_median"] not in ("", "nan", "NaN") else math.nan
+            add_row(rows, target, name, v, ref, s, sm, t_spec, note="same-host gx2 1.6.1 timing (>5 min outlier)")
+            return
         try:
             v, s, sm = timed(f, reps)
             if isinstance(v, tuple):
@@ -272,6 +286,8 @@ def run_r_methods(target, th, y, ref, t_spec, rows):
                 "diagnostic" if "diagnostic" in note else "documented domain")
             add_row(rows, target, r["method"], v, ref, s, sm, t_spec, domain=dom, note=note)
     os.remove(out)
+    if os.path.exists(tmp):
+        os.remove(tmp)
 
 
 def ratio_weights_from_cov(Sig, c, k):
@@ -298,7 +314,7 @@ def environment_record():
                python_flint=getattr(flint, "__version__", "?"), gx2=getattr(gx2, "__version__", "?"),
                threads={v: os.environ.get(v) for v in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS",
                                                        "NUMEXPR_NUM_THREADS")},
-               concurrent_load=SHARED_LOAD, rscript=RSCRIPT)
+               concurrent_load=SHARED_LOAD, rscript=os.path.basename(RSCRIPT) if RSCRIPT else None)
     try:
         cfg = np.show_config(mode="dicts")
         rec["blas"] = cfg.get("Build Dependencies", {}).get("blas", {}).get("name", "?")
@@ -328,12 +344,22 @@ def t4_reference():
         t4 = e2.get("t4")
         if t4 and t4["q"] == q:
             L, U = t4["F"]
-            src = f"results/E2r/H0.75.json (17 Nov revalidation; sha256 {sha256(e2p)[:16]})"
+            src = f"results/E2r/H0.75.json (revalidation; sha256 {sha256(e2p)[:16]})"
             te = t4.get("seconds", te)
     return q, L, U, src, tb, te
 
 
 if __name__ == "__main__":
+    cached_slow = {}
+    if "--reuse-slow-gx2" in sys.argv:
+        prev_csv = os.path.join(WORK, "results", "E5_methods.csv")
+        if os.path.exists(prev_csv):
+            with open(prev_csv, newline="", encoding="utf-8") as fh:
+                for r in csv.DictReader(fh):
+                    key = (r["target"], r["method"])
+                    if key in SLOW_GX2_KEYS:
+                        cached_slow[key] = r
+            print(f"Loaded {len(cached_slow)} slow gx2 1.6.1 outlier rows from same-host cache", flush=True)
     rng = np.random.default_rng(20261116)
     rows, meta = [], {"environment": environment_record(), "targets": {}}
     ctx.prec = 128
@@ -348,7 +374,7 @@ if __name__ == "__main__":
         ref = (lo, hi, "enclosure")
         add_row(rows, target, "certified (this paper: arb weights + Gershgorin + Ruben series)", 0.5 * (lo + hi), ref,
                 t_cert, t_cert_med, 0.0, note=f"enclosure [{lo!r}, {hi!r}]; width {hi - lo:.3e}")
-        run_python_methods(target, th, 0.0, ref, t_spec, rows, rng, allow_ruben=True)
+        run_python_methods(target, th, 0.0, ref, t_spec, rows, rng, allow_ruben=True, cached_slow=cached_slow)
         run_r_methods(target, th, 0.0, ref, t_spec, rows)
         meta["targets"][target] = dict(c2=c2, weights=th.size, seconds_shared_covariance_arb=t_cov,
                                        seconds_spectrum_double=t_spec, reference=[lo, hi])
@@ -382,11 +408,11 @@ if __name__ == "__main__":
     _, t_rep, t_rep_med = timed(lambda: sn.cdf(1.01 * c), reps=5)
     ref = (ref_v, ref_v, "computed")
     tgt3 = "T3 SN n=1000 ARFIMA(0,0.2,0)"
-    add_row(rows, tgt3, "exact law, one-eigh Bromwich (this paper; finite_n.SNExact) | setup + first query", ref_v, ref,
-            t_first, t_first, t_setup, note="reference; setup = Cholesky + one eigh, shared by all cutoffs")
-    add_row(rows, tgt3, "exact law, one-eigh Bromwich (this paper; finite_n.SNExact) | repeated query", math.nan,
+    add_row(rows, tgt3, "exact law, Cholesky-free one-eigh (this paper; finite_n.SNExact) | setup + first query", ref_v, ref,
+            t_first, t_first, t_setup, note="reference; setup = Cholesky-free Woodbury + one eigh, shared by all cutoffs")
+    add_row(rows, tgt3, "exact law, Cholesky-free one-eigh (this paper; finite_n.SNExact) | repeated query", math.nan,
             ref, t_rep, t_rep_med, 0.0, domain="timing only", note="query at a new cutoff (1.01 c) after setup; timing row")
-    run_python_methods(tgt3, th, 0.0, ref, t_spec, rows, rng, allow_ruben=True)
+    run_python_methods(tgt3, th, 0.0, ref, t_spec, rows, rng, allow_ruben=True, cached_slow=cached_slow)
     run_r_methods(tgt3, th, 0.0, ref, t_spec, rows)
     # amortisation over m cutoffs: SNExact (setup once) versus competitors (eigenvalues per cutoff)
     cuts = list(c * np.linspace(0.80, 1.20, 10))
@@ -411,13 +437,25 @@ if __name__ == "__main__":
                                  SNExact_min_raw_eigenvalue=float(getattr(sn, "min_kappa_raw", math.nan)),
                                  amortisation=amort, reference=ref_v)
     print("T3 done", flush=True)
-    # T4: the limit law T_H through Galerkin eigenvalues
+    # T4: the limit law T_H through Galerkin eigenvalues vs live upgraded CosCert (J = 16384, adaptive acb.integral)
     H = 0.75
-    q, rlo, rhi, src, t_build, t_evalc = t4_reference()
+    q, pin_lo, pin_hi, src, pin_build, pin_eval = t4_reference()
+    ctx.prec = 128
+    t0 = time.perf_counter()
+    bs_t4 = cf.BridgeSystem("0.75", 16384)
+    t_build = time.perf_counter() - t0
+    res_q, t_evalc, t_evalc_med = timed(lambda: bs_t4.cdf_T_certified_quad(q), reps=3)
+    rlo, rhi = float(res_q["lo"]), float(res_q["hi"])
+    assert max(rlo, pin_lo) <= min(rhi, pin_hi), "Live T4 certificate disjoint from pinned E1 record!"
     ref = (rlo, rhi, "enclosure")
-    add_row(rows, "T4 T_H H=0.75 (limit)", "certified (this paper: J = 16384, tilted Bromwich in arb)", 0.5 * (rlo + rhi), ref,
-            t_evalc, t_evalc, t_build, note=f"pinned record: {src}; build {t_build:.1f} s, evaluation {t_evalc:.1f} s")
-    meta["targets"]["T4"] = dict(q=q, reference=[rlo, rhi], source=src, seconds_build=t_build, seconds_eval=t_evalc)
+    add_row(rows, "T4 T_H H=0.75 (limit)", "certified (this paper: J = 16384, adaptive Bromwich in arb)", 0.5 * (rlo + rhi), ref,
+            t_evalc, t_evalc_med, t_build,
+            note=f"live build {t_build:.2f} s, quad eval {t_evalc:.2f} s (width {rhi - rlo:.3e}); overlaps {src}")
+    meta["targets"]["T4"] = dict(
+        q=q, reference=[rlo, rhi], pinned_reference=[pin_lo, pin_hi], source=src,
+        seconds_build=t_build, seconds_eval=t_evalc, seconds_eval_median=t_evalc_med,
+        evals=res_q["evals"], pinned_tilt_build_s=pin_build, pinned_tilt_eval_s=pin_eval,
+    )
     for J in (512, 2048):
         def build(J=J):
             G = gr.cosine_gram(H, J + 1)
@@ -430,7 +468,7 @@ if __name__ == "__main__":
             return ratio_weights_from_cov(Sig, q, 1), tau
         (th, tau), t_spec, _ = timed(build, reps=1)
         tgt = f"T4 T_H H=0.75 via Galerkin J={J}"
-        run_python_methods(tgt, th, q * tau, ref, t_spec, rows, rng, allow_ruben=False)
+        run_python_methods(tgt, th, q * tau, ref, t_spec, rows, rng, allow_ruben=False, cached_slow=cached_slow)
         run_r_methods(tgt, th, q * tau, ref, t_spec, rows)
         meta["targets"][tgt] = dict(J=J, tau=tau, shift=q * tau, weights=th.size, seconds_spectrum=t_spec)
         print(tgt, "done", flush=True)

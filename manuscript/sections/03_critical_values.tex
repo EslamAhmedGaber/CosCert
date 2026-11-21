@@ -2,14 +2,14 @@
 
 \begin{figure}[tbp]\centering
 \includegraphics[width=\textwidth]{fig1_headline.pdf}
-\caption{Critical values and limit size of the three test families. (a)~Two-sided $5\,\%$ critical values relative
-to short-memory values ($t$ scale). (b)~Limit size of nominal $5\,\%$ tests using short-memory values.
-(c)~As (b) after the rescaling of \cref{prop:rho} (narrower vertical range). Lines: HI, $m$ frequencies;
-circles: EWC, $B=2m$; all values certified.}\label{fig:headline}
+\caption{Memory changes critical values and limiting rejection rates before and after first-moment rescaling.}\label{fig:headline}
 \end{figure}
 
+In \cref{fig:headline}, panel~(a) expresses the two-sided cutoffs relative to their short-memory values on the signed scale.
+Panels~(b) and (c) report limiting rejection probabilities before and after first-moment rescaling. Circles mark EWC with $B=2m$.
+
 \subsection{The Bartlett/self-normalised statistic}
-\Cref{tab:sncv} gives the quantiles of $T_H$ for selected $H$; \cref{app:tables} gives all
+\Cref{tab:sncv} gives the quantiles of $T_H$ for selected $H$; Supplementary Material Table~S.1 gives all
 \pthree{sn-n-H} values $H=0.50,0.51,\dots,0.99$ at the six levels $p\in\{0.80,0.90,0.95,0.975,0.98,0.99\}$, which cover
 two-sided tests at $10$, $5$ and $1\,\%$ and one-sided tests with the signed statistics at $10$, $5$, $1.25$ and $1\,\%$.
 A two-sided test at level $\alpha$ rejects when $T_n>q_{1-\alpha}$; a one-sided test at level $a$ with the signed
@@ -21,7 +21,7 @@ in its enclosure. At $H=\frac12$
 the values agree with the closed-form law of \citet{AP97} to \pthree{g0-min-digits} significant digits or more.
 
 \begin{table}[tbp]\centering\small
-\caption{Certified quantiles $q_p(H)$ of $T_H$; each entry is correctly rounded, so the number of digits varies.}\label{tab:sncv}
+\caption{Certified quantiles of the Bartlett statistic at selected Hurst indices.}\label{tab:sncv}
 \input{tables/tab_sn_cv_short.tex}%
 \end{table}
 
@@ -32,14 +32,14 @@ Bartlett/self-normalised value is shown as $\sqrt{q_{0.95}(H)/q_{0.95}(\frac12)}
 
 \subsection{Fixed-smoothing statistics}
 The fixed-$m$ and EWC limits are finite-dimensional, so their quantiles can be certified at every $0<H<1$
-(\cref{prop:continuation,prop:fixedcert}). \Cref{tab:fixedcv} gives two-sided $5\,\%$ values; \cref{app:tables} gives the
-\pthree{fx-n-cells} certified values for $m=1,\dots,16$, $B\in\{1,2,3,4,6,8,12,16,24,32\}$, $\alpha\in\{0.10,0.05,0.01\}$
-and $H=0.50,0.51,\dots,0.99$. At $H=\frac12$ every enclosure contains the Student-$t$ value with $2m$ or $B$ degrees of
-freedom, which validates the computation against an independent closed form.
+(\cref{prop:continuation,prop:fixedcert}). \Cref{tab:fixedcv} gives two-sided $5\,\%$ values; Supplementary Material
+Table~S.2 and the accompanying archive provide the \pthree{fx-n-cells} certified values for $m=1,\dots,16$,
+$B\in\{1,2,3,4,6,8,12,16,24,32\}$, $\alpha\in\{0.10,0.05,0.01\}$ and $H=0.50,0.51,\dots,0.99$. At $H=\frac12$ every
+enclosure contains the Student-$t$ value with $2m$ or $B$ degrees of freedom, which validates the computation against an
+independent closed form.
 
 \begin{table}[tbp]\centering\small
-\caption{Two-sided $5\,\%$ critical values of the fixed-$m$ statistic $\tau$ of \citet{HI17} and of the EWC statistic
-of \citet{LLSW18} (certified). At $H=\frac12$ the values are $t_{2m,0.975}$ and $t_{B,0.975}$.}\label{tab:fixedcv}
+\caption{Certified two-sided 5\% cutoffs for fixed-periodogram and cosine tests.}\label{tab:fixedcv}
 \input{tables/tab_fixed_cv_short.tex}%
 \end{table}
 
@@ -53,25 +53,11 @@ the Bartlett/self-normalised test rejects a true null \pthree{naive-sn-0.70-0.05
 \pthree{naive-sn-0.90-0.05}\,\%. The fixed-smoothing tests are worse, and they are the worse the more components their
 variance estimator has: at $H=0.9$ the size is \pthree{naive-hi1-0.90}\,\% for $m=1$ and \pthree{naive-hi16-0.90}\,\%
 for $m=16$. The variance estimators that use more frequencies average periodogram ordinates further from the origin,
-whose expectation is smaller under long memory, and they also have smaller critical values.
-
-The same comparison can be made on data of a fixed length, where no limit argument is involved. \Cref{tab:matched} holds
-the data model and the sample size fixed (fractional Gaussian noise, $n=64$ and $128$) and changes only the critical value
-of the squared statistic $T_n$. With the Brownian value $45.526$ the exact size is
-\pthree{mx-0.90-128}\,\% at $H=0.9$ and \pthree{mx-0.99-128}\,\% at $H=0.99$ for $n=128$; with the certified value
-\pthree{mx-cv-0.99} for $H=0.99$ it is \pthree{mx-0.99-128-own}\,\%. Under long memory the finite-grid sizes differ from
-the certified limit sizes by at most \pthree{mx-gap-64-long}\,pp at $n=64$ and \pthree{mx-gap-128-long}\,pp at $n=128$;
-the largest gap, \pthree{mx-gap-64}\,pp, is the short-memory one at $H=\pthree{mx-gap-64-H}$ and $n=64$. For fractional
-Gaussian noise the limit critical values therefore already apply at these sample sizes. The
-entries are exact finite-dimensional laws, computed twice, by the series of \cref{prop:exactn} and by an independent
-Imhof integral at $30$ digits, which agree to \pthree{mx-maxdiff-AB}\,pp; they also reproduce an independent
-double-precision check to the printed digits (largest difference \pthree{mx-maxdiff-user}\,pp).
-
-\begin{table}[tbp]\centering\small
-\caption{Exact size (\%) under fractional Gaussian noise of the test that rejects when $T_n$ exceeds the stated value;
-finite-$n$ columns are exact laws (\cref{prop:exactn}), the last column the certified limit.}\label{tab:matched}
-\input{tables/tab_matched.tex}%
-\end{table}
+whose expectation is smaller under long memory, and they also have smaller critical values. As shown in \cref{sec:finite}
+using exact finite-sample laws, this excess rejection already manifests at small sample sizes ($n=64$ and $128$): under
+fractional Gaussian noise with the Brownian cutoff $45.526$, the exact size of $T_n$ at $n=128$ is
+\pthree{mx-0.90-128}\,\% at $H=0.9$ and \pthree{mx-0.99-128}\,\% at $H=0.99$, dropping immediately to
+\pthree{mx-0.99-128-own}\,\% once the certified $H=0.99$ cutoff (\pthree{mx-cv-0.99}) is substituted.
 
 \subsection{Why the critical values grow: collapse of the self-normaliser}\label{sec:collapse}
 As $H\uparrow1$ the fractional Brownian path becomes linear, $\E|B_H(r)-rB_H(1)|^2\to0$ uniformly in $r$, so every
@@ -124,21 +110,30 @@ and \pthree{rs-sn-0.95-0.05}\,\% at $H=0.95$. Its numerator and denominator are 
 coordinate, and its denominator is dominated by the first few coordinates, whose relative weights change with $H$.
 
 \begin{table}[tbp]\centering\small
-\caption{Largest deviation (percentage points) of the exact limit size of the rescaled rule \eqref{eq:rescaled} from the
-nominal level, over $m=1,\dots,16$ and $B\in\{1,2,3,4,6,8,12,16,24,32\}$ (certified enclosures of the size).}\label{tab:rescaled}
+\caption{Largest absolute limiting size error after first-moment rescaling, in percentage points.}\label{tab:rescaled}
 \input{tables/tab_rescaled.tex}%
 \end{table}
 
 \subsection{A response surface}\label{sec:surface}
 For use without tables we fit, for each level $p$, $\log q_p(H)=-\log(1-H)+\sum_{i=0}^{K}a_{p,i}(H-\frac12)^i$, which
-builds in the rate $q_p(H)\sim C_p/(1-H)$ of \cref{prop:edge}. The coefficients are fitted to the certified values at even hundredths of $H$ only; the degree, $K=\pthree{rs-surface-K}$
-for every level, is the smallest whose leave-one-out error on these points is below a tenth of their certification
-error. The odd hundredths, used neither for the fit nor for the choice of $K$, are held out, and on them we report two
-errors (\cref{tab:surface}). The held-out fit error, computed through the density, is at most
-\pthree{rs-surface-fit-maxerr}\,pp in size against the tabulated values. The certified bound refers to the coefficients as printed (\pthree{rs-surface-digits} significant digits): the
-surface value is evaluated exactly from them in ball arithmetic, and under the true law the resulting critical value has
-size within \pthree{rs-surface-cert-maxerr}\,pp of nominal at every held-out $H$ and level. Where that value lies inside
-the certified bracket, the bound follows from the enclosures of $F_H$ at the bracket ends by monotonicity; otherwise
-($\pthree{rs-surface-cert-ndirect}$ of the $\pthree{rs-surface-cert-ncells}$ cases) $F_H$ is enclosed afresh at the two
-floating-point neighbours of the value. The bound holds at the held-out points only: between them the surface is an
+builds in the rate $q_p(H)\sim C_p/(1-H)$ of \cref{prop:edge}. The coefficients are fitted to the certified values at
+even hundredths of $H$ only; the degree, $K=\pthree{rs-surface-K}$ for every level, is the smallest whose leave-one-out
+error on these points is below a tenth of their certification error. The odd hundredths, used neither for the fit nor
+for the choice of $K$, are held out, and on them we report two errors (\cref{tab:surface}). The held-out fit error,
+computed through the density, is at most \pthree{rs-surface-fit-maxerr}\,pp in size against the tabulated values. The
+certified bound refers to the coefficients as printed (\pthree{rs-surface-digits} significant digits): the printed
+decimal coefficients are parsed as exact rationals and evaluated in 128-bit ball arithmetic to a ball enclosing the
+exact real surface value, and under the true law the resulting critical value has size within
+\pthree{rs-surface-cert-maxerr}\,pp of nominal at every held-out $H$ and level. Where the ball lies inside the certified
+bracket, the bound follows from the enclosures of $F_H$ at the bracket ends by monotonicity; otherwise
+($\pthree{rs-surface-cert-ndirect}$ of the $\pthree{rs-surface-cert-ncells}$ cases) $F_H$ is enclosed afresh at both
+outward-rounded ball endpoints. The bound holds at the held-out points only: between them the surface is an
 interpolation without a guarantee, and outside $\frac12\le H\le0.99$ it should not be used.
+
+\begin{table}[tbp]\centering\small
+\caption{Bartlett quantile response surfaces fitted on even grid points and checked on odd grid points.}\label{tab:surface}
+\footnotesize\setlength{\tabcolsep}{4pt}\input{tables/tab_surface.tex}%
+\par\smallskip\parbox{\linewidth}{\raggedright\footnotesize Level $p$: two-sided tests at $\alpha=1-p$, one-sided tests with a signed
+statistic at $a=(1-p)/2$. \textsuperscript{a}Largest held-out size error against the tabulated values, computed through the
+density. \textsuperscript{b}Largest held-out size error of the printed surface under the true law, certified in ball arithmetic.}
+\end{table}

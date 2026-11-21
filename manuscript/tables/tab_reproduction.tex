@@ -9,25 +9,25 @@ T4: $F_{0.75}$ at its $95\,\%$ point & certified, $J=16384$ & Imhof, $J=512$, re
 \addlinespace[4pt]
 \multicolumn{4}{@{}l}{\textit{Independent implementation}: the same quantity from separate code or another algorithm}\\[1pt]
 closed forms at $H=\frac12$ ($T_{1/2}$; Cram\'er--von Mises) & characteristic functions (mpmath) & Imhof over the explicit eigenvalues & $\ge14.5$; $\ge12.1$ digits\\
-T3: exact law of $T_n$, $n=1000$ & one eigendecomposition (\cref{prop:exactn}b) & Imhof, Davies, gx2 on the ratio form & $\le$ $1.9\times10^{-11}$\\
-naive size of $T_n$, fGn, $n\le128$ & series route & $30$-digit Imhof; separate double-precision code & $6.7\times10^{-12}$; $3.6\times10^{-5}$\,pp\\
-local power at $H=\frac12$, fixed smoothing & noncentral Imhof (\cref{prop:power}) & noncentral Student $t$ & $\le$ $2.3\times10^{-13}$, 610 cells\\
+T3: exact law of $T_n$, $n=1000$ & Cholesky-free one-eigh (Proposition~7(b)) & Imhof, Davies, gx2 on the ratio form & $\le$ $1.9\times10^{-11}$\\
+exact size of $T_n$, fGn, $n\le128$ & Woodbury inversion (Proposition~7(b)) & $30$-digit Imhof (independent code) & max $|A-B|=$ $6.7\times10^{-14}$\,pp\\
+local power at $H=\frac12$, fixed smoothing & noncentral Imhof (Proposition~9) & noncentral Student $t$ & $\le$ $2.3\times10^{-13}$, 610 cells\\
 \addlinespace[4pt]
 \multicolumn{4}{@{}l}{\textit{Asymptotic consistency}: exact finite-sample or near-edge values approach the certified limit}\\[1pt]
 $q_{0.95}$ at $H=0.99$ & certified limit & exact law, fGn, $n=128$ & size $5.000039$\,\%\\
 naive size at $H=0.9$, $0.99$ & certified limits & exact law, fGn, $n=128$ & $6.9\times10^{-5}$; $9.2\times10^{-6}$\,pp\\
-$(1-H)\,q_{0.95}(H)$, $H\to1$ & certified, $H=0.98$, $0.99$, extrapolated & $C_{0.95}$ of \cref{prop:edge} & $0.04$\,\% relative\\
+$(1-H)\,q_{0.95}(H)$, $H\to1$ & certified, $H=0.98$, $0.99$, extrapolated & $C_{0.95}$ of Proposition~6 & $0.04$\,\% relative\\
 \addlinespace[4pt]
 \multicolumn{4}{@{}l}{\textit{Probabilistic check}: simulation against exact values}\\[1pt]
-finite-sample rates (\cref{sec:finite}) & exact laws & simulation, $R=200\,000$, 192 cells & 191 inside $99\,\%$ intervals\\
+finite-sample rates (Section~4) & exact laws & simulation, $R=200\,000$, 192 cells & 191 inside $99\,\%$ intervals\\
 oracle rates, estimated-$H$ study & exact laws, true $H$ & simulation, 1\,800 cells & 98.9\,\% inside $99\,\%$ intervals\\
 \citet[Table~2]{HI17} & exact finite-$T$ laws & their simulation & max $|z|=2.17$, 64 cells\\
 \addlinespace[4pt]
 \multicolumn{4}{@{}l}{\textit{Convergence check}: refinement of a discretisation parameter}\\[1pt]
 Bartlett/SN local power & $J=512$ & $J=256$ and $1024$ & $\le$ $9.0\times10^{-9}$; $\le$ $1.1\times10^{-9}$\\
-enclosure width of $F_H$ & $J=512,\dots,8192$ & rate $J^{-1/2-2H}$ (\cref{prop:rate}) & slopes within $0.05$\\
+enclosure width of $F_H$ & $J=512,\dots,8192$ & rate $J^{-1/2-2H}$ (Proposition~11) & slopes within $0.05$\\
 \addlinespace[4pt]
-\multicolumn{4}{@{}l}{\textit{Reproducibility}: a re-run with the same or with corrected code}\\[1pt]
-\citet{HI17} Tables 2--5 & stored runs & re-runs, same seeds & Tables 3--5 bit-identical (720 rows); Table 2 within $1.1\times10^{-15}$\\
-certified $q_p(H)$, 300 values & first implementation & final implementation (\cref{app:certificate}) & all confirmed; shifts $\le$ $3\times10^{-15}$\\
+\multicolumn{4}{@{}l}{\textit{Cross-route verification}: independent inversion routes and deterministic re-runs}\\[1pt]
+T4 certified $F_{0.75}(q_{0.95})$, $J=16384$ & adaptive complex quadrature (\texttt{acb.integral}) & tilted midpoint Poisson sum & nested overlap; width $1.87\times10^{-8}$\\
+certified $q_p(H)$, 300 brackets & ball-arithmetic certificate (Appendix~B) & full independent re-certification & all 300/300 confirmed\\
 \bottomrule\end{tabular}

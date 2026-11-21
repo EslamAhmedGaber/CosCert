@@ -36,8 +36,9 @@ COL = {
 
 
 def tex_environment():
-    """XeLaTeX from the user's TeX Live 2025 (read-only); every TeX cache/config redirected into the project."""
-    if TEXBIN not in os.environ.get("PATH", ""):
+    """Locate XeLaTeX (PATH first, then TeX Live default) and redirect TeX caches into the project."""
+    import shutil
+    if shutil.which("xelatex") is None and os.path.isdir(TEXBIN) and TEXBIN not in os.environ.get("PATH", ""):
         os.environ["PATH"] = TEXBIN + os.pathsep + os.environ.get("PATH", "")
     tv = os.path.join(WORK, ".texmf_var")
     os.environ.update({"TEXMFVAR": tv, "TEXMFCACHE": tv, "TEXMFCONFIG": os.path.join(tv, "config"),
@@ -166,7 +167,7 @@ def layout_check(fig, verbose=True):
     return issues
 
 
-def save(fig, name, inputs=(), script=None, note="", png_dpi=200):
+def save(fig, name, inputs=(), script=None, note="", png_dpi=300):
     os.makedirs(FIGDIR, exist_ok=True); os.makedirs(os.path.join(FIGDIR, "preview"), exist_ok=True)
     pdf = os.path.join(FIGDIR, name + ".pdf")
     t0 = time.perf_counter(); fig.savefig(pdf, backend="pgf"); t_pdf = time.perf_counter() - t0

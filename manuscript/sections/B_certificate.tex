@@ -2,138 +2,157 @@
 
 \paragraph{Inputs and arithmetic} $H$ is a decimal and enters as an exact rational. The Kummer values
 $p_k+\mathrm ir_k={}_1F_1(b;b+1;\mathrm ik\pi)$, $k\le J$, are computed in ball arithmetic \citep{Joh17} at $128$ bits;
-every Gram entry used in the head blocks is a ball, and the double-precision copies used for the tail blocks carry
+every Gram entry used in the head blocks is a ball, and the double-precision copies used for the near-tail blocks carry
 entrywise rounding bounds proved in the standard model of floating-point arithmetic ($u=2^{-53}$). \Cref{tab:errsources}
 lists every error source, its bound and how the bound is evaluated.
 
 \paragraph{Factorisation} By the parity of \cref{prop:coords}, the covariance of $(Z,\Lambda_1/\pi,\dots,\Lambda_J/(J\pi))$
 splits into an odd block $A_O$ and the block of $(Z,\text{even coordinates})$ with Schur structure
-$(1,g^\top;g,A_E)$, so that, for $z=\vartheta+\mathrm it$ and $\zeta=2cz$,
-\[\mathcal M(z)^{-2}=\det(I-2zK)=\det(I+\zeta A_O)\det(I+\zeta A_E)\,(1-2z\lambda_+)\,\rho(z)\qquad(\cref{lem:branch,lem:interlace}).\]
-Each block is split into a head of its first $h$ coordinates and a tail, $A=(A_{hh},A_{ht};A_{th},A_{tt})$, and evaluated
-with \cref{lem:logdet}, in which $\log\det(I+\zeta M)=\sum_i\log(1+\zeta\mu_i)$ over the eigenvalues $\mu_i$ of $M$, with
-principal logarithms, and $\|\cdot\|_*$ is the trace norm.
+$(1,g^\top;g,A_E)$, so that, for $z\in\Omega_{\mathrm{ext}}$ and $\zeta=2cz$,
+\[\mathcal M(z)^{-2}=\det(I-2zK)=\det(I+\zeta A_O)\det(I+\zeta A_E)\,r_0(z),\qquad r_0(z)=1-2zu(z),\]
+with $u(z)=1-\zeta g^\top(I+\zeta A_E)^{-1}g$ (\cref{lem:branch}). On $\operatorname{Re}z\ge0$, \cref{lem:interlace}
+further factorises $r_0(z)=(1-2z\lambda_+)\rho(z)$ with $\operatorname{Re}\rho(z)>0$. Each block is split into a head
+of its first $h$ coordinates and a tail, $A=(A_{hh},A_{ht};A_{th},A_{tt})$, and evaluated with \cref{lem:logdet}, in
+which $\log\det(I+\zeta M)=\sum_i\log(1+\zeta\mu_i)$ over the eigenvalues $\mu_i$ of $M$, with principal logarithms, and
+$\|\cdot\|_*$ is the trace norm.
 
-\begin{lemma}[Head and tail]\label[lemma]{lem:logdet}
-Let $A$ be real symmetric positive semi-definite, partitioned as above, $\operatorname{Re}\zeta\ge0$, $W=A_{th}^\top A_{th}$,
-$S=A_{tt}-\zeta A_{th}(I+\zeta A_{hh})^{-1}A_{ht}$, $s_2=\|A_{tt}\|_2+|\zeta|\tr W$ and $s_F=\|A_{tt}\|_F+|\zeta|\tr W$. Let $Q$ be
-invertible, $\ell\in[0,\infty)^h$, $F=Q^{-1}A_{hh}Q-\operatorname{diag}(\ell)$ and $\epsilon_F=|\zeta|\|F\|_F$, and suppose
-$\epsilon_F<\frac12$ and $|\zeta|s_2<\frac12$. Then:
+\begin{lemma}[Head and tail on the slit sector]\label[lemma]{lem:logdet}
+Let $A$ be real symmetric positive semi-definite, partitioned as above, and let $\zeta\in\{\operatorname{Re}\zeta\ge0\}\cup\{\operatorname{Im}\zeta>0\}$. Put
+\[M_\zeta:=\begin{cases}1,&\operatorname{Re}\zeta\ge0,\\ |\zeta|/\operatorname{Im}\zeta,&\operatorname{Re}\zeta<0,\ \operatorname{Im}\zeta>0,\end{cases}\]
+$W=A_{th}^\top A_{th}$, $S=A_{tt}-\zeta A_{th}(I+\zeta A_{hh})^{-1}A_{ht}$,
+$s_2=\|A_{tt}\|_2+|\zeta|M_\zeta\tr W$ and $s_F=\|A_{tt}\|_F+|\zeta|M_\zeta\tr W$. Let $Q$ be invertible,
+$\ell\in[0,\infty)^h$, $F=Q^{-1}A_{hh}Q-\operatorname{diag}(\ell)$ and $\epsilon_F=|\zeta|M_\zeta\|F\|_F$, and suppose
+$\epsilon_F<\frac12$ and $|\zeta|s_2<\frac12$. Put $n_D=M_\zeta\epsilon_F/(1-\epsilon_F)$. Then:
 \emph{(a)} $\log\det(I+\zeta A)=\log\det(I+\zeta A_{hh})+\log\det(I+\zeta S)$ and
 $\big|\log\det(I+\zeta A_{hh})-\sum_{i\le h}\log(1+\zeta\ell_i)\big|\le h\epsilon_F/(1-\epsilon_F)$;
 \emph{(b)} for $u,v\in\mathbb C^h$,
 \begin{gather*}
-\Big|u^\top(I+\zeta A_{hh})^{-1}v-\sum_{j\le h}\frac{(Q^\top u)_j(Q^{-1}v)_j}{1+\zeta\ell_j}\Big|\le\frac{\epsilon_F\,\|Q^\top u\|\,\|Q^{-1}v\|}{1-\epsilon_F},\\
-\Big|\tr\big((I+\zeta A_{hh})^{-1}W\big)-\sum_{j\le h}\frac{(Q^{-1}WQ)_{jj}}{1+\zeta\ell_j}\Big|\le\frac{\epsilon_F\,\|Q\|_F\|Q^{-1}\|_F\tr W}{1-\epsilon_F};
+\Big|u^\top(I+\zeta A_{hh})^{-1}v-\sum_{j\le h}\frac{(Q^\top u)_j(Q^{-1}v)_j}{1+\zeta\ell_j}\Big|\le n_D\,\|Q^\top u\|\,\|Q^{-1}v\|,\\
+\Big|\tr\big((I+\zeta A_{hh})^{-1}W\big)-\sum_{j\le h}\frac{(Q^{-1}WQ)_{jj}}{1+\zeta\ell_j}\Big|\le n_D\,\|Q\|_F\|Q^{-1}\|_F\tr W;
 \end{gather*}
 \emph{(c)} $\|S\|_2\le s_2$, $\|S\|_F\le s_F$, $\tr S=\tr A_{tt}-\zeta\tr\big((I+\zeta A_{hh})^{-1}W\big)$ and
 \begin{gather*}\log\det(I+\zeta S)=\zeta\tr S-\tfrac12\zeta^2\|A_{tt}\|_F^2+E,\\
-|E|\le\tfrac12|\zeta|^2\big(2|\zeta|\|A_{tt}\|_2\tr W+|\zeta|^2(\tr W)^2\big)+\frac{|\zeta|^3s_2s_F^2}{3(1-|\zeta|s_2)};\end{gather*}
-\emph{(d)} for $g=(g_h,g_t)$ and $e=g_t-\zeta A_{th}(I+\zeta A_{hh})^{-1}g_h$, one has $\|e\|\le\|g_t\|+|\zeta|(\tr W)^{1/2}\|g_h\|$ and
-\[g^\top(I+\zeta A)^{-1}g=g_h^\top(I+\zeta A_{hh})^{-1}g_h+e^\top e+E_g,\qquad|E_g|\le\frac{|\zeta|s_2\|e\|^2}{1-|\zeta|s_2}.\]
+|E|\le\tfrac12|\zeta|^2\big(2|\zeta|M_\zeta\|A_{tt}\|_2\tr W+|\zeta|^2M_\zeta^2(\tr W)^2\big)+\frac{|\zeta|^3s_2s_F^2}{3(1-|\zeta|s_2)};\end{gather*}
+\emph{(d)} for $g=(g_h,g_t)$ and $e=g_t-\zeta A_{th}(I+\zeta A_{hh})^{-1}g_h$, one has $\|e\|\le\|g_t\|+|\zeta|M_\zeta(\tr W)^{1/2}\|g_h\|$ and
+\[g^\top(I+\zeta A)^{-1}g=g_h^\top(I+\zeta A_{hh})^{-1}g_h+e^\top e+E_g,\qquad|E_g|\le\frac{|\zeta|s_2\|e\|^2}{1-|\zeta|s_2},\]
+with $|e^\top e-(\|g_t\|^2-2\zeta g_t^\top A_{th}(I+\zeta A_{hh})^{-1}g_h)|\le|\zeta|^2M_\zeta^2(\tr W)\|g_h\|^2$.
 \end{lemma}
 
 \begin{proof}
-Since $A_{hh}$ is positive semi-definite, $\ell\ge0$ and $\operatorname{Re}\zeta\ge0$, the normal matrices $I+\zeta A_{hh}$ and
-$I+\zeta D$, $D=\operatorname{diag}(\ell)$, have eigenvalues of modulus at least $1$, so their inverses have spectral norm at
-most $1$. Put $X=\zeta(I+\zeta D)^{-1}F$; then $\|X\|_2\le\epsilon_F$, $(I+\zeta A_{hh})^{-1}=Q(I+X)^{-1}(I+\zeta D)^{-1}Q^{-1}$,
-$(I+X)^{-1}=I-X(I+X)^{-1}$ and $\|X(I+X)^{-1}\|_2\le\epsilon_F/(1-\epsilon_F)$, which gives~(b) with $|\tr(MN)|\le\|M\|_2\|N\|_*$ and
-$\|Q^{-1}WQ\|_*\le\|Q^{-1}\|_F\|Q\|_F\tr W$. \emph{(a)} The Schur complement gives $\det(I+\zeta A)=\det(I+\zeta A_{hh})\det(I+\zeta S)$,
-and $\det(I+\zeta A_{hh})=\det(I+\zeta D)\det(I+X)$, where every eigenvalue $\mu$ of $X$ has $|\mu|\le\epsilon_F<\frac12$ and
-$|\log(1+\mu)|\le|\mu|/(1-|\mu|)$. Both identities hold for the principal logarithms, not only modulo $2\pi\mathrm i$:
-replacing $\zeta$ by $s\zeta$, $0\le s\le1$, preserves the hypotheses, every term is continuous in $s$, and all vanish at
-$s=0$. \emph{(c)} With $P=A_{th}(I+\zeta A_{hh})^{-1}A_{ht}$, $\|P\|_F\le\|P\|_*\le\|A_{th}\|_F^2=\tr W$, which gives the norm bounds
-and the trace. As $|\zeta|\|S\|_2<\frac12$, $\log\det(I+\zeta S)=\sum_{k\ge1}(-1)^{k+1}\zeta^k\tr(S^k)/k$, and Schur's inequality
-gives $|\tr S^k|\le\|S\|_2^{k-2}\|S\|_F^2$ for $k\ge2$, which bounds the terms $k\ge3$ by the last term of the bound on $|E|$;
-finally $\tr S^2=\|A_{tt}\|_F^2-2\zeta\tr(A_{tt}P)+\zeta^2\tr P^2$ with $|\tr(A_{tt}P)|\le\|A_{tt}\|_2\tr W$ and $|\tr P^2|\le(\tr W)^2$.
-\emph{(d)} By the block inverse, $g^\top(I+\zeta A)^{-1}g=g_h^\top(I+\zeta A_{hh})^{-1}g_h+e^\top(I+\zeta S)^{-1}e$, and
-$(I+\zeta S)^{-1}=I-\zeta S(I+\zeta S)^{-1}$ with $\|(I+\zeta S)^{-1}\|_2\le(1-|\zeta|s_2)^{-1}$.
+For any real $\alpha\ge0$ and $\zeta=a+\mathrm ib$, $|1+\zeta\alpha|^2=(1+a\alpha)^2+b^2\alpha^2$ is at least $1$ when
+$a\ge0$, and has minimum $b^2/(a^2+b^2)=M_\zeta^{-2}$ over $\alpha\in\mathbb R$ when $b>0$. Since $A_{hh}\succeq0$ and
+$\ell\ge0$, the normal matrices $I+\zeta A_{hh}$ and $I+\zeta D$, $D=\operatorname{diag}(\ell)$, have inverses of
+spectral norm at most $M_\zeta$. Moreover $M_{s\zeta}=M_\zeta$ identically for every $s\in(0,1]$. Put
+$X=\zeta(I+\zeta D)^{-1}F$; then $\|X\|_2\le|\zeta|M_\zeta\|F\|_F=\epsilon_F<\frac12$,
+$(I+\zeta A_{hh})^{-1}=Q(I+X)^{-1}(I+\zeta D)^{-1}Q^{-1}$, $(I+X)^{-1}=I-X(I+X)^{-1}$ and
+$\|(I+X)^{-1}(I+\zeta D)^{-1}-(I+\zeta D)^{-1}\|_2\le M_\zeta\epsilon_F/(1-\epsilon_F)=n_D$, which gives~(b) via
+$|\tr(MN)|\le\|M\|_2\|N\|_*$ and $\|Q^{-1}WQ\|_*\le\|Q^{-1}\|_F\|Q\|_F\tr W$. \emph{(a)} The Schur complement gives
+$\det(I+\zeta A)=\det(I+\zeta A_{hh})\det(I+\zeta S)$ and $\det(I+\zeta A_{hh})=\det(I+\zeta D)\det(I+X)$, where every
+eigenvalue $\mu$ of $X$ satisfies $|\mu|\le\epsilon_F<\frac12$ and $|\log(1+\mu)|\le|\mu|/(1-|\mu|)$. Both identities
+hold for the principal logarithms because replacing $\zeta$ by $s\zeta$, $0\le s\le1$, leaves $M_{s\zeta}=M_\zeta$
+invariant, preserves every hypothesis, keeps every factor continuous in $s$, and vanishes at $s=0$. \emph{(c)} With
+$P=A_{th}(I+\zeta A_{hh})^{-1}A_{ht}$, $\|P\|_F\le\|P\|_*\le M_\zeta\|A_{th}\|_F^2=M_\zeta\tr W$, giving the norm bounds
+on $S=A_{tt}-\zeta P$ and the trace. As $|\zeta|\|S\|_2<\frac12$,
+$\log\det(I+\zeta S)=\sum_{k\ge1}(-1)^{k+1}\zeta^k\tr(S^k)/k$, Schur's inequality gives $|\tr S^k|\le\|S\|_2^{k-2}\|S\|_F^2$
+for $k\ge2$, and $\tr S^2=\|A_{tt}\|_F^2-2\zeta\tr(A_{tt}P)+\zeta^2\tr P^2$ with
+$|\tr(A_{tt}P)|\le\|A_{tt}\|_2M_\zeta\tr W$ and $|\tr P^2|\le M_\zeta^2(\tr W)^2$. \emph{(d)} By block inversion,
+$g^\top(I+\zeta A)^{-1}g=g_h^\top(I+\zeta A_{hh})^{-1}g_h+e^\top(I+\zeta S)^{-1}e$, with
+$\|(I+\zeta S)^{-1}-I\|_2\le|\zeta|s_2/(1-|\zeta|s_2)$, $\|e\|\le\|g_t\|+|\zeta|M_\zeta(\tr W)^{1/2}\|g_h\|$, and the
+quadratic term $\zeta^2g_h^\top(I+\zeta A_{hh})^{-1}W(I+\zeta A_{hh})^{-1}g_h$ in $e^\top e$ bounded by
+$|\zeta|^2M_\zeta^2(\tr W)\|g_h\|^2$.
 \end{proof}
 
-In the computation $Q$ is an approximate eigenvector matrix of the midpoint of $A_{hh}$, computed in floating point, $\ell$
-are its floating-point eigenvalues (positive for every $H=0.50,\dots,0.99$; the code stops if one is not), and $F$ is formed
-in ball arithmetic, so the similarity is exact and no orthogonality of $Q$ is required; $\operatorname{Re}\zeta=2c\vartheta>0$.
-Part~(a) gives the head log-determinants, (b) and~(c) the tail, and (b) and~(d), with $g$ split in the same way, the
-rank-one term $g^\top(I+\zeta A_E)^{-1}g$ of $U$ below. For the eigenvalue bounds of the truncation, Gershgorin's theorem is
-applied to $\operatorname{diag}(\ell)+F$, which is exactly similar to $A_{hh}$ and has a real spectrum: a connected union of $k$
-discs contains exactly $k$ eigenvalues, so sorted lower bounds follow cluster by cluster \citep[Theorem~6.1.1]{HJ13}; by
-Cauchy's interlacing theorem they bound the leading eigenvalues of the full odd and even blocks from below, and the even
-block, which is coupled to $Z$ by a rank-one term, loses its largest bound (\cref{lem:interlace}). In~(c),
-$\|A_{tt}\|_2\le\min\big(\|A_{tt}\|_F,\ \cH(k_0\pi)^{-1-2H}\big)$ with $k_0$ the first tail mode (\cref{thm:eig}), and $\tr A_{tt}$,
-$\|A_{tt}\|_F^2$ and $\tr W$ are summed with rounding bounds. The head size $h\in\{8,16,32,64,128\}$ is chosen per
-quadrature node as the smallest one that meets both conditions of \cref{lem:logdet} and gives an enclosure radius below
-$10^{-12}$.
+\paragraph{Tail Frobenius norm and shared couplings} In the computation $Q$ is an approximate eigenvector matrix of the
+midpoint of $A_{hh}$, computed in floating point, $\ell$ are its floating-point eigenvalues (positive for every
+$H=0.50,\dots,0.99$; the code stops if one is not), and $F$ is formed in ball arithmetic, so the similarity is exact and
+no orthogonality of $Q$ is required. For the eigenvalue lower bounds $\nu_i$ of the truncation bound, Gershgorin's
+theorem is applied to $\operatorname{diag}(\ell)+F$, which is exactly similar to $A_{hh}$ and has a real spectrum: a
+connected union of $k$ discs contains exactly $k$ eigenvalues, so sorted lower bounds follow cluster by cluster
+\citep[Theorem~6.1.1]{HJ13}; by Cauchy's interlacing theorem they bound the leading eigenvalues of the full odd and even
+blocks from below, and the even block loses its largest bound (\cref{lem:interlace}). In~(c),
+$\|A_{tt}\|_2\le\min\big(\|A_{tt}\|_F,\ \cH(k_0\pi)^{-1-2H}\big)$ with $k_0$ the first tail mode (\cref{thm:eig}). To
+compute $\|A_{tt}\|_F^2$ in $O(n_{\mathrm{near}}^2+J)$ rather than $O(J^2)$ time at large $J$, the smallest tail
+modes are partitioned into a near block $N$ ($n_{\mathrm{near}}=768$ modes) and a far block $F$ (remaining modes):
+$N\times N$ is summed symmetrically with standard-model rounding bounds, the diagonal $\sum_{k\in F}A_{kk}^2$ is summed
+exactly in Arb, and the off-diagonal squares on $F\times F$ and $N\times F$ are bounded analytically in Arb. Specifically,
+putting $\bar r_k=\max_{j\ge k}|r_j|$ (computed in Arb), every same-parity off-diagonal entry ($k<l$) satisfies
+$|A_{kl}|=\frac{4H}{\pi^3}\frac{|lr_l-kr_k|}{kl(l-k)(l+k)}\le\frac{4H}{\pi^3}\frac{\bar r_k}{kl(l-k)}$, yielding
+\[2\sum_{k<l\in F}A_{kl}^2\le\frac{4H^2}{3\pi^4}\sum_{k\in F}\frac{\bar r_k^2}{k^4},\qquad
+2\sum_{k\in N,\,l\in F}A_{kl}^2\le\frac{8H^2}{\pi^6k_F^2}\sum_{k\in N}\frac{\bar r_k^2}{k^2(m_0(k)-\frac12)},\]
+where $k_F=\min F$ and $m_0(k)=(k_F-k)/2\ge1$ (using $\sum_{m\ge m_0}m^{-2}<(m_0-\frac12)^{-1}$). The resulting ball
+encloses $[0,B_{\mathrm{off}}]$ with radius at most $10^{-16}$ at $J=16384$ and accelerates the tail build by two orders of
+magnitude. Moreover, the coupling block $A_{th}$ is computed once for the union of all heads
+$h\in\{8,16,32,64,128\}$ and sliced without copying.
 
-\paragraph{Positive eigenvalue} Put $U(\zeta)=1-\zeta g^\top(I+\zeta A_E)^{-1}g$, so that the function of
-\cref{lem:interlace} is $u(z)=U(2cz)$. Then $\lambda_+$ is the unique root in $(0,1)$ of $U(c/\lambda)=\lambda$, equivalently
-$u(1/(2\lambda))=\lambda$, and it is enclosed by a certified sign change of $U(c/\lambda)-\lambda$ evaluated in balls. It is needed only for the factorisation used by the truncation bound: the branch itself is the
-principal one for every tilt $\vartheta<\frac12$ (\cref{lem:branch}), and $\lambda_+\le\Var Z=1$ (\cref{lem:interlace}) shows
-that the moment generating function exists on the whole strip. Production uses $\vartheta=\frac14$.
+\paragraph{Bromwich inversion: adaptive quadrature and tilted midpoint cross-check} By default, the finite Bromwich
+integral $I_{s_{\max}}(x)=\frac1\pi\int_0^{s_{\max}}\operatorname{Re}(\mathcal M(\vartheta+\mathrm is)e^{-(\vartheta+\mathrm is)x}/(\vartheta+\mathrm is))\dd s$
+(\cref{thm:certificate}) is evaluated directly in complex ball arithmetic via Arb's adaptive Petras/Gauss--Legendre
+integrator \citep{Joh18} over geometric panels on $[0,s_{\max}]$ with zero aliasing error. On every complex integration
+box visited by the integrator, \cref{lem:logdet} evaluates $\log\det(I+\zeta A_O)$, $\log\det(I+\zeta A_E)$ and $u(z)$,
+and Arb's analytic logarithm verifies that $r_0(z)=1-2zu(z)$ avoids $(-\infty,0]$ throughout the box (bisecting
+automatically if a Bernstein ellipse encroaches on the branch cut, without needing to locate $\lambda_+$). Because
+$x_{\mathrm{lo}}=c\,s_{\mathrm{lo}}$ and $x_{\mathrm{hi}}=c\,s_{\mathrm{hi}}$ are separated by $O(c\tau_J)$, the second
+endpoint is computed via the cancellation-free difference integral
+$I_{s_{\max}}(x_{\mathrm{hi}})-I_{s_{\max}}(x_{\mathrm{lo}})$, using
+$e^{-wx_{\mathrm{hi}}}-e^{-wx_{\mathrm{lo}}}=-2e^{-w(x_{\mathrm{lo}}+x_{\mathrm{hi}})/2}\sinh(w(x_{\mathrm{hi}}-x_{\mathrm{lo}})/2)$.
+The omitted tail is bounded in balls by $\epsilon(s_{\max},x)=\frac{2}{\pi|I|}e^{-\vartheta x}(1-2\vartheta)^{-1/2}\prod_{i\in I}(2s_{\max}c\,\nu_i)^{-1/2}$
+with $I=\{i:2s_{\max}c\,\nu_i>1\}$.
 
-\paragraph{Inversion sums} Write $S_\Delta(x)$ for the infinite tilted midpoint sum of the proof of \cref{thm:certificate}
-and $S_{\Delta,K}(x)$ for its first $K$ terms, which are the ones evaluated. The node spacing $\Delta$ is a binary number
-chosen in floating point; the alias identity holds for the lattice actually summed, so every bound uses its exact period
-$L=2\pi/\Delta$, enclosed in a ball. The upper alias sum is evaluated term by term in balls,
-$P(Z^2>y)=\operatorname{erfc}(\sqrt{y/2})$, until a term falls below $2^{-200}$, and its remainder after $M$ terms is
-bounded through $\operatorname{erfc}(v)\le e^{-v^2}$ by $e^{-x/2}r^{M+1}/(1-r)$, $r=e^{-(1/2-\vartheta)L}$. The truncation
-bound is $\epsilon_K=\frac{2}{\pi|I|}e^{-\vartheta x}(1-2\vartheta)^{-1/2}\prod_{i\in I}(2s_Kc\,\nu_i)^{-1/2}$ with
-$s_K=(K-\frac12)\Delta$, the certified eigenvalue lower bounds $\nu_i$ above and $I=\{i:2s_Kc\,\nu_i>1\}$, evaluated in
-balls.
+As an independent cross-check route, the code also implements the tilted midpoint Poisson sum $S_{\Delta,K}(x)$ of
+\cref{thm:certificate} on the shifted lattice $s_k=(k+\frac12)\Delta$, where $\lambda_+\in(0,1]$ (the unique root of
+$U(c/\lambda)=\lambda$, certified by a sign change in balls, with $\lambda_+=1$ at $H=\frac12$) is used to split
+$r_0(z)=(1-2z\lambda_+)\rho(z)$ so both factors stay in the open right half-plane. For this route, the exact period
+$L=2\pi/\Delta$ of the binary spacing $\Delta$ is enclosed in a ball, the upper alias sum $\epsilon_\Delta^+(x)$ is
+summed term by term in balls until a term falls below $2^{-200}$ with geometric remainder $e^{-x/2}r^{M+1}/(1-r)$,
+$r=e^{-(1/2-\vartheta)L}$, and the truncation bound is $\epsilon_K=\epsilon(s_{K-1},x)$ with $s_{K-1}=(K-\frac12)\Delta$.
+All float64 scalar bounds passed to ball radii carry a multiplicative $(1+10^{-12})$ outward safety factor.
 
-\paragraph{Procedure and parameters} $J=16384$, $t=25$, $\vartheta=\frac14$; $L$ is chosen so that the alias bounds are
-below $10^{-14}$ and $K$ so that $\epsilon_K\le10^{-14}$; the head size $h\in\{8,\dots,128\}$ at each node is the smallest
-that meets the conditions above and gives a radius below $10^{-12}$. These choices affect only the width of the
-enclosure, never its validity. A critical value is obtained in two stages. First, a computed quantile $q$ is found by
-Brent's method on the double-precision distribution function, together with an estimate $\rho$ of the relative width
-needed. Second, the certified distribution function is evaluated at both ends of
-$[q(1-f\rho-10^{-12}),\,q(1+f\rho+10^{-12})]$, starting with $f=1.5$ and doubling $f$ up to five times; the bracket is
-accepted only if the upper end of the enclosure at the left point is below $p$ and the lower end at the right point
-is above $p$. A value for which no bracket is accepted is reported as computed, not certified; this did not occur.
-The printed critical value is the shortest decimal whose rounding changes the computed size by at most $2\times10^{-5}$,
-and its size is certified separately.
+\paragraph{Procedure and parameters} Production values use $J=16384$, $t=25$, $\vartheta=\frac14$; $s_{\max}$ (or $L,K$
+in the midpoint cross-check) is chosen so that tail (and alias) bounds are below $10^{-13}$--$10^{-14}$; the head size
+$h\in\{8,\dots,128\}$ is chosen per panel (or node) as the smallest meeting the conditions of \cref{lem:logdet} with
+enclosure radius below $10^{-12}$. These choices affect only the width of the enclosure, never its validity. A critical
+value is obtained in two stages: Brent's method locates a computed quantile $q$ in double precision, and the certified
+distribution function is then evaluated at both endpoints of $[q(1-f\rho-10^{-12}),\,q(1+f\rho+10^{-12})]$, doubling
+$f$ from $1.5$ until the certified upper bound at the left endpoint lies below $p$ and the certified lower bound at the
+right endpoint exceeds $p$. The printed critical value is the shortest decimal whose rounding changes the computed size
+by at most $2\times10^{-5}$, and its size is certified separately.
+
+\begin{table}[tbp]\centering\footnotesize
+\caption{Sources of error and bounds used in the Bartlett probability certificate.}\label{tab:errsources}
+\begin{tabular}{@{}>{\raggedright}p{0.25\textwidth}>{\raggedright}p{0.40\textwidth}>{\raggedright\arraybackslash}p{0.27\textwidth}@{}}\toprule
+error source & bound & evaluation\\\midrule
+remainder $R_J$ & Laurent--Massart with $\tau_J$, $\bar\mu_J$ (\cref{thm:eig,thm:certificate}); $s_{\mathrm{lo}}$, $s_{\mathrm{hi}}$ rounded outward & balls; $e^{-t}$ rounded up\\
+evaluation points $cs_{\mathrm{lo}}$, $cs_{\mathrm{hi}}$ & monotonicity of $P(X_J\le x)$ in $x$ & products in balls, rounded down / up\\
+Gram entries, head blocks & closed forms (\cref{prop:coords}) & balls ($128$-bit)\\
+Gram entries, near-tail blocks & entrywise bounds & standard model\\
+tail trace, Frobenius norm, coupling & exact Arb diagonal + analytical far-tail bound; $\gamma_n$ on near block & balls + standard model\\
+head log-determinant & exact similarity, perturbation bound, \cref{lem:logdet}(a) & balls\\
+tail log-determinant & series bound with Schur complement, \cref{lem:logdet}(b), (c) & balls\\
+rank-one term $g^\top(I+\zeta A_E)^{-1}g$ & head similarity, tail Neumann series, \cref{lem:logdet}(b), (d) & balls\\
+eigenvalue lower bounds $\nu_i$ & Gershgorin clusters, Cauchy interlacing & balls\\
+finite Bromwich integral $[0,s_{\max}]$ & adaptive Petras/Gauss--Legendre quadrature \citep{Joh18} (zero alias) & complex balls (\texttt{acb.integral})\\
+omitted Bromwich tail $[s_{\max},\infty)$ & $\epsilon(s_{\max},x)$ via $\nu_i$ & balls\\
+midpoint cross-check aliases (optional) & $L=2\pi/\Delta$; $\epsilon_\Delta^-$ and $\epsilon_\Delta^+$ with geometric remainder & balls (\texttt{erfc} in balls)\\
+quantile bracket & enclosures at the two binary endpoints & balls\\\bottomrule
+\end{tabular}
+\end{table}
 
 \paragraph{Error budget} \Cref{tab:budget} lists the contributions at three values of $H$. At $H=\frac12$ the remainder
 term dominates and decreases like $J^{-3/2}$; at larger $H$ it decreases faster, and the radius of the finite-dimensional
 computation, which is independent of $J$, becomes the limiting term.
 
-\begin{table}[h]\centering\small
-\caption{Error budget of the certified distribution function at the $90\,\%$ quantile, $J=16384$.}\label{tab:budget}
+\begin{table}[tbp]\centering\small
+\caption{Contributions to the certified probability error at the 90th percentile with $J=16384$.}\label{tab:budget}
 \input{tables/tab_budget.tex}%
 \end{table}
 
-\paragraph{What the enclosure covers} Every error source of \cref{tab:errsources} is inside the interval; the
+\paragraph{What the enclosure covers} Every error source of \cref{tab:errsources} lies inside the reported interval; the
 exceptional events of probability $e^{-t}$ enter as additive terms, so the enclosure is deterministic. Floating point
-is used in two ways only. It selects parameters and approximate bases ($L$, $K$, $h$, $Q$, the computed quantile),
-which can affect the width but not the validity. And the tail blocks are formed in double precision with error bounds
-proved in the standard model (IEEE binary64, round to nearest; the bounds hold for any summation order). An earlier
-version evaluated the alias and truncation bounds in double precision with a heuristic safety factor, stopped the alias
-series without a remainder bound, rounded the evaluation points $cs_{\mathrm{lo}}$, $cs_{\mathrm{hi}}$ to nearest and
-used a residual eigenvalue bound that does not guarantee sorted pairing; all of these steps are now in balls as
-described above, and every certified value of $T_H$ in this paper was recomputed with the corrected code
-(\cref{app:repro}). The correctness of the software (Arb, python-flint, NumPy and our code) is assumed, not proved; the
-validation below and \cref{app:repro} are the checks on it.
-
-\begin{table}[tbp]\centering\footnotesize
-\caption{Error sources of the certified distribution function of $T_H$ and how each is enclosed. ``Balls'': Arb ball
-arithmetic at 128 bits with outward rounding; ``standard model'': a priori floating-point error bounds.}\label{tab:errsources}
-\begin{tabular}{@{}>{\raggedright}p{0.25\textwidth}>{\raggedright}p{0.40\textwidth}>{\raggedright\arraybackslash}p{0.27\textwidth}@{}}\toprule
-error source & bound & evaluation\\\midrule
-remainder $R_J$ & Laurent--Massart with $\tau_J$, $\bar\mu_J$ (\cref{thm:eig,thm:certificate}); $s_{\mathrm{lo}}$, $s_{\mathrm{hi}}$ rounded outward & balls; $e^{-t}$ rounded up\\
-evaluation points $cs_{\mathrm{lo}}$, $cs_{\mathrm{hi}}$ & monotonicity of $P(X_J\le x)$ in $x$ & products in balls, rounded down / up\\
-Gram entries, head blocks & closed forms (\cref{prop:coords}) & balls\\
-Gram entries, tail blocks & entrywise bounds & standard model\\
-tail traces, Frobenius norms, coupling & summation bounds $\gamma_n$ & standard model\\
-head log-determinant & exact similarity, perturbation bound, \cref{lem:logdet}(a) & balls\\
-tail log-determinant & series bound with Schur complement, \cref{lem:logdet}(b), (c) & balls\\
-rank-one term $g^\top(I+\zeta A_E)^{-1}g$ & head similarity, tail Neumann series, \cref{lem:logdet}(b), (d) & balls\\
-positive eigenvalue $\lambda_+$ & sign change of $U(c/\lambda)-\lambda$ & balls\\
-eigenvalue lower bounds $\nu_i$ & Gershgorin clusters, Cauchy interlacing & balls\\
-lattice period $L$ & $L=2\pi/\Delta$ for the binary $\Delta$ & balls\\
-alias sums & $\epsilon_\Delta^-$; $\epsilon_\Delta^+$ with geometric remainder & balls (erfc in balls)\\
-omitted nodes $k\ge K$ & $\epsilon_K$ above & balls\\
-quantile bracket & enclosures at the two binary endpoints & balls\\\bottomrule
-\end{tabular}
-\end{table}
+is used in two ways only: to select tuning parameters and approximate bases ($s_{\max}$, $h$, $Q$, the initial quantile),
+which affect width but never validity; and to sum the near-tail blocks with rigorous standard-model error bounds (IEEE
+binary64, round to nearest, valid for any summation order). The correctness of the underlying software libraries (Arb,
+\texttt{python-flint}, NumPy and our code) is assumed, not formally proved; the independent cross-checks in
+Supplementary Material Section~S.4 verify the implementation empirically across every regime.
 
 \paragraph{Fixed-smoothing laws} The limits $\tau_{H,m}$ and $t_{H,B}$ in \eqref{eq:limits} are $Z/(w\sum_{i=1}^kV_i^2)^{1/2}$
 with $(V_1,\dots,V_k)=(C_1,S_1,\dots,C_m,S_m)$, $k=2m$, $w=1/m$, or $(V_1,\dots,V_k)=(\Lambda_1,\dots,\Lambda_B)$, $k=B$, $w=1/B$;

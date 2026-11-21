@@ -1,29 +1,23 @@
 {
- "recorded": "2026-11-18 15:27",
+ "recorded": "2026-11-20",
  "python": "3.12.14",
  "implementation": "CPython",
  "platform": "Windows-10-10.0.19045-SP0",
  "machine": "AMD64",
  "logical_cpus": 12,
  "packages": {
-  "numpy": "2.5.3",
+  "numpy": "2.2.6",
   "scipy": "1.18.1",
-  "pandas": "3.0.6",
-  "mpmath": "1.4.1",
+  "pandas": "3.0.3",
+  "mpmath": "1.3.0",
   "python-flint": "0.8.0",
   "matplotlib": "3.11.2",
   "gx2": "1.6.1",
   "pytest": "9.2.0"
  },
  "numpy_blas": {
-  "name": "blas",
-  "found": true,
-  "version": "3.9.0",
-  "detection method": "pkgconfig",
-  "include directory": "<conda>/envs/paper2/Library/include",
-  "lib directory": "<conda>/envs/paper2/Library/lib",
-  "openblas configuration": "unknown",
-  "pc file directory": "<conda>/envs/paper2/Library/lib/pkgconfig"
+  "name": "scipy-openblas",
+  "found": true
  },
  "R": {
   "R": "R version 4.5.3 (2026-03-11 ucrt)",
@@ -37,6 +31,6 @@
   "OPENBLAS_NUM_THREADS": "1",
   "NUMEXPR_NUM_THREADS": "1"
  },
- "tex": "This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.4.15)  18 NOV 2026 14:59",
- "note": "E0(d), E2r, E3c, E5 and E7b pinned OpenMP/BLAS to one thread; the other runs used library defaults. Results do not depend on the thread count beyond floating-point rounding, and certified enclosures are unaffected."
+ "tex": "XeTeX 3.141592653-2.6-0.999997 (TeX Live 2025)",
+ "note": "E0(d), E2r, E3c, E5, E7b and E9b pinned OpenMP/BLAS to one thread; the other runs used library defaults. Results do not depend on the thread count beyond floating-point rounding, and certified enclosures are unaffected."
 }

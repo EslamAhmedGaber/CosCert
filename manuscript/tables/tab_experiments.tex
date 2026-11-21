@@ -1,16 +1,18 @@
 \begin{tabular}{@{}l>{\raggedright}p{0.50\textwidth}>{\raggedright\arraybackslash}p{0.33\textwidth}@{}}\toprule
 experiment & script & content\\\midrule
-E0, E0d & \texttt{e0\_anchors.py, e0d\_revalidate.py} & $H=\frac12$ anchors, gate G0; part (d) with the final certificate\\
+E0, E0d & \texttt{e0\_anchors.py, e0d\_revalidate.py} & $H=\frac12$ anchors and Cram\'er--von Mises verification\\
 E1, E1b & \texttt{e1\_benchmark\_J.py, e1b\_nodes.py} & truncation benchmark, node counts\\
-E2, E2b, E2r & \texttt{e2\_production\_sn.py, e2b\_production\_fixed.py, e2r\_revalidate.py} & certified critical values; recomputation with the final certificate\\
+E2, E2b, E2r & \texttt{e2\_production\_sn.py, e2b\_production\_fixed.py, e2r\_revalidate.py} & certified critical values and full bracket verification\\
 E3 & \texttt{e3\_finite\_n.py} & exact finite-sample sizes\\
 E3b, E3c & \texttt{e3b\_mc.py, e3c\_hi2017\_table2.py, e3c\_clip\_check.py} & Monte Carlo validation, plug-in, HI reproductions; eigenvalue clipping\\
-E4 & \texttt{e4\_audit.py} & audit\\
-E5 & \texttt{e5\_methods.py, rq\_methods.R} & computational methods\\
+E3d & \texttt{e3d\_plugin\_extended.py} & extended $n=50$/EWC plug-in grid, competitor benchmark, exact HI oracle\\
+E4 & \texttt{e4\_audit.py} & audit of published critical values\\
+E5 & \texttt{e5\_methods.py, rq\_methods.R} & computational methods benchmark\\
 E6, E6b & \texttt{e6\_naive\_size.py, e6b\_rescaled.py} & naive and rescaled sizes\\
 E7, E7b, E7c & \texttt{e7\_power.py, e7b\_power\_jladder.py, e7c\_nct\_check.py} & local power; $J$ ladder; noncentral-$t$ check\\
-E8, E9, E9b & \texttt{e8\_spectrum.py, e9\_surface.py, e9b\_surface\_certified.py} & spectrum, response surface, its certified held-out bound\\
-E10 & \texttt{e10\_matched\_example.py} & matched finite-grid example\\
-E11 & \texttt{make\_numbers.py} & independent checks (\cref{tab:reproduction})\\
+E8, E9, E9b & \texttt{e8\_spectrum.py, e9\_surface.py, e9b\_surface\_certified.py} & spectrum, response surface, ball-arithmetic held-out bound\\
+E10 & \texttt{e10\_matched\_example.py} & matched finite-grid fGn check ($n=64,128$)\\
+E11 & \texttt{make\_numbers.py} & independent verification matrix (\cref{tab:reproduction})\\
 E12 & \texttt{e12\_edge\_limit.py} & limit constants as $H\to1$\\
+E13 & \texttt{e13\_empirical.py} & empirical applications (AusElec-NSW, London GR9 $\mathrm{PM}_{2.5}$, Nile minima)\\
 \bottomrule\end{tabular}

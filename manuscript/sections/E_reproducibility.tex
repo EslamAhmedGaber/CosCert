@@ -1,11 +1,9 @@
+% Historical appendix source. The current standalone supplement is manuscript/supplementary.tex.
 \section{Validation and reproduction package}\label{app:repro}
 
 \begin{figure}[h]\centering
 \includegraphics[width=\textwidth]{figA1_validation.pdf}
-\caption{Validation of the exact finite-sample laws. (a)~Simulated minus exact rejection rates, with $99\,\%$ Wilson
-intervals. (b)~Standardised differences against normal quantiles: validation cells (black) and oracle cells of the
-estimated-$H$ study (grey). (c)~Published rates of \citet[Table~2]{HI17} minus our exact rates, $\pm2$ standard errors;
-filled: $T=64$, open: $T=256$.}\label{fig:validation}
+\caption{Exact finite-sample rejection rates compared with independent simulations and published rejection frequencies.}\label{fig:validation}
 \end{figure}
 
 \paragraph{Code} \texttt{code/p3}: \texttt{gram.py} (closed-form Gram matrices, double precision), \texttt{lowrank.py}
@@ -18,7 +16,7 @@ of published values (\texttt{literature}), so that no number is typed by hand, a
 missing or a check fails.
 
 \begin{table}[h]\centering\footnotesize
-\caption{Experiments and the scripts that produce them.}\label{tab:experiments}
+\caption{Experiments, outputs and scripts for reproducing the numerical results.}\label{tab:experiments}
 \input{tables/tab_experiments.tex}%
 \end{table}
 
@@ -28,7 +26,7 @@ certified enclosure confirms both. Every cell is computed by \texttt{make\_numbe
 \texttt{E11\_reproduction.csv}.
 
 \begin{table}[!tb]\centering\footnotesize\setlength{\tabcolsep}{4pt}
-\caption{Independent checks of the headline numbers, grouped by the kind of evidence.}\label{tab:reproduction}
+\caption{Independent checks of numerical results by type of evidence.}\label{tab:reproduction}
 \input{tables/tab_reproduction.tex}%
 \end{table}
 

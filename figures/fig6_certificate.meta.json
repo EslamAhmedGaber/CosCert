@@ -1,0 +1,41 @@
+{
+ "figure": "fig6_certificate",
+ "created": "2026-11-21 00:36:05",
+ "script": "code\\figures\\fig6_certificate.py",
+ "note": "",
+ "size_in": [
+  6.475716064757161,
+  2.6
+ ],
+ "pgf_seconds": 5.384801100000914,
+ "inputs": [
+  {
+   "path": "results\\E8_spectrum.json",
+   "sha256": "420c27f80b46d791"
+  },
+  {
+   "path": "results\\E1_benchmark_H0.5.json",
+   "sha256": "d8acb2eafda84b37"
+  },
+  {
+   "path": "results\\E1_benchmark_H0.51.json",
+   "sha256": "737a309d79dbbb6e"
+  },
+  {
+   "path": "results\\E1_benchmark_H0.55.json",
+   "sha256": "0889c8a02d152389"
+  },
+  {
+   "path": "results\\E1_benchmark_H0.75.json",
+   "sha256": "2acf87595bfc2069"
+  },
+  {
+   "path": "results\\E1_benchmark_H0.95.json",
+   "sha256": "5466cfd6a3d5fbd8"
+  },
+  {
+   "path": "results\\E1_benchmark_H0.99.json",
+   "sha256": "1f7b6ec5b4388752"
+  }
+ ]
+}

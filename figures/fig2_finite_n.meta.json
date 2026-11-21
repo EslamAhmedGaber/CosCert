@@ -1,0 +1,113 @@
+{
+ "figure": "fig2_finite_n",
+ "created": "2026-11-21 00:44:42",
+ "script": "code\\figures\\fig2_finite_n.py",
+ "note": "",
+ "size_in": [
+  6.475716064757161,
+  4.6
+ ],
+ "pgf_seconds": 4.433513399999356,
+ "inputs": [
+  {
+   "path": "results\\E3_rates_arfima0_H0.5_0.6_0.7_0.8_0.9.csv",
+   "sha256": "1a8fe164cd9784be"
+  },
+  {
+   "path": "results\\E3_rates_arfima1m_H0.5_0.6_0.7_0.8_0.9.csv",
+   "sha256": "f060a401410ec270"
+  },
+  {
+   "path": "results\\E3_rates_arfima1p_H0.5_0.6_0.7_0.8_0.9.csv",
+   "sha256": "4e3868adda1b7051"
+  },
+  {
+   "path": "results\\E3_rates_fgn_H0.5_0.6_0.7_0.8_0.9.csv",
+   "sha256": "37d51b03e2906c34"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima0_H0.5.csv",
+   "sha256": "83895ed49f70cdca"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima0_H0.6.csv",
+   "sha256": "2c3916816dca143f"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima0_H0.7.csv",
+   "sha256": "4e3db2b025a5ffee"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima0_H0.8.csv",
+   "sha256": "5d6ea59e185bff6c"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima0_H0.9.csv",
+   "sha256": "43f19fe1cd4cd750"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1m_H0.5.csv",
+   "sha256": "0acafe6642a00c33"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1m_H0.6.csv",
+   "sha256": "e925636600594bac"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1m_H0.7.csv",
+   "sha256": "b50cc13b87d2d17c"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1m_H0.8.csv",
+   "sha256": "c05eff72a5a86bf1"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1m_H0.9.csv",
+   "sha256": "bf2ce08934ce89c9"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1p_H0.5.csv",
+   "sha256": "65f6787ddc972d79"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1p_H0.6.csv",
+   "sha256": "233d2429fcb6409b"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1p_H0.7.csv",
+   "sha256": "4ad1c5755ac4e06f"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1p_H0.8.csv",
+   "sha256": "c39b578100a44853"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1p_H0.9.csv",
+   "sha256": "baf1f686aaf8cb7f"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_fgn_H0.5.csv",
+   "sha256": "19a4b3f8ae815603"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_fgn_H0.6.csv",
+   "sha256": "3a22b6522eae9f4b"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_fgn_H0.7.csv",
+   "sha256": "369b4cb388d30037"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_fgn_H0.8.csv",
+   "sha256": "d72c4c5e75ced198"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_fgn_H0.9.csv",
+   "sha256": "cbd55236480ce110"
+  },
+  {
+   "path": "results\\E3d_plugin_n50_ewc.csv",
+   "sha256": "f6031e0a8b795282"
+  }
+ ]
+}

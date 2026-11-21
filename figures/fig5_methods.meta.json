@@ -1,0 +1,17 @@
+{
+ "figure": "fig5_methods",
+ "created": "2026-11-21 00:36:21",
+ "script": "code\\figures\\fig5_methods.py",
+ "note": "",
+ "size_in": [
+  6.475716064757161,
+  5.15
+ ],
+ "pgf_seconds": 5.7907821999979205,
+ "inputs": [
+  {
+   "path": "results\\E5_methods.csv",
+   "sha256": "3fbe2188efac0a7a"
+  }
+ ]
+}

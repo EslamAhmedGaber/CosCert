@@ -1,0 +1,29 @@
+{
+ "figure": "fig7_empirical",
+ "created": "2026-11-21 06:01:44",
+ "script": "code\\figures\\fig7_empirical.py",
+ "note": "",
+ "size_in": [
+  6.475716064757161,
+  5.15
+ ],
+ "pgf_seconds": 6.055041799998435,
+ "inputs": [
+  {
+   "path": "results\\E13_empirical.json",
+   "sha256": "c2c07bcb572945e8"
+  },
+  {
+   "path": "data\\aus_elec_nsw_yoy_2012_2015.csv",
+   "sha256": "ef206990ea25f9d4"
+  },
+  {
+   "path": "data\\london_gr9_pm25_2017_2018.csv",
+   "sha256": "cfae294a5030f366"
+  },
+  {
+   "path": "data\\nile_minima_622_1284.csv",
+   "sha256": "9405da1dadc0f037"
+  }
+ ]
+}

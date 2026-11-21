@@ -53,12 +53,12 @@
 \newcommand{\dd}{\,\mathrm d}
 
 \usepackage{placeins}
-% float placement: large figures may take a float page instead of drifting to the end (16 Nov)
+% float placement: large figures may take a float page instead of drifting to the end
 \renewcommand{\topfraction}{0.9}\renewcommand{\bottomfraction}{0.6}\renewcommand{\textfraction}{0.07}
 \renewcommand{\floatpagefraction}{0.75}\setcounter{topnumber}{3}\setcounter{bottomnumber}{2}\setcounter{totalnumber}{5}
 \newsavebox{\fixcitebox}   % citation in a box as wide as [00]: table widths independent of the LaTeX pass
 \newcommand{\fixcite}[1]{\sbox{\fixcitebox}{[00]}\makebox[\wd\fixcitebox][l]{\citep{#1}}}
-\newcommand{\CosCert}{CosCert}   % name of the certified computation (17 Nov 2026); change here only
+\newcommand{\CosCert}{CosCert}   % name of the certified computation
 \begin{document}
 \begin{frontmatter}
 \title{\CosCert: certified critical values and exact size\\ for long-memory tests of the mean}
@@ -81,15 +81,22 @@
 \input{sections/03_critical_values.tex}%
 \input{sections/04_finite_samples.tex}%
 \input{sections/05_power.tex}%
+\input{sections/06_empirical.tex}%
 \input{sections/06_audit.tex}%
 \input{sections/07_computation.tex}%
 \input{sections/08_conclusion.tex}%
 
 \section*{Data and code availability}
-The code, numerical results and manuscript sources supporting this study are publicly available at
+The code, empirical datasets, numerical results and manuscript sources supporting this study are publicly available at
 \url{https://github.com/EslamAhmedGaber/CosCert} and in the supplementary archive
-\texttt{CosCert\_\allowbreak code\_\allowbreak and\_\allowbreak data.zip}; \cref{app:repro} explains how every number and table is rebuilt
-from them.
+\texttt{CosCert\_\allowbreak code\_\allowbreak and\_\allowbreak data.zip}; Supplementary Material Section~S.4 explains
+how every number, figure and table is rebuilt from them.
+
+\section*{CRediT authorship contribution statement}
+\textbf{Eslam Ahmed:} Conceptualization, Methodology, Software, Formal analysis, Investigation, Validation, Visualization, Writing -- original draft, Writing -- review \& editing.
+\textbf{Mohamed A. El-Beltagy:} Conceptualization, Methodology, Formal analysis, Supervision, Writing -- review \& editing.
+\textbf{Ahmed Etman:} Writing -- review \& editing.
+\textbf{Sroor M. Elnady:} Writing -- review \& editing.
 
 \section*{Declaration of competing interest}
 The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
@@ -97,9 +104,8 @@ The authors declare that they have no known competing financial interests or per
 \section*{Acknowledgements}
 The authors acknowledge support from the Science, Technology \& Innovation Funding Authority (STDF), Egypt, under the Basic Sciences Grant (Project ID 50925). The funder had no role in the study design, analysis and interpretation, manuscript preparation or decision to submit the work for publication.
 
-% Section title as required by the CSDA Guide for Authors (Nov 2026); statement verbatim from the CovFourier manuscript.
 \section*{Declaration of generative AI and AI-assisted technologies in the manuscript preparation process}
-During the preparation of this work the authors used ChatGPT and Claude. After using these tools, the authors reviewed and edited the content as needed and take full responsibility for the content of the publication.
+During the preparation of this work the authors used ChatGPT (including Codex) and Claude to revise the prose, document the code and assist with numerical and editorial checks. After using these tools, the authors reviewed and edited the content as needed and take full responsibility for the content of the published article.
 
 \bibliographystyle{elsarticle-num-names}
 \bibliography{references}
@@ -108,7 +114,4 @@ During the preparation of this work the authors used ChatGPT and Claude. After u
 \crefalias{section}{appendix}
 \input{sections/A_proofs.tex}%
 \input{sections/B_certificate.tex}%
-\input{sections/C_tables.tex}%
-\input{sections/D_audit.tex}%
-\input{sections/E_reproducibility.tex}%
 \end{document}

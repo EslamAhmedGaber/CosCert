@@ -35,7 +35,7 @@ GROUPS = [
                                     (r"Davies, CompQuadForm (R)", ["CompQuadForm::davies"]),
                                     (r"gx2 imhof and auto", ["gx2 imhof"]), (r"Ruben series, double", ["Ruben-Beta"]),
                                     (r"gx2 ifft", ["gx2 ifft"])]),
-    ("Sampling", "#666666", [(r"gx2 ray", ["gx2 ray"]), (r"Monte Carlo", ["Monte Carlo"])]),
+    ("Sampling", "#666666", [(r"gx2 ray (MC ray-tracing)", ["gx2 ray"]), (r"Monte Carlo", ["Monte Carlo"])]),
     ("Approximation", "#7F7F7F", [(r"leading 20 + Satterthwaite", ["leading-20"]), (r"LPB4, momentchi2 (R)", ["lpb4 | adaptive"]),
                                   (r"saddlepoint, survey (R)", ["pchisqsum saddlepoint | adaptive"]),
                                   (r"Lugannani--Rice saddlepoint", ["Lugannani-Rice"]), (r"HBE, momentchi2 (R)", ["hbe | adaptive"]),
@@ -80,7 +80,9 @@ def main():
                 continue
             yv = yy + DY[tname]
             if not np.isfinite(r.value):
-                ae.plot([XFAIL], [yv], marker="x", ms=MS, color=col, ls="none", zorder=3, mew=1.0); n_fail += 1
+                ae.plot([XFAIL], [yv], marker="x", ms=MS, color=col, ls="none", zorder=3, mew=1.0)
+                ae.text(XFAIL * 1.35, yv, tname, fontsize=5.5, color=col, ha="left", va="center", zorder=3)
+                n_fail += 1
                 continue
             lo, hi = 100 * float(r.err_lo), 100 * float(r.err_hi)
             if "certified" in pats:
@@ -102,7 +104,7 @@ def main():
                 rr = M[(M.target == tkey) & M.method.str.contains("repeated query", regex=False)]
                 if len(rr):
                     at.plot([float(rr.seconds_method.iloc[0])], [yv], marker=mk, ms=MS, mfc="white", mec=col, mew=0.9, ls="none", zorder=3)
-    ae.set_xscale("log"); ae.set_xlim(2e-13, 400)
+    ae.set_xscale("log"); ae.set_xlim(2e-13, 600)
     ae.xaxis.set_major_locator(FixedLocator([1e-12, 1e-9, 1e-6, 1e-3, 1, 100]))
     ae.xaxis.set_major_formatter(FuncFormatter(lambda v, p: {1e-12: r"$10^{-12}$", 1e-9: r"$10^{-9}$", 1e-6: r"$10^{-6}$",
                                                              1e-3: r"$10^{-3}$", 1: r"$1$", 100: r"$100$"}.get(v, "")))
@@ -126,12 +128,13 @@ def main():
     F.panel_tag(ae, "a"); F.panel_tag(at, "b")
     hd = [Line2D([], [], ls="none", marker=mk, ms=MS, color=F.COL["INK"], label=lab) for lab, mk in
           ((r"T1 fixed-$m$ limit", "o"), (r"T3 exact law, $n{=}1000$", "s"), (r"T4 limit of $T_H$", "^"))]
-    hd += [Line2D([], [], ls="none", marker="o", ms=MS, mfc="white", mec=F.COL["INK"], label="upper bound / further cutoff"),
+    hd += [Line2D([], [], ls="none", marker="o", ms=MS, mfc="white", mec=F.COL["INK"], label="open (a): inside enclosure"),
+           Line2D([], [], ls="none", marker="s", ms=MS, mfc="white", mec=F.COL["INK"], label="open (b): repeat cutoff"),
            Line2D([], [], ls="none", marker="x", ms=MS, color=F.COL["INK"], label="no value")]
-    fig.legend(handles=hd[:3], loc="upper center", bbox_to_anchor=(0.62, 1.0), ncol=3, frameon=False, fontsize=F.SIZES[1],
-               handletextpad=0.25, columnspacing=1.4)
-    fig.legend(handles=hd[3:], loc="upper center", bbox_to_anchor=(0.62, 0.965), ncol=2, frameon=False, fontsize=F.SIZES[1],
-               handletextpad=0.25, columnspacing=1.4)
+    fig.legend(handles=hd[:3], loc="upper center", bbox_to_anchor=(0.61, 1.0), ncol=3, frameon=False, fontsize=F.SIZES[1],
+               handletextpad=0.25, columnspacing=1.3)
+    fig.legend(handles=hd[3:], loc="upper center", bbox_to_anchor=(0.61, 0.965), ncol=3, frameon=False, fontsize=F.SIZES[1],
+               handletextpad=0.25, columnspacing=1.0)
     print(f"fig5: points plotted {n_plot}, upper bounds {n_bound}, failures {n_fail}")
     return fig, [path]
 

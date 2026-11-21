@@ -81,9 +81,14 @@ def main():
         return np.array(xs), np.array(ys), kk
     xh, yh, kh = pts("HI", (1, 2, 4, 8, 16)); c.plot(xh, yh, color=F.COL["HI"], lw=1.0, marker="o", ms=3.4, zorder=4)
     for xx, yy, k in zip(xh, yh, kh):
-        left = k <= 2
-        c.annotate(rf"$m{{=}}{k}$", xy=(xx, yy), xytext=((-5, 0) if left else (5, -3)), textcoords="offset points", fontsize=F.SIZES[2],
-                   color=F.COL["HI"], ha=("right" if left else "left"), va=("center" if left else "top"))
+        if k == 1:
+            xy_off, ha_, va_ = (-5, 0), "right", "center"
+        elif k == 2:
+            xy_off, ha_, va_ = (5, 4), "left", "bottom"
+        else:
+            xy_off, ha_, va_ = (5, -3), "left", "top"
+        c.annotate(rf"$m{{=}}{k}$", xy=(xx, yy), xytext=xy_off, textcoords="offset points", fontsize=F.SIZES[2],
+                   color=F.COL["HI"], ha=ha_, va=va_)
     xe, ye, ke = pts("EWC", (4, 8, 16, 32)); c.plot(xe, ye, color=F.COL["EWC"], lw=1.0, ls="none", marker="o", ms=3.6, mfc="white", mec=F.COL["EWC"], zorder=5)
 
     xs_, ys_, _ = pts("SN", (0,)); c.plot(xs_, ys_, ls="none", marker="s", ms=4.6, color=F.COL["SN"], zorder=6)

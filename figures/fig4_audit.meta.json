@@ -1,0 +1,33 @@
+{
+ "figure": "fig4_audit",
+ "created": "2026-11-21 00:35:50",
+ "script": "code\\figures\\fig4_audit.py",
+ "note": "",
+ "size_in": [
+  6.475716064757161,
+  4.6
+ ],
+ "pgf_seconds": 6.137673500001256,
+ "inputs": [
+  {
+   "path": "results\\E4_audit_half.csv",
+   "sha256": "1570cf3c714fceb1"
+  },
+  {
+   "path": "results\\E4_audit_hi.csv",
+   "sha256": "7eacd496f9cb87ce"
+  },
+  {
+   "path": "results\\E4_audit_hi_neg.csv",
+   "sha256": "b7800fa5dca1158d"
+  },
+  {
+   "path": "results\\E4_audit_mp.csv",
+   "sha256": "fd8253db59c72b71"
+  },
+  {
+   "path": "results\\E4_audit_mp_neg.csv",
+   "sha256": "c7f95e5a55eb6cde"
+  }
+ ]
+}

@@ -1,0 +1,792 @@
+{
+ "cases": [
+  {
+   "id": "aus_elec_nsw",
+   "label": "Australian Electricity Demand (NSW YoY %, 2012-2015)",
+   "n": 1095,
+   "unit": "%",
+   "mu0": 0.0,
+   "mu0_label": "0%",
+   "xbar": -2.2471834648401825,
+   "sd": 9.808663115064444,
+   "m_lw": 94,
+   "b_sub": 67,
+   "d_lw": 0.14073855805224175,
+   "H_lw": 0.6407385580522418,
+   "d_elw": 0.1445381033477575,
+   "H_elw": 0.6445381033477575,
+   "se_H": 0.05157106231293967,
+   "H_up90": 0.7068295336961877,
+   "tests": {
+    "SN": {
+     "stat": 70.19139238046904,
+     "se": 0.2682233620080239,
+     "cv_naive": 45.526085752448,
+     "cv_coscert_lw": 88.83174166433423,
+     "cv_coscert_elw": 90.57109847452898,
+     "cv_coscert_up": 126.5006694333425,
+     "p_naive": 0.022455652354415934,
+     "p_coscert_lw": 0.07053729822615279,
+     "p_coscert_lw_lo": 0.07053641660706322,
+     "p_coscert_lw_hi": 0.07053817984524235,
+     "reject_naive": true,
+     "reject_coscert_lw": false,
+     "reject_coscert_elw": false,
+     "reject_coscert_up": false,
+     "reversal_lw": true,
+     "ci95_naive": [
+      -4.056967521046347,
+      -0.43739940863401805
+     ],
+     "ci95_coscert_lw": [
+      -4.7752045411303,
+      0.2808376114499356
+     ],
+     "ci95_coscert_up": [
+      -5.263959112831092,
+      0.7695921831507269
+     ],
+     "ci_width_ratio": 1.3968633813636242,
+     "exact_arfima_size_naive_pct": 12.111443494959584,
+     "exact_arfima_size_coscert_pct": 4.997485536812252
+    },
+    "HI4": {
+     "stat": -3.051882057100534,
+     "se": 0.7363271000633419,
+     "cv_naive": 2.306004135204166,
+     "cv_coscert_lw": 3.249439604501919,
+     "cv_coscert_elw": 3.2829289647881748,
+     "cv_coscert_up": 3.9227970465252517,
+     "p_naive": 0.015775871837457434,
+     "p_coscert_lw": 0.06219075487228953,
+     "p_coscert_lw_lo": 0.06219075487228931,
+     "p_coscert_lw_hi": 0.062190754872289755,
+     "reject_naive": true,
+     "reject_coscert_lw": false,
+     "reject_coscert_elw": false,
+     "reject_coscert_up": false,
+     "reversal_lw": true,
+     "ci95_naive": [
+      -3.945156802449141,
+      -0.5492101272312244
+     ],
+     "ci95_coscert_lw": [
+      -4.6398339056540525,
+      0.14546697597368796
+     ],
+     "ci95_coscert_up": [
+      -5.135645238245163,
+      0.6412783085647984
+     ],
+     "ci_width_ratio": 1.4091213258879192,
+     "exact_arfima_size_naive_pct": 14.027685237673005,
+     "exact_arfima_size_coscert_pct": 4.999854661306314
+    },
+    "HI16": {
+     "stat": -4.397352108308661,
+     "se": 0.5110310499343909,
+     "cv_naive": 2.036933343460101,
+     "cv_coscert_lw": 3.3416986945013614,
+     "cv_coscert_elw": 3.3894296771133257,
+     "cv_coscert_up": 4.31243279255434,
+     "p_naive": 0.00011334721505429357,
+     "p_coscert_lw": 0.011559773596009237,
+     "p_coscert_lw_lo": 0.011559773596009015,
+     "p_coscert_lw_hi": 0.01155977359600946,
+     "reject_naive": true,
+     "reject_coscert_lw": true,
+     "reject_coscert_elw": true,
+     "reject_coscert_up": true,
+     "reversal_lw": false,
+     "ci95_naive": [
+      -3.288119649994967,
+      -1.2062472796853978
+     ],
+     "ci95_coscert_lw": [
+      -3.9548952572555964,
+      -0.5394716724247686
+     ],
+     "ci95_coscert_up": [
+      -4.450970522590724,
+      -0.0433964070896411
+     ],
+     "ci_width_ratio": 1.6405537791555218,
+     "exact_arfima_size_naive_pct": 22.310095932788144,
+     "exact_arfima_size_coscert_pct": 4.999399820110972
+    },
+    "EWC8": {
+     "stat": -3.1496137484412823,
+     "se": 0.7134790626159462,
+     "cv_naive": 2.306004135204166,
+     "cv_coscert_lw": 3.2459241575849997,
+     "cv_coscert_elw": 3.279189919368816,
+     "cv_coscert_up": 3.914065435396142,
+     "p_naive": 0.01360640238288835,
+     "p_coscert_lw": 0.05560922861654377,
+     "p_coscert_lw_lo": 0.055609228616543493,
+     "p_coscert_lw_hi": 0.05560922861654405,
+     "reject_naive": true,
+     "reject_coscert_lw": false,
+     "reject_coscert_elw": false,
+     "reject_coscert_up": false,
+     "reversal_lw": true,
+     "ci95_naive": [
+      -3.8924691336141466,
+      -0.6018977960662186
+     ],
+     "ci95_coscert_lw": [
+      -4.563082390116383,
+      0.06871546043601784
+     ],
+     "ci95_coscert_up": [
+      -5.0397872027040975,
+      0.5454202730237321
+     ],
+     "ci_width_ratio": 1.4075968503402603,
+     "exact_arfima_size_naive_pct": 13.988836637143587,
+     "exact_arfima_size_coscert_pct": 4.999585839572718
+    },
+    "EWC32": {
+     "stat": -4.368930384114026,
+     "se": 0.5143555212074838,
+     "cv_naive": 2.036933343460101,
+     "cv_coscert_lw": 3.340518379610188,
+     "cv_coscert_elw": 3.388173510540665,
+     "cv_coscert_up": 4.309427175727731,
+     "p_naive": 0.0001229558906501449,
+     "p_coscert_lw": 0.012027346558559915,
+     "p_coscert_lw_lo": 0.012027346558559637,
+     "p_coscert_lw_hi": 0.012027346558560192,
+     "reject_naive": true,
+     "reject_coscert_lw": true,
+     "reject_coscert_elw": true,
+     "reject_coscert_up": true,
+     "reversal_lw": false,
+     "ci95_naive": [
+      -3.294891376380505,
+      -1.1994755532998596
+     ],
+     "ci95_coscert_lw": [
+      -3.9653975370877603,
+      -0.5289693925926049
+     ],
+     "ci95_coscert_up": [
+      -4.463761125917315,
+      -0.030605803763050332
+     ],
+     "ci_width_ratio": 1.639974322348571,
+     "exact_arfima_size_naive_pct": 22.293033622293336,
+     "exact_arfima_size_coscert_pct": 4.998998199401806
+    },
+    "ADG_MAC": {
+     "stat": -2.583198796120162,
+     "se": 0.8699227749003839,
+     "cv": 1.959963984540054,
+     "p_value": 0.009788890024830632,
+     "reject": true,
+     "ci95": [
+      -3.9522007729760795,
+      -0.5421661567042855
+     ]
+    },
+    "Subsampling_SN": {
+     "stat": 70.19139238046904,
+     "b_sub": 67,
+     "p_value": 0.13508260447035958,
+     "reject": false
+    }
+   }
+  },
+  {
+   "id": "london_pm25_who05",
+   "label": "London Urban PM2.5 (GR9 log ug/m^3, 2017-2018; reference 10)",
+   "n": 454,
+   "unit": "log ug/m^3",
+   "mu0": 2.302585092994046,
+   "mu0_label": "log(10)",
+   "xbar": 2.113169486784141,
+   "sd": 0.7810100036599258,
+   "m_lw": 53,
+   "b_sub": 39,
+   "d_lw": 0.2843020183639736,
+   "H_lw": 0.7843020183639736,
+   "d_elw": 0.29071334591941483,
+   "H_elw": 0.7907133459194149,
+   "se_H": 0.06868028197434452,
+   "H_up90": 0.8723193412502395,
+   "tests": {
+    "SN": {
+     "stat": 15.730241823572245,
+     "se": 0.04775821195872099,
+     "cv_naive": 45.526085752448,
+     "cv_coscert_lw": 204.03674386384688,
+     "cv_coscert_elw": 213.24642900910146,
+     "cv_coscert_up": 416.76373631893114,
+     "p_naive": 0.19154886654997172,
+     "p_coscert_lw": 0.4544535136900849,
+     "p_coscert_lw_lo": 0.4544534117975335,
+     "p_coscert_lw_hi": 0.4544536155826363,
+     "reject_naive": false,
+     "reject_coscert_lw": false,
+     "reject_coscert_elw": false,
+     "reject_coscert_up": false,
+     "reversal_lw": false,
+     "ci95_naive": [
+      1.7909304025047403,
+      2.435408571063542
+     ],
+     "ci95_coscert_lw": [
+      1.430984353362557,
+      2.795354620205725
+     ],
+     "ci95_coscert_up": [
+      1.1381955187747983,
+      3.088143454793484
+     ],
+     "ci_width_ratio": 2.117015491609603,
+     "exact_arfima_size_naive_pct": 24.61304895866132,
+     "exact_arfima_size_coscert_pct": 4.995191310234137
+    },
+    "HI4": {
+     "stat": -2.121459090240898,
+     "se": 0.08928553328284831,
+     "cv_naive": 2.306004135204166,
+     "cv_coscert_lw": 5.071900270441676,
+     "cv_coscert_elw": 5.193701764111596,
+     "cv_coscert_up": 7.430370164106451,
+     "p_naive": 0.06667359910317927,
+     "p_coscert_lw": 0.3606892820802807,
+     "p_coscert_lw_lo": 0.3606892820802804,
+     "p_coscert_lw_hi": 0.36068928208028106,
+     "reject_naive": false,
+     "reject_coscert_lw": false,
+     "reject_coscert_elw": false,
+     "reject_coscert_up": false,
+     "reversal_lw": false,
+     "ci95_naive": [
+      1.9072766778199837,
+      2.3190622957482985
+     ],
+     "ci95_coscert_lw": [
+      1.6603221663803334,
+      2.566016807187949
+     ],
+     "ci95_coscert_up": [
+      1.4497449241929314,
+      2.7765940493753507
+     ],
+     "ci_width_ratio": 2.199432426426515,
+     "exact_arfima_size_naive_pct": 32.28646483663725,
+     "exact_arfima_size_coscert_pct": 4.999307651027996
+    },
+    "HI16": {
+     "stat": -2.6483306775524897,
+     "se": 0.07152264172122087,
+     "cv_naive": 2.036933343460101,
+     "cv_coscert_lw": 5.999808997239827,
+     "cv_coscert_elw": 6.179710555936118,
+     "cv_coscert_up": 9.485741552947403,
+     "p_naive": 0.012454727525509801,
+     "p_coscert_lw": 0.3727240556307233,
+     "p_coscert_lw_lo": 0.37272405563072264,
+     "p_coscert_lw_hi": 0.37272405563072397,
+     "reject_naive": true,
+     "reject_coscert_lw": false,
+     "reject_coscert_elw": false,
+     "reject_coscert_up": false,
+     "reversal_lw": true,
+     "ci95_naive": [
+      1.9674826330498356,
+      2.2588563405184465
+     ],
+     "ci95_coscert_lw": [
+      1.6840472974787994,
+      2.5422916760894827
+     ],
+     "ci95_coscert_up": [
+      1.4347241922325868,
+      2.7916147813356953
+     ],
+     "ci_width_ratio": 2.9455107190930767,
+     "exact_arfima_size_naive_pct": 49.15097012420484,
+     "exact_arfima_size_coscert_pct": 4.995779236780851
+    },
+    "EWC8": {
+     "stat": -2.057381061382033,
+     "se": 0.0920663700883229,
+     "cv_naive": 2.306004135204166,
+     "cv_coscert_lw": 5.052089399912465,
+     "cv_coscert_elw": 5.172623115772144,
+     "cv_coscert_up": 7.384689358906099,
+     "p_naive": 0.07365902089128973,
+     "p_coscert_lw": 0.3726980212594581,
+     "p_coscert_lw_lo": 0.3726980212594576,
+     "p_coscert_lw_hi": 0.3726980212594586,
+     "reject_naive": false,
+     "reject_coscert_lw": false,
+     "reject_coscert_elw": false,
+     "reject_coscert_up": false,
+     "reversal_lw": false,
+     "ci95_naive": [
+      1.9008640566472312,
+      2.325474916921051
+     ],
+     "ci95_coscert_lw": [
+      1.648041954372507,
+      2.5782970191957753
+     ],
+     "ci95_coscert_up": [
+      1.433287943279792,
+      2.79305103028849
+     ],
+     "ci_width_ratio": 2.190841431195079,
+     "exact_arfima_size_naive_pct": 32.09829431815954,
+     "exact_arfima_size_coscert_pct": 4.998834727619029
+    },
+    "EWC32": {
+     "stat": -2.6545529024129326,
+     "se": 0.07135499391921331,
+     "cv_naive": 2.036933343460101,
+     "cv_coscert_lw": 5.992676337754806,
+     "cv_coscert_elw": 6.172091737636001,
+     "cv_coscert_up": 9.468398742660224,
+     "p_naive": 0.01226878928423436,
+     "p_coscert_lw": 0.3710430442680627,
+     "p_coscert_lw_lo": 0.37104304426806156,
+     "p_coscert_lw_hi": 0.3710430442680639,
+     "reject_naive": true,
+     "reject_coscert_lw": false,
+     "reject_coscert_elw": false,
+     "reject_coscert_up": false,
+     "reversal_lw": true,
+     "ci95_naive": [
+      1.9678241204477027,
+      2.2585148531205794
+     ],
+     "ci95_coscert_lw": [
+      1.6855621031438335,
+      2.5407768704244487
+     ],
+     "ci95_coscert_up": [
+      1.4375519520769338,
+      2.7887870214913484
+     ],
+     "ci_width_ratio": 2.9420090534603145,
+     "exact_arfima_size_naive_pct": 49.09682044115543,
+     "exact_arfima_size_coscert_pct": 4.99503845773015
+    },
+    "ADG_MAC": {
+     "stat": -0.7714598941617204,
+     "se": 0.24552877945227028,
+     "cv": 1.959963984540054,
+     "p_value": 0.4404343856477815,
+     "reject": false,
+     "ci95": [
+      1.6319419218896134,
+      2.5943970516786687
+     ]
+    },
+    "Subsampling_SN": {
+     "stat": 15.730241823572245,
+     "b_sub": 39,
+     "p_value": 0.2764423076923077,
+     "reject": false
+    }
+   }
+  },
+  {
+   "id": "london_pm25_who21",
+   "label": "London Urban PM2.5 (GR9 log ug/m^3, 2017-2018; reference 15)",
+   "n": 454,
+   "unit": "log ug/m^3",
+   "mu0": 2.70805020110221,
+   "mu0_label": "log(15)",
+   "xbar": 2.113169486784141,
+   "sd": 0.7810100036599258,
+   "m_lw": 53,
+   "b_sub": 39,
+   "d_lw": 0.2843020183639736,
+   "H_lw": 0.7843020183639736,
+   "d_elw": 0.29071334591941483,
+   "H_elw": 0.7907133459194149,
+   "se_H": 0.06868028197434452,
+   "H_up90": 0.8723193412502395,
+   "tests": {
+    "SN": {
+     "stat": 155.1542448157951,
+     "se": 0.04775821195872099,
+     "cv_naive": 45.526085752448,
+     "cv_coscert_lw": 204.03674386384688,
+     "cv_coscert_elw": 213.24642900910146,
+     "cv_coscert_up": 416.76373631893114,
+     "p_naive": 0.0029869659866792464,
+     "p_coscert_lw": 0.07274530140913693,
+     "p_coscert_lw_lo": 0.07274519703084859,
+     "p_coscert_lw_hi": 0.07274540578742528,
+     "reject_naive": true,
+     "reject_coscert_lw": false,
+     "reject_coscert_elw": false,
+     "reject_coscert_up": false,
+     "reversal_lw": true,
+     "ci95_naive": [
+      1.7909304025047403,
+      2.435408571063542
+     ],
+     "ci95_coscert_lw": [
+      1.430984353362557,
+      2.795354620205725
+     ],
+     "ci95_coscert_up": [
+      1.1381955187747983,
+      3.088143454793484
+     ],
+     "ci_width_ratio": 2.117015491609603,
+     "exact_arfima_size_naive_pct": 24.61304895866132,
+     "exact_arfima_size_coscert_pct": 4.995191310234137
+    },
+    "HI4": {
+     "stat": -6.662677507156079,
+     "se": 0.08928553328284831,
+     "cv_naive": 2.306004135204166,
+     "cv_coscert_lw": 5.071900270441676,
+     "cv_coscert_elw": 5.193701764111596,
+     "cv_coscert_up": 7.430370164106451,
+     "p_naive": 0.00015870931525308052,
+     "p_coscert_lw": 0.016494339692055993,
+     "p_coscert_lw_lo": 0.016494339692055826,
+     "p_coscert_lw_hi": 0.01649433969205616,
+     "reject_naive": true,
+     "reject_coscert_lw": true,
+     "reject_coscert_elw": true,
+     "reject_coscert_up": false,
+     "reversal_lw": false,
+     "ci95_naive": [
+      1.9072766778199837,
+      2.3190622957482985
+     ],
+     "ci95_coscert_lw": [
+      1.6603221663803334,
+      2.566016807187949
+     ],
+     "ci95_coscert_up": [
+      1.4497449241929314,
+      2.7765940493753507
+     ],
+     "ci_width_ratio": 2.199432426426515,
+     "exact_arfima_size_naive_pct": 32.28646483663725,
+     "exact_arfima_size_coscert_pct": 4.999307651027996
+    },
+    "HI16": {
+     "stat": -8.317376148336074,
+     "se": 0.07152264172122087,
+     "cv_naive": 2.036933343460101,
+     "cv_coscert_lw": 5.999808997239827,
+     "cv_coscert_elw": 6.179710555936118,
+     "cv_coscert_up": 9.485741552947403,
+     "p_naive": 1.6740586694652393e-09,
+     "p_coscert_lw": 0.00837332895827847,
+     "p_coscert_lw_lo": 0.008373328958278248,
+     "p_coscert_lw_hi": 0.008373328958278692,
+     "reject_naive": true,
+     "reject_coscert_lw": true,
+     "reject_coscert_elw": true,
+     "reject_coscert_up": false,
+     "reversal_lw": false,
+     "ci95_naive": [
+      1.9674826330498356,
+      2.2588563405184465
+     ],
+     "ci95_coscert_lw": [
+      1.6840472974787994,
+      2.5422916760894827
+     ],
+     "ci95_coscert_up": [
+      1.4347241922325868,
+      2.7916147813356953
+     ],
+     "ci_width_ratio": 2.9455107190930767,
+     "exact_arfima_size_naive_pct": 49.15097012420484,
+     "exact_arfima_size_coscert_pct": 4.995779236780851
+    },
+    "EWC8": {
+     "stat": -6.461433352345449,
+     "se": 0.0920663700883229,
+     "cv_naive": 2.306004135204166,
+     "cv_coscert_lw": 5.052089399912465,
+     "cv_coscert_elw": 5.172623115772144,
+     "cv_coscert_up": 7.384689358906099,
+     "p_naive": 0.00019592402513701757,
+     "p_coscert_lw": 0.018618826982098324,
+     "p_coscert_lw_lo": 0.018618826982098158,
+     "p_coscert_lw_hi": 0.01861882698209849,
+     "reject_naive": true,
+     "reject_coscert_lw": true,
+     "reject_coscert_elw": true,
+     "reject_coscert_up": false,
+     "reversal_lw": false,
+     "ci95_naive": [
+      1.9008640566472312,
+      2.325474916921051
+     ],
+     "ci95_coscert_lw": [
+      1.648041954372507,
+      2.5782970191957753
+     ],
+     "ci95_coscert_up": [
+      1.433287943279792,
+      2.79305103028849
+     ],
+     "ci_width_ratio": 2.190841431195079,
+     "exact_arfima_size_naive_pct": 32.09829431815954,
+     "exact_arfima_size_coscert_pct": 4.998834727619029
+    },
+    "EWC32": {
+     "stat": -8.336917735450738,
+     "se": 0.07135499391921331,
+     "cv_naive": 2.036933343460101,
+     "cv_coscert_lw": 5.992676337754806,
+     "cv_coscert_elw": 6.172091737636001,
+     "cv_coscert_up": 9.468398742660224,
+     "p_naive": 1.5891303828396985e-09,
+     "p_coscert_lw": 0.008173785715360926,
+     "p_coscert_lw_lo": 0.008173785715360649,
+     "p_coscert_lw_hi": 0.008173785715361204,
+     "reject_naive": true,
+     "reject_coscert_lw": true,
+     "reject_coscert_elw": true,
+     "reject_coscert_up": false,
+     "reversal_lw": false,
+     "ci95_naive": [
+      1.9678241204477027,
+      2.2585148531205794
+     ],
+     "ci95_coscert_lw": [
+      1.6855621031438335,
+      2.5407768704244487
+     ],
+     "ci95_coscert_up": [
+      1.4375519520769338,
+      2.7887870214913484
+     ],
+     "ci_width_ratio": 2.9420090534603145,
+     "exact_arfima_size_naive_pct": 49.09682044115543,
+     "exact_arfima_size_coscert_pct": 4.99503845773015
+    },
+    "ADG_MAC": {
+     "stat": -2.4228553395864165,
+     "se": 0.24552877945227042,
+     "cv": 1.959963984540054,
+     "p_value": 0.015399057377593062,
+     "reject": true,
+     "ci95": [
+      1.631941921889613,
+      2.594397051678669
+     ]
+    },
+    "Subsampling_SN": {
+     "stat": 155.1542448157951,
+     "b_sub": 39,
+     "p_value": 0.004807692307692308,
+     "reject": true
+    }
+   }
+  },
+  {
+   "id": "nile_minima",
+   "label": "Nile River Annual Minima (Roda Gauge, 622-1284 AD)",
+   "n": 663,
+   "unit": "cm",
+   "mu0": 1100.0,
+   "mu0_label": "1100 cm",
+   "xbar": 1148.1251885369531,
+   "sd": 88.74729568537524,
+   "m_lw": 68,
+   "b_sub": 49,
+   "d_lw": 0.4090555623705652,
+   "H_lw": 0.9090555623705652,
+   "d_elw": 0.4075014338807357,
+   "H_elw": 0.9075014338807357,
+   "se_H": 0.06063390625908324,
+   "H_up90": 0.9867610398619778,
+   "tests": {
+    "SN": {
+     "stat": 30.981157968663172,
+     "se": 8.646167024084967,
+     "cv_naive": 45.526085752448,
+     "cv_coscert_lw": 632.7473438148681,
+     "cv_coscert_elw": 620.0647660035243,
+     "cv_coscert_up": 5317.529706978177,
+     "p_naive": 0.08888242424631865,
+     "p_coscert_lw": 0.5222110980141785,
+     "p_coscert_lw_lo": 0.5222110853501309,
+     "p_coscert_lw_hi": 0.5222111106782261,
+     "reject_naive": false,
+     "reject_coscert_lw": false,
+     "reject_coscert_elw": false,
+     "reject_coscert_up": false,
+     "reversal_lw": false,
+     "ci95_naive": [
+      1089.786887539084,
+      1206.4634895348222
+     ],
+     "ci95_coscert_lw": [
+      930.6354424647976,
+      1365.6149346091088
+     ],
+     "ci95_coscert_up": [
+      517.6346361422662,
+      1778.6157409316402
+     ],
+     "ci_width_ratio": 3.7280781639509892,
+     "exact_arfima_size_naive_pct": 44.89063551793401,
+     "exact_arfima_size_coscert_pct": 4.998545644798558
+    },
+    "HI4": {
+     "stat": 2.908022341107214,
+     "se": 16.549112383582905,
+     "cv_naive": 2.306004135204166,
+     "cv_coscert_lw": 9.261124633923487,
+     "cv_coscert_elw": 9.163275907103053,
+     "cv_coscert_up": 27.373730697692043,
+     "p_naive": 0.019648565652816696,
+     "p_coscert_lw": 0.48242683696878436,
+     "p_coscert_lw_lo": 0.4824268369687841,
+     "p_coscert_lw_hi": 0.48242683696878463,
+     "reject_naive": true,
+     "reject_coscert_lw": false,
+     "reject_coscert_elw": false,
+     "reject_coscert_up": false,
+     "reversal_lw": true,
+     "ci95_naive": [
+      1109.9628669464526,
+      1186.2875101274537
+     ],
+     "ci95_coscert_lw": [
+      994.8617961717853,
+      1301.388580902121
+     ],
+     "ci95_coscert_up": [
+      695.1142428629142,
+      1601.1361342109922
+     ],
+     "ci_width_ratio": 4.016091945604225,
+     "exact_arfima_size_naive_pct": 57.46778695580947,
+     "exact_arfima_size_coscert_pct": 4.999655498270716
+    },
+    "HI16": {
+     "stat": 4.924985092785797,
+     "se": 9.771641462924984,
+     "cv_naive": 2.036933343460101,
+     "cv_coscert_lw": 12.176321026296185,
+     "cv_coscert_elw": 12.033011990277696,
+     "cv_coscert_up": 38.131014067854444,
+     "p_naive": 2.4710170244635066e-05,
+     "p_coscert_lw": 0.40864908878717104,
+     "p_coscert_lw_lo": 0.40864908878717043,
+     "p_coscert_lw_hi": 0.40864908878717165,
+     "reject_naive": true,
+     "reject_coscert_lw": false,
+     "reject_coscert_elw": false,
+     "reject_coscert_up": false,
+     "reversal_lw": true,
+     "ci95_naive": [
+      1128.221006220784,
+      1168.0293708531224
+     ],
+     "ci95_coscert_lw": [
+      1029.142545130512,
+      1267.1078319433943
+     ],
+     "ci95_coscert_up": [
+      775.5225904481308,
+      1520.7277866257755
+     ],
+     "ci_width_ratio": 5.977770978805077,
+     "exact_arfima_size_naive_pct": 73.0399403935029,
+     "exact_arfima_size_coscert_pct": 4.997802146272646
+    },
+    "EWC8": {
+     "stat": 2.961078545246152,
+     "se": 16.25258763034688,
+     "cv_naive": 2.306004135204166,
+     "cv_coscert_lw": 9.194745271614543,
+     "cv_coscert_elw": 9.098001344313689,
+     "cv_coscert_up": 27.114587374925797,
+     "p_naive": 0.018116335608970857,
+     "p_coscert_lw": 0.4714900829296511,
+     "p_coscert_lw_lo": 0.47149008292965067,
+     "p_coscert_lw_hi": 0.47149008292965155,
+     "reject_naive": true,
+     "reject_coscert_lw": false,
+     "reject_coscert_elw": false,
+     "reject_coscert_up": false,
+     "reversal_lw": true,
+     "ci95_naive": [
+      1110.6466542536052,
+      1185.603722820301
+     ],
+     "ci95_coscert_lw": [
+      998.6867852713201,
+      1297.5635918025862
+     ],
+     "ci95_coscert_up": [
+      707.4429811652744,
+      1588.8073959086319
+     ],
+     "ci_width_ratio": 3.9873064975230283,
+     "exact_arfima_size_naive_pct": 57.175976504616365,
+     "exact_arfima_size_coscert_pct": 4.999534055177401
+    },
+    "EWC32": {
+     "stat": 4.920674064699092,
+     "se": 9.780202448726115,
+     "cv_naive": 2.036933343460101,
+     "cv_coscert_lw": 12.150583533203704,
+     "cv_coscert_elw": 12.00772493409761,
+     "cv_coscert_up": 38.02629840098599,
+     "p_naive": 2.5021406983460892e-05,
+     "p_coscert_lw": 0.40804019492931265,
+     "p_coscert_lw_lo": 0.40804019492931143,
+     "p_coscert_lw_hi": 0.40804019492931387,
+     "reject_naive": true,
+     "reject_coscert_lw": false,
+     "reject_coscert_elw": false,
+     "reject_coscert_up": false,
+     "reversal_lw": true,
+     "ci95_naive": [
+      1128.2035680633528,
+      1168.0468090105535
+     ],
+     "ci95_coscert_lw": [
+      1029.290021712063,
+      1266.9603553618433
+     ],
+     "ci95_coscert_up": [
+      776.22029179964,
+      1520.0300852742662
+     ],
+     "ci_width_ratio": 5.965135566274217,
+     "exact_arfima_size_naive_pct": 72.98237117340113,
+     "exact_arfima_size_coscert_pct": 4.997610530763586
+    },
+    "ADG_MAC": {
+     "stat": 0.8755016818647268,
+     "se": 54.96869912854027,
+     "cv": 1.959963984540054,
+     "p_value": 0.38130099550298135,
+     "reject": false,
+     "ci95": [
+      1040.388517967996,
+      1255.8618591059103
+     ]
+    },
+    "Subsampling_SN": {
+     "stat": 30.981157968663172,
+     "b_sub": 49,
+     "p_value": 0.27154471544715447,
+     "reject": false
+    }
+   }
+  }
+ ]
+}

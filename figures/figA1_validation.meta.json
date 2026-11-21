@@ -1,0 +1,113 @@
+{
+ "figure": "figA1_validation",
+ "created": "2026-11-21 00:36:56",
+ "script": "code\\figures\\figA1_validation.py",
+ "note": "",
+ "size_in": [
+  6.475716064757161,
+  2.55
+ ],
+ "pgf_seconds": 6.891884299999219,
+ "inputs": [
+  {
+   "path": "results\\E3b_validate_arfima0.csv",
+   "sha256": "4a3413f8fad5033e"
+  },
+  {
+   "path": "results\\E3b_validate_arfima1m.csv",
+   "sha256": "402ed029b97fd895"
+  },
+  {
+   "path": "results\\E3b_validate_arfima1p.csv",
+   "sha256": "2fdbd6430335cf3c"
+  },
+  {
+   "path": "results\\E3b_validate_fgn.csv",
+   "sha256": "808e1a5c67a1cc79"
+  },
+  {
+   "path": "results\\E3c_hi2017_table2.csv",
+   "sha256": "5691ce3b780c376d"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima0_H0.5.csv",
+   "sha256": "83895ed49f70cdca"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima0_H0.6.csv",
+   "sha256": "2c3916816dca143f"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima0_H0.7.csv",
+   "sha256": "4e3db2b025a5ffee"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima0_H0.8.csv",
+   "sha256": "5d6ea59e185bff6c"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima0_H0.9.csv",
+   "sha256": "43f19fe1cd4cd750"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1m_H0.5.csv",
+   "sha256": "0acafe6642a00c33"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1m_H0.6.csv",
+   "sha256": "e925636600594bac"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1m_H0.7.csv",
+   "sha256": "b50cc13b87d2d17c"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1m_H0.8.csv",
+   "sha256": "c05eff72a5a86bf1"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1m_H0.9.csv",
+   "sha256": "bf2ce08934ce89c9"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1p_H0.5.csv",
+   "sha256": "65f6787ddc972d79"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1p_H0.6.csv",
+   "sha256": "233d2429fcb6409b"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1p_H0.7.csv",
+   "sha256": "4ad1c5755ac4e06f"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1p_H0.8.csv",
+   "sha256": "c39b578100a44853"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_arfima1p_H0.9.csv",
+   "sha256": "baf1f686aaf8cb7f"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_fgn_H0.5.csv",
+   "sha256": "19a4b3f8ae815603"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_fgn_H0.6.csv",
+   "sha256": "3a22b6522eae9f4b"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_fgn_H0.7.csv",
+   "sha256": "369b4cb388d30037"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_fgn_H0.8.csv",
+   "sha256": "d72c4c5e75ced198"
+  },
+  {
+   "path": "results\\E3b_plugin_v2_fgn_H0.9.csv",
+   "sha256": "cbd55236480ce110"
+  }
+ ]
+}

@@ -1,21 +1,25 @@
 """Certified distribution function of T_H = Z^2 / int_0^1 Btilde(r)^2 dr  (self-normalised / Bartlett b = 1 limit).
 
-Chain of the certificate (manuscript, Section 'Certified critical values'; every step encloses its error):
-  (1) exact representation  int Btilde^2 = sum_k V_k^2,  V_k = I_H(h_k)/(k pi),  h_k = sqrt2 cos(k pi .)   (Theorem A'),
-      Cov(V_k, V_l) = G_kl/(k pi l pi),  Cov(V_k, Z) = G_0k/(k pi)  with the closed cosine Gram G of Paper 1;
+Chain of the certificate (manuscript Sections 2, 8 and Appendix B; every step encloses its error):
+  (1) exact representation  int Btilde^2 = sum_k V_k^2,  V_k = I_H(h_k)/(k pi),  h_k = sqrt2 cos(k pi .)   (Proposition 1),
+      Cov(V_k, V_l) = G_kl/(k pi l pi),  Cov(V_k, Z) = G_0k/(k pi)  with the closed cosine Gram G (CosChaos, Proposition 1);
       parity: odd modes are independent of (Z, even modes);
   (2) truncation W_J = sum_{k<=J} V_k^2;  R_J = int Btilde^2 - W_J >= 0 has mean tau_J (exact: tr K_br - sum Var V_k) and
-      Laurent-Massart tails with variance proxy v <= mu_max tau_J,  mu_max <= min(tau_J, c_H ((J+1) pi)^(-1-2H))  (Theorem A');
-  (3) eigenvector-free characteristic function of X_J = Z^2 - c W_J,  z = 2 i s c:
-         phi(s) = det(I + z A_O)^(-1/2) det(I + z A_E)^(-1/2) u^(-1/2) (1/u - 2 i s)^(-1/2),   u = 1 - z g^T (I + z A_E)^(-1) g,
-      every factor with a positive real part (principal logarithms are continuous);
-  (4) head-tail Schur complement: log det(I + z A) = log det(I + z A_hh) + log det(I + z S),  S = A_tt - z A_th (I + z A_hh)^(-1) A_ht;
-      the head block is handled through an exact similarity Q^(-1) A_hh Q = diag(lam) + F computed in ball arithmetic, the tail through
-      tr A_tt, ||A_tt||_F^2 and the couplings W = A_th^T A_th, with explicit balls for every neglected term;
-  (5) Gil-Pelaez midpoint sum (Davies 1973): the infinite sum S_Delta(x) satisfies F(x) - S_Delta(x) in [-P(X > x + L), P(X <= x - L)],
-      L = 2 pi / Delta, with P(X > y) <= P(Z^2 > y) and a Chernoff bound for P(c W_J >= y); series truncation bounded through certified
-      lower bounds of the eigenvalues (Cauchy interlacing, Kahan's residual theorem).
-All floating-point inputs to step (4) carry entrywise rounding bounds (standard model, u = 2^-53); all other arithmetic is in arb.
+      Laurent-Massart tails with variance proxy v <= mu_max tau_J,  mu_max <= min(tau_J, c_H ((J+1) pi)^(-1-2H))  (Theorem 3);
+  (3) eigenvector-free characteristic function of X_J = Z^2 - c W_J,  z = 2 w c:
+         M(w) = det(I + 2 w c A_O)^(-1/2) det(I + 2 w c A_E)^(-1/2) r(w)^(-1/2),   r(w) = 1 - 2 w u(w),
+      principal branches are holomorphic on {0 < Re w < 1/2} union {Im w > 0} (Lemma 11, Lemma 12);
+  (4) head-tail Schur complement (Lemma 13, extended to the sector Im z > 0 with resolvent factor M_z = max(1, |z|/Im z)):
+      log det(I + z A) = log det(I + z A_hh) + log det(I + z S),  S = A_tt - z A_th (I + z A_hh)^(-1) A_ht;
+      head handled via exact similarity Q^(-1) A_hh Q = diag(lam) + F in ball arithmetic, tail via tr A_tt, ||A_tt||_F^2
+      (enclosed via near-field symmetric summation plus analytical far-tail bound in Arb) and couplings W = A_th^T A_th;
+  (5) certified Bromwich inversion (Theorem 9):
+      - cdf_T_certified_quad (default fast route): adaptive Petras/Gauss-Legendre complex ball integration (acb.integral,
+        Johansson 2018) on dyadic panels along [0, s_max] with zero aliasing error, exact Arb tail bound eps(s_max), and
+        difference integration for (x_lo, x_hi);
+      - cdf_T_certified_tilt (cross-check route): tilted midpoint Poisson summation on the shifted lattice with Arb alias
+        and truncation bounds.
+All floating-point inputs to step (4) carry entrywise rounding bounds (standard model, u = 2^-53); all other arithmetic is in Arb.
 """
 import math
 import time
@@ -223,9 +227,110 @@ def nested_tail_frobenius(km, modes, heads, chunk_entries=2_000_000):
     return out
 
 
+def _sumsq_upper_sym(km, modes, chunk_entries=2_000_000):
+    """Exact certified sum_{k,l in modes} A_kl^2 exploiting symmetry (upper triangle + diagonal)."""
+    modes = np.asarray(modes, dtype=np.int64)
+    n = modes.size
+    if n == 0:
+        return 0.0, 0.0
+    # exact diagonal in Arb
+    diag_arb = sum((km.Ad_arb[int(k)] * km.Ad_arb[int(k)] for k in modes), arb(0))
+    step = max(1, chunk_entries // max(n, 1))
+    parts, E, nsum = [], 0.0, 0
+    for i0 in range(0, n, step):
+        i1 = min(n, i0 + step)
+        # strict upper triangle: rows i0..i1-1, cols i0..n-1
+        A, rho = km.block(modes[i0:i1], modes[i0:])
+        r_idx = np.arange(i1 - i0)[:, None]
+        c_idx = np.arange(n - i0)[None, :]
+        mask = c_idx > r_idx
+        if mask.any():
+            Au = A[mask]
+            ru = rho[mask]
+            parts.append(2.0 * float(np.sum(Au * Au)))
+            E += 2.0 * float(np.sum(2.0 * np.abs(Au) * ru + ru * ru))
+            nsum = max(nsum, int(Au.size))
+    S_off = math.fsum(parts)
+    e_off = gam(nsum + len(parts)) * S_off + E * (1.0 + 1e-6)
+    tot = diag_arb + arb(S_off, math.nextafter(e_off, INF))
+    return float(tot.mid()), fup(arb(float(tot.rad())) * (1 + 1e-12) + 2 * U * abs(float(tot.mid())))
+
+
+def fast_nested_tail_frobenius(km, modes, heads, n_near=768, chunk_entries=2_000_000):
+    """Certified ||A_tt(h)||_F^2 for tails modes[h:], h in heads (ascending), in O(n_near^2 + J) time.
+
+    Splits the smallest tail modes[hmax:] into a near block N (first n_near modes) and a far block F (remaining modes).
+    - N x N is summed symmetrically in double precision with rounding bounds (_sumsq_upper_sym).
+    - Diagonal of F is summed exactly in Arb.
+    - Off-diagonal of F x F and cross block N x F are bounded analytically in Arb using the suffix maximum
+      r_bar_k = max_{j >= k} |r_j| and |A_kl| <= (4H / pi^3) r_bar_k / (k l (l - k)) for same-parity k < l:
+        2 sum_{k<l in F} A_kl^2 <= (4 H^2 / (3 pi^4)) sum_{k in F} r_bar_k^2 / k^4,
+        2 sum_{k in N, l in F} A_kl^2 <= (8 H^2 / (pi^6 k_F^2)) sum_{k in N} r_bar_k^2 / (k^2 (m_0(k) - 1/2)),
+      where m_0(k) = (k_F - k) / 2 >= 1 and k_F = F[0].
+    - Strips modes[a:b] for smaller heads h < hmax are added identically to nested_tail_frobenius.
+    """
+    modes = np.asarray(modes, dtype=np.int64)
+    heads = sorted(heads)
+    hmax = heads[-1]
+    tl = modes[hmax:]
+    out = {}
+    if tl.size <= n_near + 32:
+        S, err = _sumsq_upper_sym(km, tl, chunk_entries)
+        out[hmax] = (S, err)
+    else:
+        near = tl[:n_near]
+        far = tl[n_near:]
+        S_nn, e_nn = _sumsq_upper_sym(km, near, chunk_entries)
+        # Exact diagonal of far tail in Arb
+        diag_far = sum((km.Ad_arb[int(k)] * km.Ad_arb[int(k)] for k in far), arb(0))
+        # Rigorous suffix maximum of |r_k| over tl in Arb upper bounds
+        r_abs = [km.R[int(k)].abs_upper() for k in tl]
+        r_bar = [arb(0)] * tl.size
+        cur = arb(0)
+        for idx in range(tl.size - 1, -1, -1):
+            if r_abs[idx] > cur:
+                cur = r_abs[idx]
+            r_bar[idx] = cur
+        Ha = km.Ha
+        pi = km.pi
+        # Far x Far off-diagonal upper bound: (4 H^2 / (3 pi^4)) sum_{k in F} r_bar_k^2 / k^4
+        s_ff = arb(0)
+        for idx in range(n_near, tl.size):
+            k_a = arb(int(tl[idx]))
+            rb = r_bar[idx]
+            s_ff += (rb * rb) / (k_a ** 4)
+        B_ff = (4 * Ha * Ha) / (3 * pi ** 4) * s_ff
+        # Near x Far cross-block upper bound: (8 H^2 / (pi^6 k_F^2)) sum_{k in N} r_bar_k^2 / (k^2 (m0 - 1/2))
+        kF = int(far[0])
+        kF_a = arb(kF)
+        s_nf = arb(0)
+        for idx in range(n_near):
+            k_int = int(near[idx])
+            k_a = arb(k_int)
+            m0 = arb(kF - k_int) / 2
+            rb = r_bar[idx]
+            s_nf += (rb * rb) / (k_a * k_a * (m0 - arb(0.5)))
+        B_nf = (8 * Ha * Ha) / (pi ** 6 * kF_a * kF_a) * s_nf
+        B_off_up = fup(B_ff + B_nf)
+        # Enclose [0, B_off_up] as ball (B_off_up/2 +/- B_off_up/2)
+        off_ball = arb(B_off_up / 2.0, math.nextafter(B_off_up / 2.0, INF))
+        tot = arb(S_nn, math.nextafter(e_nn, INF)) + diag_far + off_ball
+        mid = float(tot.mid())
+        rad = fup(arb(float(tot.rad())) * (1 + 1e-12) + 2 * U * abs(mid))
+        out[hmax] = (mid, rad)
+    for a, b in zip(heads[-2::-1], heads[:0:-1]):
+        S1, e1 = _sumsq_block(km, modes[a:b], modes[b:], chunk_entries)
+        S2, e2 = _sumsq_upper_sym(km, modes[a:b], chunk_entries)
+        Sb, eb = out[b]
+        Sa = math.fsum([Sb, 2 * S1, S2])
+        out[a] = (Sa, (eb + 2 * e1 + e2) * (1 + 1e-12) + 4 * U * Sa)
+    return out
+
+
 # ============================================================================ one parity block: head-tail data
 class Block:
-    def __init__(self, km, modes, nh, with_g=False, chunk_entries=2_000_000, verbose=False, tail_fro=None):
+    def __init__(self, km, modes, nh, with_g=False, chunk_entries=2_000_000, verbose=False,
+                 tail_fro=None, Ath_rth=None):
         t0 = time.perf_counter()
         modes = np.asarray(modes, dtype=np.int64)
         nh = min(nh, modes.size)
@@ -266,9 +371,6 @@ class Block:
         t1 = time.perf_counter()
         # ---- tail: trace (arb), Frobenius norm (double with bounds), coupling W = A_th^T A_th
         self.trAtt = sum((km.Ad_arb[int(k)] for k in tl), arb(0))
-        S = 0.0
-        E = 0.0
-        nsum = 0
         if self.nt:
             if tail_fro is None:
                 S, err = tail_frobenius(km, tl, chunk_entries)
@@ -277,7 +379,10 @@ class Block:
             self.fro2Att = arb(S, math.nextafter(err, INF))
             fro_up = math.sqrt(S + err) * (1 + 1e-15)
             # coupling
-            Ath, rth = km.block(tl, hd)
+            if Ath_rth is None:
+                Ath, rth = km.block(tl, hd)
+            else:
+                Ath, rth = Ath_rth
             Wd = Ath.T @ Ath
             aA = np.abs(Ath)
             Wb = (gam(self.nt) * (aA.T @ aA) + aA.T @ rth + rth.T @ aA + rth.T @ rth) * (1 + 2 * gam(self.nt)) + 1e-300
@@ -288,7 +393,7 @@ class Block:
                     Wa[i, j] = arb_from(Wd[i, j], Wb[i, j])
             Wt = Qi * Wa * Qa
             self.w = [Wt[j, j] for j in range(n)]
-            # operator norm of A_tt: min(Frobenius, Theorem A' bound c_H (L pi)^(-1-2H), L = first tail mode)
+            # operator norm of A_tt: min(Frobenius, CosChaos Lemma 3 bound c_H (L pi)^(-1-2H), L = first tail mode)
             thA = c_H_arb(km.Ha) * (self.first_tail * km.pi) ** (-1 - 2 * km.Ha)
             self.nAtt_thm = fup(thA)
             self.nAtt_fro = fro_up
@@ -344,17 +449,18 @@ class Block:
             print(f"  block nh={n} nt={self.nt}: head {self.timing[0]:.1f}s tail {self.timing[1]:.1f}s g {self.timing[2]:.1f}s; "
                   f"nF={self.nF:.2e} eta={self.eta:.2e} trW={self.trW:.2e} nAtt={self.nAtt:.2e} (thm {self.nAtt_thm:.2e}, fro {self.nAtt_fro:.2e})")
 
-    # ----- ball evaluation of log det(I + zA) (and gamma for the even block)
+    # ----- ball evaluation of log det(I + zA) (and gamma for the even block) for Re z >= 0
     def terms(self, z, az):
+        pad = 1.0 + 1e-12
         n = self.nh
-        xF = az * self.nF
+        xF = az * self.nF * (1.0 + 1e-14)
         if not xF < 0.5:
             raise ValueError(f"head similarity residual too large: |z| ||F|| = {xF:.3e}")
-        nD = xF / (1 - xF)
-        s2 = self.nAtt + az * self.trW
+        nD = xF / (1.0 - xF) * (1.0 + 1e-14)
+        s2 = (self.nAtt + az * self.trW) * (1.0 + 1e-14)
         if not az * s2 < 0.5:
             raise ValueError(f"tail not small: |z| ||S|| = {az * s2:.3e}")
-        sF = self.fAtt + az * self.trW
+        sF = (self.fAtt + az * self.trW) * (1.0 + 1e-14)
         LH = acb(0)
         sw = acb(0)
         sz = acb(0)
@@ -367,19 +473,84 @@ class Block:
             if self.with_g:
                 sz += self.zeta[j] * inv
                 sx += self.xi[j] * inv
-        LH += disk(n * xF / (1 - xF))
-        sw += disk(nD * self.nQ * self.nQi * self.trW)
+        LH += disk(n * nD * pad)
+        sw += disk(nD * self.nQ * self.nQi * self.trW * pad)
         trS = self.trAtt - z * sw
         E2 = az ** 2 / 2 * (2 * az * self.nAtt * self.trW + az ** 2 * self.trW ** 2)
-        E3 = az ** 3 * s2 * sF ** 2 / (3 * (1 - az * s2))
-        L = LH + z * trS - z * z / 2 * self.fro2Att + disk((E2 + E3) * (1 + 1e-12))
+        E3 = az ** 3 * s2 * sF ** 2 / (3 * (1.0 - az * s2))
+        L = LH + z * trS - z * z / 2 * self.fro2Att + disk((E2 + E3) * pad)
         if not self.with_g:
             return L, None
-        sz += disk(nD * self.nQtg * self.nQig)
-        sx += disk(nD * self.nQtv * self.nQig)
-        ete = self.gt2 - 2 * z * sx + disk(az ** 2 * self.trW * self.ngh ** 2 * (1 + 1e-12))
+        sz += disk(nD * self.nQtg * self.nQig * pad)
+        sx += disk(nD * self.nQtv * self.nQig * pad)
+        ete = self.gt2 - 2 * z * sx + disk(az ** 2 * self.trW * self.ngh ** 2 * pad)
         e2 = (self.ngt + az * math.sqrt(self.trW) * self.ngh) ** 2
-        gamma = sz + ete + disk(az * s2 * e2 / (1 - az * s2) * (1 + 1e-12))
+        gamma = sz + ete + disk(az * s2 * e2 / (1.0 - az * s2) * pad)
+        return L, gamma
+
+    # ----- extended Lemma 13 on {Re z >= 0} union {Im z > 0} for acb.integral analytic boxes
+    def terms_sector(self, z, analytic=False):
+        """Ball evaluation of (log det(I + zA), gamma(z)) on {Re z >= 0} union {Im z > 0}.
+
+        Uses the exact resolvent norm bound M_z = 1 if Re z >= 0 else |z|/Im z (for Im z > 0), which is invariant
+        along the homotopy t -> t z (t in [0, 1]). When analytic=True and any condition fails on a wide complex box,
+        returns (acb('nan'), acb('nan')) so acb.integral cleanly bisects the panel.
+        """
+        pad = 1.0 + 1e-12
+        if z.real.lower() >= 0:
+            Mz = 1.0
+        elif z.imag.lower() > 0:
+            Mz = fup(abs(z) / z.imag)
+            if not math.isfinite(Mz) or Mz < 1.0:
+                Mz = max(1.0, Mz) if math.isfinite(Mz) else INF
+        else:
+            if analytic:
+                return acb("nan"), acb("nan")
+            raise ValueError("z must lie in {Re z >= 0} union {Im z > 0}")
+        az = fup(abs(z))
+        if not (math.isfinite(az) and math.isfinite(Mz)):
+            if analytic:
+                return acb("nan"), acb("nan")
+            raise ValueError("non-finite z in terms_sector")
+        azM = az * Mz * (1.0 + 1e-14)
+        n = self.nh
+        xF = azM * self.nF
+        if not xF < 0.5:
+            if analytic:
+                return acb("nan"), acb("nan")
+            raise ValueError(f"head similarity residual too large: |z| M_z ||F|| = {xF:.3e}")
+        nD = Mz * xF / (1.0 - xF) * (1.0 + 1e-14)
+        s2 = (self.nAtt + azM * self.trW) * (1.0 + 1e-14)
+        if not az * s2 < 0.5:
+            if analytic:
+                return acb("nan"), acb("nan")
+            raise ValueError(f"tail not small: |z| ||S|| = {az * s2:.3e}")
+        sF = (self.fAtt + azM * self.trW) * (1.0 + 1e-14)
+        LH = acb(0)
+        sw = acb(0)
+        sz = acb(0)
+        sx = acb(0)
+        for j in range(n):
+            d = 1 + z * float(self.lam[j])
+            inv = 1 / d
+            LH += d.log(analytic=analytic)
+            sw += self.w[j] * inv
+            if self.with_g:
+                sz += self.zeta[j] * inv
+                sx += self.xi[j] * inv
+        LH += disk(n * (xF / (1.0 - xF)) * pad)
+        sw += disk(nD * self.nQ * self.nQi * self.trW * pad)
+        trS = self.trAtt - z * sw
+        E2 = az ** 2 / 2 * (2 * azM * self.nAtt * self.trW + (azM * self.trW) ** 2)
+        E3 = az ** 3 * s2 * sF ** 2 / (3 * (1.0 - az * s2))
+        L = LH + z * trS - z * z / 2 * self.fro2Att + disk((E2 + E3) * pad)
+        if not self.with_g:
+            return L, None
+        sz += disk(nD * self.nQtg * self.nQig * pad)
+        sx += disk(nD * self.nQtv * self.nQig * pad)
+        ete = self.gt2 - 2 * z * sx + disk((azM ** 2) * self.trW * self.ngh ** 2 * pad)
+        e2 = (self.ngt + azM * math.sqrt(self.trW) * self.ngh) ** 2
+        gamma = sz + ete + disk(az * s2 * e2 / (1.0 - az * s2) * pad)
         return L, gamma
 
     # ----- float estimate of the ball radii produced by terms() (used only to choose the head size)
@@ -429,16 +600,34 @@ class BridgeSystem:
         t1 = time.perf_counter()
         mo = np.arange(1, J, 2)
         me = np.arange(2, J + 1, 2)
-        fo = nested_tail_frobenius(km, mo, heads)
-        fe = nested_tail_frobenius(km, me, heads)
-        self.odd_blocks = [Block(km, mo, h, with_g=False, tail_fro=fo[h], verbose=verbose) for h in heads]
-        self.even_blocks = [Block(km, me, h, with_g=True, tail_fro=fe[h], verbose=verbose) for h in heads]
+        fo = fast_nested_tail_frobenius(km, mo, heads)
+        fe = fast_nested_tail_frobenius(km, me, heads)
+        # Share the coupling matrix block Ath across all head sizes h in heads (zero-copy slices)
+        h0, hmax = heads[0], heads[-1]
+        if h0 < mo.size:
+            Ath_o_all, rth_o_all = km.block(mo[h0:], mo[:hmax])
+        else:
+            Ath_o_all = rth_o_all = None
+        if h0 < me.size:
+            Ath_e_all, rth_e_all = km.block(me[h0:], me[:hmax])
+        else:
+            Ath_e_all = rth_e_all = None
+        self.odd_blocks = [
+            Block(km, mo, h, with_g=False, tail_fro=fo[h], verbose=verbose,
+                  Ath_rth=(Ath_o_all[h - h0:, :h], rth_o_all[h - h0:, :h]) if (Ath_o_all is not None and h < mo.size) else None)
+            for h in heads
+        ]
+        self.even_blocks = [
+            Block(km, me, h, with_g=True, tail_fro=fe[h], verbose=verbose,
+                  Ath_rth=(Ath_e_all[h - h0:, :h], rth_e_all[h - h0:, :h]) if (Ath_e_all is not None and h < me.size) else None)
+            for h in heads
+        ]
         self.odd, self.even = self.odd_blocks[-1], self.even_blocks[-1]
         Ha = km.Ha
         self.trK = trace_bridge_arb(Ha)
         self.trA = self.odd.trA + self.even.trA
         self.tau = self.trK - self.trA                                   # E R_J (exact)
-        self.cbar = c_H_arb(Ha) * ((J + 1) * km.pi) ** (-1 - 2 * Ha)     # Theorem A'
+        self.cbar = c_H_arb(Ha) * ((J + 1) * km.pi) ** (-1 - 2 * Ha)     # CosChaos Lemma 3
         self.fro2_up = self.odd.fro2_up + self.even.fro2_up
         self.lmax_up = max(self.odd.lmax_up, self.even.lmax_up)
         self.trA_up = fup(self.trA)
@@ -538,16 +727,12 @@ class BridgeSystem:
         hi = F[2] + rem["p_fail"]
         return {"point": F[1], "lo": lo, "hi": hi, **info}
 
-    # ---------------- certified CDF of X_J (ball arithmetic)
-    # The untilted route that used to be exposed here as cdf_X_certified / cdf_T_certified assembled part of its scalar
-    # bound in ordinary floating point (threshold products, an erfc alias bound with a heuristic factor, endpoint
-    # arithmetic) and therefore did not meet the certification standard of the paper. It produced no reported number and
-    # was removed on 17 Nov 2026 (the old code is in the repository history). The certified route is the tilted one below.
+    # ---------------- legacy uncertified route (disabled)
     def cdf_X_certified(self, *args, **kwargs):
-        raise NotImplementedError("BridgeSystem.cdf_X_certified was removed (not certified); use cdf_X_certified_tilt")
+        raise NotImplementedError("Use cdf_X_certified_quad (default) or cdf_X_certified_tilt (cross-check)")
 
     def cdf_T_certified(self, *args, **kwargs):
-        raise NotImplementedError("BridgeSystem.cdf_T_certified was removed (not certified); use cdf_T_certified_tilt")
+        raise NotImplementedError("Use cdf_T_certified_quad (default) or cdf_T_certified_tilt (cross-check)")
 
 
 # ============================================================================ tilted Bromwich inversion (production path)
@@ -663,8 +848,6 @@ def _sys_trunc_tilt(self, c, sK, theta, xmin):
 
 
 def _sys_choose_K_tilt(self, c, Delta, theta, xmin, eps, kmax=4000000):
-    # kmax raised 16 Nov 2026 (was 4e5): evaluating T_H CDFs far below the bulk (e.g. H >= 0.95 at the H = 1/2
-    # critical values, E6) needs ~5e5-1e6 nodes; the rigorous stopping rule itself is unchanged.
     K = 32
     while K < kmax:
         if self.trunc_tilt(c, (K - 0.5) * Delta, theta, xmin) <= eps:
@@ -797,6 +980,167 @@ def _sys_cdf_T_certified_tilt(self, c, t=25.0, theta=0.25):
             "s_lo": rem["s_lo"], "s_hi": rem["s_hi"], "tau": float(rem["tau"].mid())}
 
 
+# ============================================================================ adaptive certified Bromwich quadrature (fast production path)
+#   P(X_J > x) = (1/pi) Re int_0^{s_max} M(theta + i s) e^{-(theta + i s) x} / (theta + i s) ds + E_trunc(s_max, x),
+#   with zero aliasing error (continuous integral rather than periodic Poisson sum), evaluated in complex ball
+#   arithmetic by Arb's adaptive Petras/Gauss-Legendre integrator (acb.integral; Johansson 2018) over dyadic panels.
+#   Branch: r_0(w) = 1 - 2 w u(w) satisfies Im r_0(w) < 0 whenever Im w > 0 and r_0(w) > 0 for real w in (0, 1/2),
+#   so Log r_0(w) is holomorphic on {0 < Re w < 1/2} union {Im w > 0}; acb.log(analytic=True) verifies branch-cut
+#   avoidance on every complex integration box.
+
+def _sys_choose_smax(self, c, theta, xmin, eps):
+    s = 4.0
+    while self.trunc_tilt(c, s, theta, xmin) > eps * 0.5:
+        s *= 1.2
+        if s > 1e9:
+            raise RuntimeError("Bromwich truncation did not converge")
+    while self.trunc_tilt_arb(c, arb(s), theta, xmin)[0] > eps:
+        s *= 1.05
+    return s
+
+
+def _sys_cdf_X_certified_quad(self, c, xs, theta=0.25, eps=1e-13, eps_rad=1e-12, prec=80):
+    old_prec = ctx.prec
+    try:
+        ctx.prec = max(int(prec), 64)
+        c_a = arb(float(c))
+        th_a = arb(theta)
+        xs = [float(x) for x in xs]
+        xs_a = [arb(x) for x in xs]
+        s_max = self.choose_smax(c, theta, min(xs), eps)
+        # Dyadic / geometric panel split on [0, s_max]
+        pts = [0.0]
+        s_step = min(0.5, s_max)
+        while s_step < s_max:
+            pts.append(s_step)
+            s_step *= 4.0
+        if s_max - pts[-1] < 1e-12 * s_max:
+            pts[-1] = s_max
+        else:
+            pts.append(s_max)
+        panels = list(zip(pts[:-1], pts[1:]))
+        n_panels = len(panels)
+        # Double-precision estimate of |M(theta + i s)| on each panel to pick head sizes (certificate is independent)
+        panel_heads = []
+        for a, b in panels:
+            s_probe = np.linspace(a, b, 5)
+            z_probe = 2.0 * c * (theta + 1j * s_probe)
+            LOd, _ = self.odd.terms_d(z_probe)
+            LEd, gmd = self.even.terms_d(z_probe)
+            ud = 1.0 - z_probe * gmd
+            r0d = 1.0 - 2.0 * (theta + 1j * s_probe) * ud
+            Md_max = float(np.max(np.abs(np.exp(-0.5 * (LOd + LEd + np.log(r0d))) / (theta + 1j * s_probe))))
+            az_hi = 2.0 * c * math.hypot(b, theta) * 1.1
+            allow = math.pi * eps_rad / (max(n_panels, 1) * max(Md_max * (b - a), 1e-300))
+            panel_heads.append(self.select(az_hi, b, allow))
+
+        I_unit = acb(0, 1)
+        n_blk = len(self.odd_blocks)
+        eval_counts = [0]
+
+        def eval_Mw(t, blk_idx, analytic):
+            eval_counts[0] += 1
+            w = th_a + I_unit * t
+            z = (2 * c_a) * w
+            LO, _ = self.odd_blocks[blk_idx].terms_sector(z, analytic=analytic)
+            if not LO.is_finite():
+                if blk_idx < n_blk - 1:
+                    blk_idx = n_blk - 1
+                    LO, _ = self.odd_blocks[blk_idx].terms_sector(z, analytic=analytic)
+                    if not LO.is_finite():
+                        return acb("nan"), w
+                else:
+                    return acb("nan"), w
+            LE, gm = self.even_blocks[blk_idx].terms_sector(z, analytic=analytic)
+            if not LE.is_finite():
+                if blk_idx < n_blk - 1:
+                    blk_idx = n_blk - 1
+                    LO, _ = self.odd_blocks[blk_idx].terms_sector(z, analytic=analytic)
+                    LE, gm = self.even_blocks[blk_idx].terms_sector(z, analytic=analytic)
+                if not (LO.is_finite() and LE.is_finite()):
+                    return acb("nan"), w
+            u = 1 - z * gm
+            r0 = 1 - 2 * w * u
+            Lr0 = r0.log(analytic=analytic)
+            M = (-(LO + LE + Lr0) / 2).exp()
+            return M / w, w
+
+        # Target per-panel absolute and relative tolerances (positive rel_tol required by python-flint)
+        abs_tol_main = max(eps_rad / max(4 * n_panels, 1), 2.0 ** -48)
+        rel_tol_main = max(eps_rad * 0.5, 2.0 ** -44)
+
+        def integrate_x(xa, is_zero):
+            tot = acb(0)
+            for (a, b), blk_idx in zip(panels, panel_heads):
+                def f(t, analytic, _bi=blk_idx):
+                    Mw, w = eval_Mw(t, _bi, analytic)
+                    if not Mw.is_finite():
+                        return acb("nan")
+                    return Mw if is_zero else Mw * (-(w * xa)).exp()
+                tot += acb.integral(f, arb(a), arb(b), abs_tol=abs_tol_main, rel_tol=rel_tol_main)
+            return tot / arb.pi()
+
+        def integrate_diff(x0a, x1a):
+            half_sum = (x0a + x1a) / 2
+            half_dif = (x1a - x0a) / 2
+            tot = acb(0)
+            abs_tol_d = max(eps_rad / max(4 * n_panels, 1), 2.0 ** -48)
+            rel_tol_d = 2.0 ** -20
+            for (a, b), blk_idx in zip(panels, panel_heads):
+                def f(t, analytic, _bi=blk_idx):
+                    Mw, w = eval_Mw(t, _bi, analytic)
+                    if not Mw.is_finite():
+                        return acb("nan")
+                    return Mw * (-2 * (-(w * half_sum)).exp() * (w * half_dif).sinh())
+                tot += acb.integral(f, arb(a), arb(b), abs_tol=abs_tol_d, rel_tol=rel_tol_d)
+            return tot / arb.pi()
+
+        I0 = integrate_x(xs_a[0], xs[0] == 0.0)
+        vals = [I0.real]
+        for j in range(1, len(xs)):
+            if xs[j] == xs[0]:
+                vals.append(I0.real)
+            elif abs(xs[j] - xs[0]) * (1.0 + theta) < 0.05:
+                Id = integrate_diff(xs_a[0], xs_a[j])
+                vals.append((I0 + Id).real)
+            else:
+                Ij = integrate_x(xs_a[j], xs[j] == 0.0)
+                vals.append(Ij.real)
+
+        smax_a = arb(s_max)
+        out = []
+        budget = []
+        for j, x in enumerate(xs):
+            S_ = vals[j]
+            tb, m_sel = self.trunc_tilt_arb(c, smax_a, theta, x)
+            P = S_ + arb(0, math.nextafter(tb, INF))
+            F = 1 - P
+            out.append((flo(F), fup(F)))
+            budget.append({"x": x, "sum_radius": float(S_.rad()), "trunc": tb, "trunc_m": m_sel, "alias": 0.0})
+        return out, {
+            "s_max": s_max,
+            "n_panels": n_panels,
+            "panel_heads": [self.heads[i] for i in panel_heads],
+            "evals": eval_counts[0],
+            "prec": ctx.prec,
+            "budget": budget,
+        }
+    finally:
+        ctx.prec = old_prec
+
+
+def _sys_cdf_T_certified_quad(self, c, t=25.0, theta=0.25, eps=1e-13, eps_rad=1e-12, prec=80):
+    rem = self.remainder(t)
+    ca = arb(float(c))
+    xs = [0.0 if rem["s_lo"] == 0.0 else max(0.0, flo(ca * arb(rem["s_lo"]))), fup(ca * arb(rem["s_hi"]))]
+    (Flo, Fhi), info = self.cdf_X_certified_quad(c, xs, theta=theta, eps=eps, eps_rad=eps_rad, prec=prec)
+    p_up = fup(arb(-float(t)).exp())
+    lo = flo(arb(Flo[0]) - arb(p_up)) if rem["lo_uses_tail"] else Flo[0]
+    hi = fup(arb(Fhi[1]) + arb(p_up))
+    return {"lo": lo, "hi": hi, "width": hi - lo, "X_radius": max(Flo[1] - Flo[0], Fhi[1] - Fhi[0]) / 2, **info,
+            "s_lo": rem["s_lo"], "s_hi": rem["s_hi"], "tau": float(rem["tau"].mid())}
+
+
 BridgeSystem.theta_plus_d = _sys_theta_plus_d
 BridgeSystem.h_arb = _sys_h_arb
 BridgeSystem.theta_plus_cert = _sys_theta_plus_cert
@@ -809,6 +1153,9 @@ BridgeSystem.cdf_T_computed_tilt = _sys_cdf_T_computed_tilt
 BridgeSystem.cdf_X_certified_tilt = _sys_cdf_X_certified_tilt
 BridgeSystem.select = _sys_select
 BridgeSystem.cdf_T_certified_tilt = _sys_cdf_T_certified_tilt
+BridgeSystem.choose_smax = _sys_choose_smax
+BridgeSystem.cdf_X_certified_quad = _sys_cdf_X_certified_quad
+BridgeSystem.cdf_T_certified_quad = _sys_cdf_T_certified_quad
 
 
 # ============================================================================ law of W = int Btilde^2 alone (KPSS-type F3 functional)
@@ -836,7 +1183,7 @@ def _sys_trunc_W(self, sK, theta, x, nu_all):
 def _sys_nu_all(self):
     """Certified lower bounds of the eigenvalues of the bridge covariance (W = int Btilde^2 has no Z update, so every
     head eigenvalue of both parity blocks is used): Gershgorin clusters of the head blocks, sorted, and Cauchy interlacing
-    head -> full block (17 Nov 2026; replaces lam - eta, whose pairing with the sorted eigenvalues was not guaranteed)."""
+    head -> full block."""
     nu = np.concatenate([self.odd.eig_lo, self.even.eig_lo])
     return np.sort(nu[nu > 0])[::-1]
 
@@ -915,7 +1262,7 @@ def _sys_cdf_Wfull(self, x, certified=False, t=25.0):
         lo = a1 - rem["p_fail"]
         hi = b2 + (rem["p_fail"] if rem["lo_uses_tail"] else 0.0)
         return {"lo": lo, "hi": hi, "width": hi - lo, "K": max(i1["K"], i2["K"])}
-    # certified (17 Nov 2026): evaluation points rounded outward, e^{-t} rounded up, assembly in balls
+    # certified: evaluation points rounded outward, e^{-t} rounded up, assembly in balls
     xa = arb(float(x))
     x_lo_arg = flo(xa - arb(rem["s_hi"]))
     x_hi_arg = fup(xa - arb(rem["s_lo"]))

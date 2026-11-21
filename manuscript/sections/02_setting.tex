@@ -34,13 +34,12 @@ with the Wiener integrals
 \[C_j=\int_0^1\cos(2\pi jr)\dd B_H(r),\qquad S_j=\int_0^1\sin(2\pi jr)\dd B_H(r),\qquad
 \Lambda_k=\int_0^1\sqrt2\cos(k\pi r)\dd B_H(r).\]
 At $H=\frac12$ the numerator is independent of the denominators and
-$\tau_{1/2,m}\sim t_{2m}$, $t_{1/2,B}\sim t_B$; for $H\ne\frac12$ neither is true. A two-sided level-$\alpha$ test rejects
+$\tau_{1/2,m}\sim t_{2m}$, $t_{1/2,B}\sim t_B$; away from $H=\frac12$, the cutoffs depend on $H$. For EWC with $B=1$, the odd cosine coordinate remains independent of $Z$ by symmetry, but its variance changes. A two-sided level-$\alpha$ test rejects
 when $T_n>q_{1-\alpha}(H)$, $|\tau_{n,m}|>c_{m,\alpha}(H)$ or $|t_{n,B}|>c_{B,\alpha}(H)$, with $q_p(H)$ the $p$-quantile of
 $T_H$ and $c_{\cdot,\alpha}(H)$ the upper $\alpha/2$-point of the symmetric limit.
 
 \begin{table}[tbp]\centering\small
-\caption{Normalisations of the published statistics and conversion of their tabulated values into quantiles $q_p$ of
-$T_H$.}\label{tab:norm}
+\caption{Published normalisations and conversions to Bartlett critical values.}\label{tab:norm}
 \footnotesize\setlength{\tabcolsep}{4pt}
 \begin{tabular}{@{}>{\raggedright}p{0.21\textwidth}>{\raggedright}p{0.21\textwidth}>{\raggedright}p{0.31\textwidth}>{\raggedright\arraybackslash}p{0.19\textwidth}@{}}\toprule
 source (location) & tabulated quantity & relation to $T_H$ & conversion\\\midrule
@@ -116,12 +115,21 @@ At $H=\frac12$ the upper bound is attained, $\lambda_k=(k\pi)^{-2}$. Numerically
 every $H$ we examined (\cref{fig:certificate}a), which suggests that the upper bound is asymptotically sharp, in line
 with the exact asymptotics of \citet{CK18} for related fractional covariance operators.
 
+\begin{remark}[Scope of the $T_H$ certificate and the antipersistent regime]\label{rem:antipersistent}
+\Cref{thm:eig} requires $\frac12\le H<1$ because the weighted cosine inequality of \citet[Lemma~3]{AhmedCosChaos}
+relies on the complete monotonicity of the covariance kernel $|u-v|^{2H-2}$. For antipersistent series
+($0<H<\frac12$), the fixed-smoothing limits remain finite-dimensional and are certified directly via
+\cref{prop:continuation,prop:fixedcert}; for the self-normalised statistic $T_n$, however, the bridge tail decays
+slowly (like $J^{-2H}$) and finite-sample laws approach the limit very slowly (\cref{sec:audit}), so practitioners
+should evaluate the exact finite-sample law at the observed sample size $n$ via \cref{prop:exactn}(b).
+\end{remark}
+
 \subsection{What is meant by size}
 For a test with critical value $c$ we distinguish the \emph{exact finite-sample size}
 $P_{\mu_0}(\text{reject at }n)$ under a fully specified Gaussian model, the \emph{limit size} under $T_H$, $\tau_{H,m}$ or
 $t_{H,B}$, and the \emph{simulated} size of a Monte Carlo experiment. The critical value is the \emph{own limit} value
 (the quantile of the limit at the true $H$), the \emph{naive} value (the quantile at $H=\frac12$: $q_p(\frac12)$, $t_{2m}$
-or $t_B$), or a \emph{plug-in} value at an estimate $\hat H$. Following the conventions frozen before any computation
-(\cref{app:audit}), a value is \emph{exact} when it is a closed form or a finite-dimensional law evaluated with a stated
-numerical error, \emph{certified} when every numerical step is enclosed with outward rounding, and \emph{computed} when
-it is a floating-point result without a complete enclosure.
+or $t_B$), or a \emph{plug-in} value at an estimate $\hat H$. Following the classification fixed prior to computation
+(Supplementary Material Section~S.3), a value is \emph{exact} when it is a closed form or a finite-dimensional law
+evaluated with a stated numerical error, \emph{certified} when every numerical step is enclosed with outward rounding,
+and \emph{computed} when it is a floating-point result without a complete enclosure.

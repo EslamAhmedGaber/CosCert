@@ -1,0 +1,51 @@
+\section{Empirical applications}\label{sec:empirical}
+
+We compare short-memory and plug-in critical values on three contiguous series (\cref{fig:empirical,tab:empirical}).
+The examples span local Whittle estimates of $H$ from \pthree{emp-aus-hlw} to \pthree{emp-nile-hlw}.
+\begin{enumerate}
+\item \emph{New South Wales electricity demand.} We aggregate half-hourly load from the Monash archive \citep{God21,MonashNSW}
+to daily energy $D_t$ and test whether mean year-over-year growth $100\log(D_t/D_{t-365})$ is zero.
+The $1095$ observations from March 2012 to February 2015 average \pthree{emp-aus-xbar}\,\%.
+\item \emph{London air quality.} At Greenwich--Westhorne Avenue (GR9), we take the logarithm of each daily mean
+$\mathrm{PM}_{2.5}$ concentration, in $\mu\mathrm{g}/\mathrm{m}^3$. From 1 January 2017 to 30 March 2018,
+all 454 days have observations. The hourly archive \citep{MonashGR9} has 76 missing readings across 32 of those days;
+each daily mean uses the available hours. We compare the geometric mean with two illustrative reference
+concentrations, 10 and 15. The sample geometric mean is \pthree{emp-lon-geom}, and the arithmetic mean is
+\pthree{emp-lon-arith}\,$\mu\mathrm{g}/\mathrm{m}^3$.
+\item \emph{Nile annual minima.} The Roda Gauge series comprises 663 annual minimum water levels from AD 622 to 1284
+\citep{Tou25,Hur51,Ber94}. We use 1100\,cm as a reference and obtain a sample mean of \pthree{emp-nile-xbar}\,cm.
+\end{enumerate}
+
+In \cref{fig:empirical}, coloured end marks identify plug-in intervals that change the decision relative to the grey interval.
+For the plug-in tests, the archive interpolates the critical value at $\hat H_{\mathrm{LW}}$. It encloses the
+limiting tail probability with $H$ fixed at that estimate rounded to four decimal places. These bounds quantify
+numerical error. The sampling variability of $\hat H$ affects the rejection rates of feasible tests
+(\cref{sec:competitors}). The last column of \cref{tab:empirical} gives the rejection rate of the short-memory cutoff
+under a fitted Gaussian ARFIMA$(0,\hat d_{\mathrm{LW}},0)$ model. Daggers identify changed decisions at $5\,\%$;
+the interval ratio is plug-in width divided by short-memory width. MAC and subsampling use their own reference laws.
+
+\begin{figure}[tbp]\centering
+\includegraphics[width=\textwidth]{fig7_empirical.pdf}
+\caption{Observed series and nominal 95\% intervals for mean electricity growth, log particulate concentration and Nile minima.}\label{fig:empirical}
+\end{figure}
+
+\begin{table}[tbp]\centering\small
+\caption{Short-memory and plug-in tests of three series means. Daggers mark decisions that change at 5\%.}\label{tab:empirical}
+\footnotesize\setlength{\tabcolsep}{2.2pt}\input{tables/tab_empirical.tex}%
+\end{table}
+
+In New South Wales all five tests reject zero mean growth with the short-memory cutoffs. With plug-in calibration,
+three change decision: SN ($p=\pthree{emp-aus-SN-pcc}$), HI with $m=4$ ($p=\pthree{emp-aus-HI4-pcc}$)
+and EWC with $B=8$ ($p=\pthree{emp-aus-EWC8-pcc}$). HI with $m=16$ and EWC with $B=32$ still reject.
+The choice of smoothing therefore matters even when the memory estimate is held fixed.
+
+For London, HI with $m=16$ changes from $p=\pthree{emp-lon-HI16-pnv}$ to $p=\pthree{emp-lon-HI16-pcc}$
+at the reference concentration of 10. At the reference of 15, SN gives $p=\pthree{emp-lon15-SN-pcc}$,
+while HI with $m=4$ and EWC with $B=8$ give $p=\pthree{emp-lon15-HI4-pcc}$ and
+$p=\pthree{emp-lon15-EWC8-pcc}$. These comparisons concern the mean of log concentration over the observed period.
+
+For the Nile, all four fixed-smoothing tests change from rejection to non-rejection. The widest relative change
+occurs for HI with $m=16$: its interval expands by a factor of \pthree{emp-nile-HI16-ratio}, and its plug-in
+$p$-value is \pthree{emp-nile-HI16-pcc}. LW and demeaned ELW give the same decisions in all three series.
+
+\FloatBarrier

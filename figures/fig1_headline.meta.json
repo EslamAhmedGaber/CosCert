@@ -1,0 +1,69 @@
+{
+ "figure": "fig1_headline",
+ "created": "2026-11-21 00:35:16",
+ "script": "code\\figures\\fig1_headline.py",
+ "note": "",
+ "size_in": [
+  6.475716064757161,
+  2.62
+ ],
+ "pgf_seconds": 7.629633799995645,
+ "inputs": [
+  {
+   "path": "results\\E2_sn_critical_values.json",
+   "sha256": "4351fc0fe7172bbf"
+  },
+  {
+   "path": "results\\E2b_fixed_0.50_0.98.json",
+   "sha256": "bc5cd38a0c3f7bfb"
+  },
+  {
+   "path": "results\\E2b_fixed_0.51_0.99.json",
+   "sha256": "1de191a427e64fee"
+  },
+  {
+   "path": "results\\E6_naive_sn_0.50_0.98.json",
+   "sha256": "9b6df08777ad5830"
+  },
+  {
+   "path": "results\\E6_naive_sn_0.51_0.99.json",
+   "sha256": "a7937b062e320fe7"
+  },
+  {
+   "path": "results\\E6_naive_sn_0.95_0.95.json",
+   "sha256": "591c8ed460ba6eb1"
+  },
+  {
+   "path": "results\\E6_naive_sn_0.96_0.96.json",
+   "sha256": "fff4fcb816b545f4"
+  },
+  {
+   "path": "results\\E6_naive_sn_0.97_0.97.json",
+   "sha256": "c08b8319129b769e"
+  },
+  {
+   "path": "results\\E6_naive_sn_0.98_0.98.json",
+   "sha256": "db95ce3871c230e6"
+  },
+  {
+   "path": "results\\E6_naive_sn_0.99_0.99.json",
+   "sha256": "ea1b4f50c8766af7"
+  },
+  {
+   "path": "results\\E6_naive_fixed_0.50_0.99.json",
+   "sha256": "f0fe3953c8d895eb"
+  },
+  {
+   "path": "results\\E6b_rescaled_fixed_0.50_0.99.json",
+   "sha256": "38f224e0a6957ab0"
+  },
+  {
+   "path": "results\\E6b_rescaled_sn_0.50_0.99.json",
+   "sha256": "0a93d9e9e5a53fca"
+  },
+  {
+   "path": "results\\E6b_rescaled_sn_0.55_0.95.json",
+   "sha256": "87f7c92a886d4251"
+  }
+ ]
+}

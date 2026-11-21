@@ -1,0 +1,41 @@
+{
+ "figure": "fig3_power",
+ "created": "2026-11-21 00:35:33",
+ "script": "code\\figures\\fig3_power.py",
+ "note": "",
+ "size_in": [
+  6.475716064757161,
+  2.62
+ ],
+ "pgf_seconds": 5.722859599998628,
+ "inputs": [
+  {
+   "path": "results\\E7_power_H0.50.csv",
+   "sha256": "b3e8e6c112eb8381"
+  },
+  {
+   "path": "results\\E7_power_H0.60.csv",
+   "sha256": "e536fdb524f4aeee"
+  },
+  {
+   "path": "results\\E7_power_H0.70.csv",
+   "sha256": "1f029451a9573468"
+  },
+  {
+   "path": "results\\E7_power_H0.75.csv",
+   "sha256": "df7f27c4138f8878"
+  },
+  {
+   "path": "results\\E7_power_H0.80.csv",
+   "sha256": "a6e3a67f41080dff"
+  },
+  {
+   "path": "results\\E7_power_H0.90.csv",
+   "sha256": "f2b3833b177795ca"
+  },
+  {
+   "path": "results\\E3_rates_arfima1p_H0.5_0.6_0.7_0.8_0.9.csv",
+   "sha256": "4e3868adda1b7051"
+  }
+ ]
+}

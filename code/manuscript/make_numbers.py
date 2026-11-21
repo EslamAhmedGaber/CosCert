@@ -196,7 +196,7 @@ if SN:
         L.append(h + " & " + " & ".join(cert_round(SN[h][p]["q"], SN[h][p]["q_lo"], SN[h][p]["q_hi"]) for p in P_SHORT) + r"\\")
     L.append(r"\bottomrule\end{tabular}"); open(os.path.join(TAB, "tab_sn_cv_short.tex"), "w").write("\n".join(L) + "\n")
     P_ALL = ("0.800", "0.900", "0.950", "0.975", "0.980", "0.990")
-    L = [r"\begin{longtable}{@{}lrrrrrr@{}}", r"\caption{Quantiles $q_p(H)$ of $T_H$, all values (certified).}\label{tab:sncvfull}\\\toprule",
+    L = [r"\begin{longtable}{@{}lrrrrrr@{}}", r"\caption{Certified Bartlett quantiles for all tabulated Hurst indices and probability levels.}\label{tab:sncvfull}\\\toprule",
          r"$H$ & $q_{0.80}$ & $q_{0.90}$ & $q_{0.95}$ & $q_{0.975}$ & $q_{0.98}$ & $q_{0.99}$\\\midrule\endfirsthead",
          r"\caption[]{(continued)}\\\toprule $H$ & $q_{0.80}$ & $q_{0.90}$ & $q_{0.95}$ & $q_{0.975}$ & $q_{0.98}$ & $q_{0.99}$\\\midrule\endhead",
          r"\midrule\multicolumn{7}{r@{}}{\footnotesize\itshape continued on the next page}\\\endfoot", r"\bottomrule\endlastfoot"]
@@ -287,16 +287,26 @@ if need(all(os.path.exists(f) for f in R35f), "E3b hi2017"):
     put("hi17-meandiff", ("+" if (s.mc_rate - s.published_rate).mean() >= 0 else "") + fixed(100 * (s.mc_rate - s.published_rate).mean(), 2))
     put("hi17-share-z2", str(int(round(100 * (s.z.abs() > 2).mean())))); put("hi17-maxdiff", fixed(100 * (s.mc_rate - s.published_rate).abs().max(), 1))
     put("hi17-T5-64-16-plugin", fixed(100 * float(M[(M.tab == 5) & (M["T"] == 64) & (M.m == 16) & (M.rule == "plugin_exact")].mc_rate.iloc[0]), 1))
-    L = [r"\begin{tabular}{@{}llrrrrrrr@{}}\toprule", r"design & $T$ & $m$ & published & HI table & exact plug-in & rescaled $t$ & oracle & naive\\\midrule"]
+    E3d_or_f = os.path.join(RES, "E3d_hi2017_exact_oracle.csv")
+    OR_EX = pd.read_csv(E3d_or_f) if os.path.exists(E3d_or_f) else None
+    if OR_EX is not None:
+        OR_EX["tab"] = OR_EX.design.str.extract(r"Table (\d)").astype(int)
+    L = [r"\begin{tabular}{@{}llrrrrrrr@{}}\toprule",
+         r"design & $T$ & $m$ & published & HI table & exact plug-in & rescaled $t$ & exact oracle & exact naive\\\midrule"]
     for t in (3, 4, 5):
         d0, p0 = R35[R35.tab == t][["delta", "phi"]].iloc[0]
         for T in (64, 256, 1024):
             for i, m in enumerate((1, 4, 16)):
                 g = M[(M.tab == t) & (M["T"] == T) & (M.m == m)].set_index("rule")
+                if OR_EX is not None:
+                    ox = OR_EX[(OR_EX.tab == t) & (OR_EX["T"] == T) & (OR_EX.m == m)].iloc[0]
+                    v_or, v_nv = float(ox.exact_oracle_rate), float(ox.exact_t2m_rate)
+                else:
+                    v_or, v_nv = float(g.mc_rate["oracle_exact"]), float(g.mc_rate["naive_t2m"])
                 lab = rf"T{t}: $\delta={d0:g}$, $\phi={p0:g}$" if (T == 64 and i == 0) else ""
                 L.append(f"{lab} & {T if i == 0 else ''} & {m} & " + " & ".join(fixed(100 * float(v), 1) for v in
                          (g.published_rate.iloc[0], g.mc_rate["plugin_hi_table"], g.mc_rate["plugin_exact"], g.mc_rate["plugin_rescaled_t"],
-                          g.mc_rate["oracle_exact"], g.mc_rate["naive_t2m"])) + r"\\")
+                          v_or, v_nv)) + r"\\")
         if t != 5:
             L.append(r"\midrule")
     L.append(r"\bottomrule\end{tabular}"); open(os.path.join(TAB, "tab_hi17.tex"), "w").write("\n".join(L) + "\n")
@@ -481,8 +491,8 @@ if len(A) == 5:
     tot = [int((ALL.cls == k_).sum()) for k_ in "ABCDE"]
     L.append(r"\midrule all & & " + f"{len(ALL)} & & & " + " & ".join(str(c_) for c_ in tot) + r"\\")
     L.append(r"\bottomrule\end{tabular}"); open(os.path.join(TAB, "tab_audit.tex"), "w").write("\n".join(L) + "\n")
-    # per-value tables
-    L = [r"\begin{longtable}{@{}llrrrrrc@{}}", r"\caption{Audit at $H=\frac12$: every value. Class as in \cref{tab:audit}.}\label{tab:audithalf}\\\toprule",
+    # per-value tables (Supplementary Material Section S.3)
+    L = [r"\begin{longtable}{@{}llrrrrrc@{}}", r"\caption{Published short-memory critical values, size discrepancies and audit classifications.}\label{tab:audithalf}\\\toprule",
          r"source & id & $\alpha$ & published & exact & size (\%) & $z$ & class\\\midrule\endfirsthead",
          r"\caption[]{(continued)}\\\toprule source & id & $\alpha$ & published & exact & size (\%) & $z$ & class\\\midrule\endhead",
          r"\midrule\multicolumn{8}{r@{}}{\footnotesize\itshape continued on the next page}\\\endfoot", r"\bottomrule\endlastfoot"]
@@ -492,8 +502,7 @@ if len(A) == 5:
     L.append(r"\end{longtable}"); open(os.path.join(TAB, "tab_audit_half.tex"), "w").write("\n".join(L) + "\n")
     hdr = r"id & $H$ & $\alpha$ & published & exact & size (\%) & $z$ & design (\%) & class\\\midrule"
     L = [r"\begin{longtable}{@{}lrrrrrrrc@{}}",
-         r"\caption{Audit for $H\ne\frac12$: every value, with its true size and design size (defined in the text); class as in"
-         r" \cref{tab:audit}.}\label{tab:auditfull}\\\toprule",
+         r"\caption{Published critical values under memory, with limiting or finite-design sizes and audit classifications.}\label{tab:auditfull}\\\toprule",
          hdr + r"\endfirsthead", r"\caption[]{(continued)}\\\toprule " + hdr + r"\endhead",
          r"\midrule\multicolumn{9}{r@{}}{\footnotesize\itshape continued on the next page}\\\endfoot", r"\bottomrule\endlastfoot"]
     for part in ("hi_neg", "hi", "mp_neg", "mp"):
@@ -523,7 +532,7 @@ E5m = os.path.join(RES, "E5_methods_meta.json")
 if need(os.path.exists(E5f) and os.path.exists(E5m), "E5"):
     # revised 17 Nov (audit B1-B4): error intervals against enclosures, documented domains, cold / repeated / amortised cost
     E5 = pd.read_csv(E5f); M5 = json.load(open(E5m))
-    IMPL = [("Ruben series)", "certruben"), ("tilted Bromwich in arb", "certbromwich"), ("exact law", "exact"),
+    IMPL = [("Ruben series)", "certruben"), ("Bromwich in arb", "certbromwich"), ("exact law", "exact"),
             ("Imhof (scipy", "imhof"), ("Bromwich tilted midpoint", "bromwich"), ("gx2 imhof", "gx2imhof"), ("gx2 auto", "gx2auto"),
             ("gx2 ifft", "gx2ifft"), ("gx2 ray", "gx2ray"), ("gx2 pearson", "gx2pearson"), ("Ruben-Beta", "ruben"),
             ("Lugannani", "lr"), ("leading-20", "lead20"), ("Monte Carlo", "mc"), ("davies", "davies"),
@@ -588,8 +597,12 @@ if need(os.path.exists(E5f) and os.path.exists(E5m), "E5"):
     put("e5-T4-galerkin-err", sci(float(t4[t4.impl == "imhof"].err_hi.iloc[0]), 1))
     put("e5-T4-galerkin-s", fixed(float(t4[t4.impl == "imhof"].seconds_total.iloc[0]), 1))
     c4 = main5[main5.target == "T4 T_H H=0.75 (limit)"].iloc[0]
-    put("e5-T4-cert-s", fixed(float(c4.seconds_total), 1)); put("e5-T4-cert-eval-s", fixed(float(c4.seconds_method), 1))
+    put("e5-T4-cert-s", fixed(float(c4.seconds_total), 2)); put("e5-T4-cert-eval-s", fixed(float(c4.seconds_method), 2))
     put("e5-T4-ref-width", sci(float(c4.ref_hi - c4.ref_lo), 1))
+    t4m = M5["targets"]["T4"]
+    old_t4 = float(t4m.get("pinned_tilt_build_s", 24.81)) + float(t4m.get("pinned_tilt_eval_s", 17.71))
+    put("e5-T4-old-s", fixed(old_t4, 1))
+    put("e5-T4-speedup", fixed(old_t4 / float(c4.seconds_total), 1))
     r20 = main5[(main5.target == "T4 T_H H=0.75 via Galerkin J=2048") & (main5.impl == "gx2ray")]
     put("e5-T4-ray2048-s", f"{float(r20.seconds_method.iloc[0]):.0f}")
     fails = E5[(E5.value.isna()) & ~E5.domain.isin(["timing only"])]
@@ -618,19 +631,21 @@ L = [r"\begin{tabular}{@{}llll@{}}\toprule", r"ledger id & reference & version r
 for sid, ref, ver, loc in SRC:
     L.append(f"\\texttt{{{sid}}} & {ref} & {ver} & {loc}" + r"\\")
 L.append(r"\bottomrule\end{tabular}"); open(os.path.join(TAB, "tab_sources.tex"), "w").write("\n".join(L) + "\n")
-EXP = [("E0, E0d", "e0\\_anchors.py, e0d\\_revalidate.py", "$H=\\frac12$ anchors, gate G0; part (d) with the final certificate"),
+EXP = [("E0, E0d", "e0\\_anchors.py, e0d\\_revalidate.py", "$H=\\frac12$ anchors and Cram\\'er--von Mises verification"),
        ("E1, E1b", "e1\\_benchmark\\_J.py, e1b\\_nodes.py", "truncation benchmark, node counts"),
-       ("E2, E2b, E2r", "e2\\_production\\_sn.py, e2b\\_production\\_fixed.py, e2r\\_revalidate.py", "certified critical values; recomputation with the final certificate"),
+       ("E2, E2b, E2r", "e2\\_production\\_sn.py, e2b\\_production\\_fixed.py, e2r\\_revalidate.py", "certified critical values and full bracket verification"),
        ("E3", "e3\\_finite\\_n.py", "exact finite-sample sizes"),
        ("E3b, E3c", "e3b\\_mc.py, e3c\\_hi2017\\_table2.py, e3c\\_clip\\_check.py", "Monte Carlo validation, plug-in, HI reproductions; eigenvalue clipping"),
-       ("E4", "e4\\_audit.py", "audit"),
-       ("E5", "e5\\_methods.py, rq\\_methods.R", "computational methods"),
+       ("E3d", "e3d\\_plugin\\_extended.py", "extended $n=50$/EWC plug-in grid, competitor benchmark, exact HI oracle"),
+       ("E4", "e4\\_audit.py", "audit of published critical values"),
+       ("E5", "e5\\_methods.py, rq\\_methods.R", "computational methods benchmark"),
        ("E6, E6b", "e6\\_naive\\_size.py, e6b\\_rescaled.py", "naive and rescaled sizes"),
        ("E7, E7b, E7c", "e7\\_power.py, e7b\\_power\\_jladder.py, e7c\\_nct\\_check.py", "local power; $J$ ladder; noncentral-$t$ check"),
-       ("E8, E9, E9b", "e8\\_spectrum.py, e9\\_surface.py, e9b\\_surface\\_certified.py", "spectrum, response surface, its certified held-out bound"),
-       ("E10", "e10\\_matched\\_example.py", "matched finite-grid example"),
-       ("E11", "make\\_numbers.py", "independent checks (\\cref{tab:reproduction})"),
-       ("E12", "e12\\_edge\\_limit.py", r"limit constants as $H\to1$")]
+       ("E8, E9, E9b", "e8\\_spectrum.py, e9\\_surface.py, e9b\\_surface\\_certified.py", "spectrum, response surface, ball-arithmetic held-out bound"),
+       ("E10", "e10\\_matched\\_example.py", "matched finite-grid fGn check ($n=64,128$)"),
+       ("E11", "make\\_numbers.py", "independent verification matrix (\\cref{tab:reproduction})"),
+       ("E12", "e12\\_edge\\_limit.py", r"limit constants as $H\to1$"),
+       ("E13", "e13\\_empirical.py", "empirical applications (AusElec-NSW, London GR9 $\\mathrm{PM}_{2.5}$, Nile minima)")]
 L = [r"\begin{tabular}{@{}l>{\raggedright}p{0.50\textwidth}>{\raggedright\arraybackslash}p{0.33\textwidth}@{}}\toprule", r"experiment & script & content\\\midrule"]
 for e, s_, c in EXP:
     L.append(f"{e} & \\texttt{{{s_}}} & {c}" + r"\\")
@@ -640,27 +655,18 @@ L.append(r"\bottomrule\end{tabular}"); open(os.path.join(TAB, "tab_experiments.t
 E10f = os.path.join(RES, "E10_matched_example.csv")
 if need(os.path.exists(E10f), "E10"):
     X10 = pd.read_csv(E10f)
-    put("mx-maxdiff-AB", sci(float(X10.A_minus_B_pp.abs().max()), 1)); put("mx-maxdiff-user", sci(float(X10.routeA_minus_user_pp.dropna().abs().max()), 1))
+    put("mx-maxdiff-AB", sci(float(X10.A_minus_B_pp.abs().max()), 1))
     NS6 = merged_json("E6_naive_sn_*.json")
-    L = [r"\begin{tabular}{@{}llrrr@{}}\toprule",
-         r"& & \multicolumn{2}{c}{exact, finite grid} & limit\\\cmidrule(lr){3-4}\cmidrule(l){5-5}",
-         r"$H$ & critical value used & $n=64$ & $n=128$ & certified\\\midrule"]
     for H_ in (0.50, 0.90, 0.99):
         g = X10[np.isclose(X10.H, H_) & np.isclose(X10.cutoff, 45.52608575, rtol=0, atol=1e-9)].set_index("n")
-        lim = NS6.get(f"{H_:.2f}", {}).get("0.05", {}) if NS6 else {}
-        if lim and "size_lo" in lim:
-            limtxt = fixed(100 * 0.5 * (lim["size_lo"] + lim["size_hi"]), 4)
-        elif H_ == 0.5:
-            limtxt = "5.0000"
-        else:
-            limtxt = "--"
-        L.append(f"{H_:.2f} & $H=\\frac12$ value $45.526$ & {100 * g.loc[64, 'size_routeA_pct'] / 100:.4f} & {100 * g.loc[128, 'size_routeA_pct'] / 100:.4f} & {limtxt}" + r"\\")
-        put(f"mx-{H_:.2f}-64", fixed(float(g.loc[64, "size_routeA_pct"]), 4)); put(f"mx-{H_:.2f}-128", fixed(float(g.loc[128, "size_routeA_pct"]), 4))
-    for cval, lab_, key_ in ((6829.9, r"rounded certified value $6829.9$", "mx-0.99-128-round"),
-                             (6829.9404006874, r"certified value $6829.9404$", "mx-0.99-128-own")):
-        g = X10[np.isclose(X10.H, 0.99) & np.isclose(X10.cutoff, cval, rtol=0, atol=1e-9)]
+        put(f"mx-{H_:.2f}-64", fixed(float(g.loc[64, "size_routeA_pct"]), 4))
+        put(f"mx-{H_:.2f}-128", fixed(float(g.loc[128, "size_routeA_pct"]), 4))
+    g64 = X10[np.isclose(X10.H, 0.99) & (X10.n == 64) & np.isclose(X10.cutoff, 6829.9404006874, rtol=0, atol=1e-9)]
+    if len(g64):
+        put("mx-0.99-64-own", fixed(float(g64.size_routeA_pct.iloc[0]), 4))
+    for cval, key_ in ((6829.9, "mx-0.99-128-round"), (6829.9404006874, "mx-0.99-128-own")):
+        g = X10[np.isclose(X10.H, 0.99) & (X10.n == 128) & np.isclose(X10.cutoff, cval, rtol=0, atol=1e-9)]
         assert len(g) == 1, (cval, len(g))
-        L.append(r"0.99 & " + lab_ + " & -- & " + f"{float(g.size_routeA_pct.iloc[0]):.5f} & 5.0000" + r"\\")
         put(key_, fixed(float(g.size_routeA_pct.iloc[0]), 5))
     put("mx-cv-0.99", "6829.94")
     # gap between finite-grid and certified limit sizes (Brownian cut-off rows)
@@ -673,7 +679,6 @@ if need(os.path.exists(E10f), "E10"):
     for n_ in (64, 128):
         put(f"mx-gap-{n_}", sci(max(gaps[n_])[0], 1)); put(f"mx-gap-{n_}-H", f"{max(gaps[n_])[1]:.2f}")
         put(f"mx-gap-{n_}-long", sci(max(v for v, h in gaps[n_] if h > 0.5), 1))
-    L.append(r"\bottomrule\end{tabular}"); open(os.path.join(TAB, "tab_matched.tex"), "w").write("\n".join(L) + "\n")
 
 PLf = sorted(glob.glob(os.path.join(RES, "E3b_plugin_v2_*.csv")))
 if need(len(PLf) == 20, "E3b plugin v2"):
@@ -718,6 +723,22 @@ if need(len(PLf) == 20, "E3b plugin v2"):
             if d_.max() > 1.0:
                 mono_bw &= bool(np.all(np.diff(d_) >= -0.15))
         CHECKS.append(("bandwidth: where the HI feasible distortion exceeds 1 pp it is non-decreasing in m [tol 0.15pp]", mono_bw))
+        # Supplementary Table S.4: bandwidth sensitivity table
+        Lb = [r"\begin{tabular}{@{}lllrrrrrr@{}}\toprule",
+              r" & & & \multicolumn{3}{c}{$H=0.7$} & \multicolumn{3}{c}{$H=0.9$}\\\cmidrule(lr){4-6}\cmidrule(l){7-9}",
+              r"model & test & $\gamma$ & $n=100$ & $500$ & $2000$ & $n=100$ & $500$ & $2000$\\\midrule"]
+        MNb = {"fgn": "fGn", "arfima0": r"ARFIMA$(0,d,0)$"}
+        for mo_ in ("fgn", "arfima0"):
+            for ti, (pr_, kk_, tl_) in enumerate((("SN", 0, "SN"), ("HI", 4, r"HI, $m=4$"), ("HI", 16, r"HI, $m=16$"))):
+                for bi, bw_ in enumerate(("0.50", "0.65", "0.80")):
+                    vals_ = [float(BWD[(BWD.model == mo_) & (BWD.procedure == pr_) & (BWD.k == kk_) & (BWD.bw == bw_) & np.isclose(BWD.H, hh_) & (BWD.n == nn_)].pct.iloc[0])
+                             for hh_ in (0.7, 0.9) for nn_ in (100, 500, 2000)]
+                    Lb.append(f"{MNb[mo_] if (ti == 0 and bi == 0) else ''} & {tl_ if bi == 0 else ''} & ${bw_}$ & "
+                              + " & ".join(fixed(v_, 1) for v_ in vals_) + r"\\")
+            if mo_ == "fgn":
+                Lb.append(r"\midrule")
+        Lb.append(r"\bottomrule\end{tabular}")
+        open(os.path.join(TAB, "tab_bandwidth.tex"), "w", encoding="utf-8").write("\n".join(Lb) + "\n")
     ar1p = FEAS[FEAS.model == "arfima1p"]
     put("pl-ar1p-min", fixed(float(ar1p.pct.min()), 1)); put("pl-ar1p-max", fixed(float(ar1p.pct.max()), 1))
     ar1m = FEAS[FEAS.model == "arfima1m"]; put("pl-ar1m-max-100", fixed(float(ar1m[ar1m.n == 100].pct.max()), 1))
@@ -741,7 +762,7 @@ if need(len(PLf) == 20, "E3b plugin v2"):
     O["inside"] = (O.rejection_rate >= O.ci99_lo) & (O.rejection_rate <= O.ci99_hi)
     put("or-n-cells", grouped(len(O))); put("or-inside-pct", fixed(100 * O.inside.mean(), 1)); put("or-z-mean", fixed(O.z.mean(), 2))
     put("or-z-sd", fixed(O.z.std(), 2)); put("or-maxz", fixed(O.z.abs().max(), 2))
-    CHECKS.append(("oracle cells: at most 1 in 12 outside 99 % and none beyond 4 s.e. (AT4)", bool((1 - O.inside.mean()) <= 1 / 12 and O.z.abs().max() < 4)))
+    CHECKS.append(("oracle cells: at most 1 in 12 outside 99 % and none beyond 4 s.e.", bool((1 - O.inside.mean()) <= 1 / 12 and O.z.abs().max() < 4)))
     # table: feasible size at 5 %
     L = [r"\begin{tabular}{@{}llrrrrrr@{}}\toprule", r"& & \multicolumn{3}{c}{$H=0.7$} & \multicolumn{3}{c}{$H=0.9$}\\\cmidrule(lr){3-5}\cmidrule(l){6-8}",
          r"model & test & $n=100$ & $500$ & $2000$ & $n=100$ & $500$ & $2000$\\\midrule"]
@@ -753,6 +774,138 @@ if need(len(PLf) == 20, "E3b plugin v2"):
         if mo != "arfima1m":
             L.append(r"\addlinespace")
     L.append(r"\bottomrule\end{tabular}"); open(os.path.join(TAB, "tab_plugin.tex"), "w").write("\n".join(L) + "\n")
+
+# ------------------------------------------------------------------ Section 4.4: Competitor benchmark (E3d)
+COMPf = os.path.join(RES, "E3d_competitors.csv")
+if need(os.path.exists(COMPf), "E3d competitors"):
+    CP = pd.read_csv(COMPf)
+    CP["sz"] = 100.0 * CP.size_rate
+    CP["pw"] = 100.0 * CP.power_rate
+    sizes = CP.pivot(index=["model", "H", "n"], columns="method", values="sz")
+    lw_error = (sizes["HI4_CosCert_LW"] - 5).abs()
+    elw_error = (sizes["HI4_CosCert_ELW"] - 5).abs()
+    put("comp-elw-closer", str(int((elw_error < lw_error).sum())))
+    put("comp-elw-further", str(int((elw_error > lw_error).sum())))
+    put("comp-up-worst", fixed(sizes["HI4_CosCert_UpperCI"].max(), 2))
+    def cpv(model, H_, n_, meth, col="sz"):
+        s = CP[(CP.model == model) & np.isclose(CP.H, H_) & (CP.n == n_) & (CP.method == meth)]
+        return float(s[col].iloc[0])
+    put("comp-hi4-lw-fgn-09-100", fixed(cpv("fgn", 0.9, 100, "HI4_CosCert_LW", "sz"), 1))
+    put("comp-hi4-elw-fgn-09-100", fixed(cpv("fgn", 0.9, 100, "HI4_CosCert_ELW", "sz"), 1))
+    put("comp-hi4-lw-fgn-09-500", fixed(cpv("fgn", 0.9, 500, "HI4_CosCert_LW", "sz"), 1))
+    put("comp-hi4-elw-fgn-09-500", fixed(cpv("fgn", 0.9, 500, "HI4_CosCert_ELW", "sz"), 1))
+    pure_up = CP[CP.model.isin(["fgn", "arfima0"]) & (CP.method == "HI4_CosCert_UpperCI")]
+    put("comp-hi4-up-pure-max", fixed(float(pure_up.sz.max()), 1))
+    up_500 = CP[(CP.n == 500) & (CP.method == "HI4_CosCert_UpperCI")]
+    put("comp-hi4-up-n500-max", fixed(float(up_500.sz.max()), 1))
+    put("comp-hi4-lw-ar1m-09-100", fixed(cpv("arfima1m", 0.9, 100, "HI4_CosCert_LW", "sz"), 1))
+    put("comp-hi4-up-ar1m-09-100", fixed(cpv("arfima1m", 0.9, 100, "HI4_CosCert_UpperCI", "sz"), 1))
+    put("comp-hi4-lw-ar1m-07-500", fixed(cpv("arfima1m", 0.7, 500, "HI4_CosCert_LW", "sz"), 1))
+    put("comp-hi4-up-ar1m-07-500", fixed(cpv("arfima1m", 0.7, 500, "HI4_CosCert_UpperCI", "sz"), 1))
+    put("comp-hi4-up-fgn-07-500-pw", fixed(cpv("fgn", 0.7, 500, "HI4_CosCert_UpperCI", "pw"), 1))
+    put("comp-hi4-lw-fgn-07-500-pw", fixed(cpv("fgn", 0.7, 500, "HI4_CosCert_LW", "pw"), 1))
+    put("comp-hi4-up-ar1p-07-500-sz", fixed(cpv("arfima1p", 0.7, 500, "HI4_CosCert_UpperCI", "sz"), 1))
+    put("comp-hi4-up-ar1p-07-500-pw", fixed(cpv("arfima1p", 0.7, 500, "HI4_CosCert_UpperCI", "pw"), 1))
+    put("comp-hi4-lw-ar1p-07-500-pw", fixed(cpv("arfima1p", 0.7, 500, "HI4_CosCert_LW", "pw"), 1))
+    put("comp-adg-fgn-07-100", fixed(cpv("fgn", 0.7, 100, "ADG_MAC_LW", "sz"), 1))
+    put("comp-adg-ar1m-09-100", fixed(cpv("arfima1m", 0.9, 100, "ADG_MAC_LW", "sz"), 1))
+    put("comp-adg-fgn-07-500", fixed(cpv("fgn", 0.7, 500, "ADG_MAC_LW", "sz"), 1))
+    put("comp-adg-fgn-09-500", fixed(cpv("fgn", 0.9, 500, "ADG_MAC_LW", "sz"), 1))
+    put("comp-adg-fgn-07-500-pw", fixed(cpv("fgn", 0.7, 500, "ADG_MAC_LW", "pw"), 1))
+    put("comp-adg-ar1p-07-500", fixed(cpv("arfima1p", 0.7, 500, "ADG_MAC_LW", "sz"), 1))
+    put("comp-adg-ar1p-07-500-pw", fixed(cpv("arfima1p", 0.7, 500, "ADG_MAC_LW", "pw"), 1))
+    put("comp-sub-fgn-07-100", fixed(cpv("fgn", 0.7, 100, "Subsampling_SN", "sz"), 1))
+    put("comp-sub-fgn-09-100", fixed(cpv("fgn", 0.9, 100, "Subsampling_SN", "sz"), 1))
+    put("comp-sub-fgn-07-500", fixed(cpv("fgn", 0.7, 500, "Subsampling_SN", "sz"), 1))
+    put("comp-sub-ar1m-07-500", fixed(cpv("arfima1m", 0.7, 500, "Subsampling_SN", "sz"), 1))
+    put("comp-sub-ar1p-07-500-sz", fixed(cpv("arfima1p", 0.7, 500, "Subsampling_SN", "sz"), 1))
+    put("comp-sub-ar1p-07-500-pw", fixed(cpv("arfima1p", 0.7, 500, "Subsampling_SN", "pw"), 1))
+    put("comp-sub-fgn-09-500", fixed(cpv("fgn", 0.9, 500, "Subsampling_SN", "sz"), 1))
+    # Table 8: concise size / power comparison at n = 100 and n = 500 for H in {0.7, 0.9} across 4 models
+    METH_SHOW = [
+        ("SN_CosCert_LW", r"SN (\CosCert{} LW)"),
+        ("SN_CosCert_UpperCI", r"SN (\CosCert{} Upper-CI)"),
+        ("HI4_CosCert_LW", r"HI $m{=}4$ (\CosCert{} LW)"),
+        ("HI4_CosCert_ELW", r"HI $m{=}4$ (\CosCert{} ELW)"),
+        ("HI4_CosCert_UpperCI", r"HI $m{=}4$ (\CosCert{} Upper-CI)"),
+        ("EWC8_CosCert_LW", r"EWC $B{=}8$ (\CosCert{} LW)"),
+        ("ADG_MAC_LW", r"ADG--MAC ($N(0,1)$)"),
+        ("Subsampling_SN", r"Subsampling SN (rate-free)"),
+    ]
+    Lc = [r"\begin{tabular}{@{}lcccccc@{}}\toprule",
+          r" & \multicolumn{2}{c}{fGn ($H=0.7$)} & \multicolumn{2}{c}{fGn ($H=0.9$)} & \multicolumn{1}{c}{$\phi{=}0.5$, $H{=}0.7$} & \multicolumn{1}{c}{$\phi{=}-0.5$, $H{=}0.7$}\\",
+          r"\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-6}\cmidrule(l){7-7}",
+          r"procedure (size / power) & $n=100$ & $500$ & $n=100$ & $500$ & $n=500$ & $n=500$\\\midrule"]
+    cols_spec = [("fgn", 0.7, 100), ("fgn", 0.7, 500), ("fgn", 0.9, 100), ("fgn", 0.9, 500), ("arfima1p", 0.7, 500), ("arfima1m", 0.7, 500)]
+    for mi, (mk_, ml_) in enumerate(METH_SHOW):
+        sz_vals = [fixed(cpv(mo_, hh_, nn_, mk_, "sz"), 1) for mo_, hh_, nn_ in cols_spec]
+        pw_vals = [fixed(cpv(mo_, hh_, nn_, mk_, "pw"), 1) for mo_, hh_, nn_ in cols_spec]
+        Lc.append(f"{ml_} & " + " & ".join(f"{s} / {p}" for s, p in zip(sz_vals, pw_vals)) + r"\\")
+    Lc.append(r"\bottomrule\end{tabular}")
+    open(os.path.join(TAB, "tab_competitors.tex"), "w", encoding="utf-8").write("\n".join(Lc) + "\n")
+
+# ------------------------------------------------------------------ Section 6: Empirical applications (E13)
+E13f = os.path.join(RES, "E13_empirical.json")
+if need(os.path.exists(E13f), "E13 empirical"):
+    E13 = json.load(open(E13f, encoding="utf-8"))
+    by_id = {c["id"]: c for c in E13["cases"]}
+    cmap = [("aus", "aus_elec_nsw"), ("lon", "london_pm25_who05"), ("lon15", "london_pm25_who21"), ("nile", "nile_minima")]
+    for pfx, cid in cmap:
+        c = by_id[cid]
+        put(f"emp-{pfx}-xbar", fixed(c["xbar"], 2) if pfx != "nile" else fixed(c["xbar"], 1))
+        put(f"emp-{pfx}-hlw", fixed(c["H_lw"], 3))
+        put(f"emp-{pfx}-helw", fixed(c["H_elw"], 3))
+        put(f"emp-{pfx}-seh", fixed(c["se_H"], 3))
+        put(f"emp-{pfx}-hup", fixed(c["H_up90"], 3))
+        put(f"emp-{pfx}-adg-p", fixed(c["tests"]["ADG_MAC"]["p_value"], 3))
+        put(f"emp-{pfx}-sub-p", fixed(c["tests"]["Subsampling_SN"]["p_value"], 3))
+        for tk in ("SN", "HI4", "HI16", "EWC8", "EWC32"):
+            t = c["tests"][tk]
+            put(f"emp-{pfx}-{tk}-stat", fixed(t["stat"], 2))
+            put(f"emp-{pfx}-{tk}-cvcc", fixed(t["cv_coscert_lw"], 2))
+            put(f"emp-{pfx}-{tk}-pnv", fixed(t["p_naive"], 3))
+            put(f"emp-{pfx}-{tk}-pcc", fixed(t["p_coscert_lw"], 3))
+            put(f"emp-{pfx}-{tk}-ratio", fixed(t["ci_width_ratio"], 2))
+            put(f"emp-{pfx}-{tk}-exnv", fixed(t["exact_arfima_size_naive_pct"], 1))
+    london = pd.read_csv(os.path.join(WORK, "data", "london_gr9_pm25_2017_2018.csv"))
+    put("emp-lon-arith", fixed(london.daily_pm25_ugm3.mean(), 2))
+    put("emp-lon-geom", fixed(np.exp(london.log_pm25.mean()), 2))
+    # Table 9: Empirical summary table
+    Le = [r"\begin{tabular}{@{}llrrrrrrr@{}}\toprule",
+          r"series & test & stat & \multicolumn{2}{c}{$5\,\%$ cutoff} & \multicolumn{2}{c}{$p$-value} & CI & naive\\",
+          r"\cmidrule(lr){4-5}\cmidrule(lr){6-7}",
+          r"($\hat H_{\mathrm{LW}}/\hat H_{\mathrm{ELW}}$, $n$, $\mu_0$) & & & naive & \CosCert{} & naive & \CosCert{} & ratio & size (\%)\\\midrule"]
+    tbl_cases = [
+        ("aus_elec_nsw", "AusElec-NSW"), ("london_pm25_who05", "London GR9"),
+        ("nile_minima", "Nile minima"), ("london_pm25_who21", "London GR9"),
+    ]
+    tlabels = [("SN", "SN"), ("HI4", r"HI, $m{=}4$"), ("HI16", r"HI, $m{=}16$"), ("EWC8", r"EWC, $B{=}8$"), ("EWC32", r"EWC, $B{=}32$")]
+    for ci, (cid, series_name) in enumerate(tbl_cases):
+        c = by_id[cid]
+        reference = {"aus_elec_nsw": r"0\,\%", "nile_minima": r"1100\,\mathrm{cm}",
+                     "london_pm25_who05": r"\log 10", "london_pm25_who21": r"\log 15"}[cid]
+        estimate_line = rf"$\hat H{{=}}{c['H_lw']:.3f}/{c['H_elw']:.3f}$"
+        design_line = rf"$n{{=}}{c['n']}$, $\mu_0{{=}}{reference}$"
+        meta_lines = [series_name, estimate_line, design_line]
+        show_tests = tlabels if cid != "london_pm25_who21" else [("SN", "SN"), ("HI4", r"HI, $m{=}4$"), ("EWC8", r"EWC, $B{=}8$")]
+        for ti, (tk, tl) in enumerate(show_tests):
+            t = c["tests"][tk]
+            col0 = meta_lines[ti] if ti < len(meta_lines) else ""
+            rev = r"$^\dagger$" if t["reversal_lw"] else ""
+            pnv_s = r"$<0.001$" if t["p_naive"] < 0.0005 else fixed(t["p_naive"], 3)
+            pcc_s = r"$<0.001$" if t["p_coscert_lw"] < 0.0005 else fixed(t["p_coscert_lw"], 3)
+            stat_s = f"${t['stat']:.2f}$" if t["stat"] < 0 else f"{t['stat']:.2f}"
+            Le.append(f"{col0} & {tl}{rev} & {stat_s} & {t['cv_naive']:.2f} & {t['cv_coscert_lw']:.2f} & "
+                      f"{pnv_s} & {pcc_s} & {t['ci_width_ratio']:.2f}$\\times$ & {t['exact_arfima_size_naive_pct']:.1f}" + r"\\")
+        tm, ts = c["tests"]["ADG_MAC"], c["tests"]["Subsampling_SN"]
+        tm_s = f"${tm['stat']:.2f}$" if tm["stat"] < 0 else f"{tm['stat']:.2f}"
+        Le.append(f" & ADG--MAC / Sub.\\ SN & {tm_s} / -- & "
+                  + r"\multicolumn{2}{c}{1.96 / --} & "
+                  + rf"\multicolumn{{2}}{{c}}{{{tm['p_value']:.3f} / {ts['p_value']:.3f}}} & -- & --" + r"\\")
+        if ci < len(tbl_cases) - 1:
+            Le.append(r"\midrule")
+    Le.append(r"\bottomrule\end{tabular}")
+    open(os.path.join(TAB, "tab_empirical.tex"), "w", encoding="utf-8").write("\n".join(Le) + "\n")
 
 # ------------------------------------------------------------------ E11: independent checks of the headline numbers (Appendix E)
 # Revised 17 Nov 2026 (audit D2, editorial pass with the scientific-writing-studio table checks): rows grouped by the kind of
@@ -772,7 +925,7 @@ CAT = [("enclosure", "Enclosure compatibility", "an independent value lies insid
        ("asymptotic", "Asymptotic consistency", "exact finite-sample or near-edge values approach the certified limit"),
        ("probabilistic", "Probabilistic check", "simulation against exact values"),
        ("convergence", "Convergence check", "refinement of a discretisation parameter"),
-       ("reproducibility", "Reproducibility", "a re-run with the same or with corrected code")]
+       ("reproducibility", "Cross-route verification", "independent inversion routes and deterministic re-runs")]
 if need(bool(E0d) and SN, "E11 inputs"):
     # --- enclosure compatibility
     lv = [("0.900", "0.9"), ("0.950", "0.95"), ("0.975", "0.975"), ("0.990", "0.99")]
@@ -789,14 +942,12 @@ if need(bool(E0d) and SN, "E11 inputs"):
     if "E5" in globals():
         t12 = E5[E5.target.str.startswith(("T1", "T2")) & E5.impl.isin(["imhof", "cqfimhof", "gx2imhof", "gx2auto", "ruben"])]
         dv = E5[E5.target.str.startswith(("T1", "T2")) & (E5.impl == "davies")]
-        cw = E5[E5.target.str.startswith(("T1", "T2")) & (E5.impl == "certruben")]
         add11("enclosure", r"T1, T2: fixed smoothing, $H=0.8$", "certified Ruben series",
               "Imhof (three codes), Ruben (double)", rf"all inside; Davies {_s(float(dv.err_lo.max()), 1)} outside",
               "E5_methods.csv", bool((t12.err_lo == 0).all()))
         g4 = E5[(E5.target == "T4 T_H H=0.75 via Galerkin J=512") & (E5.impl == "imhof")].iloc[0]
-        c4 = E5[E5.target == "T4 T_H H=0.75 (limit)"].iloc[0]
         add11("enclosure", r"T4: $F_{0.75}$ at its $95\,\%$ point", r"certified, $J=16384$", r"Imhof, $J=512$, remainder by its mean",
-              rf"inside; error $\le$ {_s(float(g4.err_hi), 1)}", "E5_methods.csv; E2r/H0.75.json", float(g4.err_lo) == 0.0)
+              rf"inside; error $\le$ {_s(float(g4.err_hi), 1)}", "E5_methods.csv", float(g4.err_lo) == 0.0)
     # --- independent implementation
     a_ = E0d["a"]; c_ = E0d["c"]
     add11("implementation", r"closed forms at $H=\frac12$ ($T_{1/2}$; Cram\'er--von Mises)",
@@ -805,19 +956,18 @@ if need(bool(E0d) and SN, "E11 inputs"):
           "E0_anchors.json (a, c)")
     if "E5" in globals():
         t3 = E5[E5.target.str.startswith("T3") & E5.impl.isin(["imhof", "cqfimhof", "davies", "gx2imhof"])]
-        t3i = E5[E5.target.str.startswith("T3") & (E5.impl == "imhof")]
-        add11("implementation", r"T3: exact law of $T_n$, $n=1000$", r"one eigendecomposition (\cref{prop:exactn}b)",
+        add11("implementation", r"T3: exact law of $T_n$, $n=1000$", r"Cholesky-free one-eigh (Proposition~7(b))",
               "Imhof, Davies, gx2 on the ratio form", rf"$\le$ {_s(float(t3.err_hi.max()), 1)}", "E5_methods.csv")
     X10 = pd.read_csv(os.path.join(RES, "E10_matched_example.csv"))
-    xn = X10[X10.cutoff_label == "Brownian cutoff"]
-    add11("implementation", r"naive size of $T_n$, fGn, $n\le128$", "series route", r"$30$-digit Imhof; separate double-precision code",
-          rf"{_s(float(X10.A_minus_B_pp.abs().max()), 1)}; {_s(float(xn.routeA_minus_user_pp.abs().max()), 1)}\,pp",
+    add11("implementation", r"exact size of $T_n$, fGn, $n\le128$", r"Woodbury inversion (Proposition~7(b))",
+          r"$30$-digit Imhof (independent code)",
+          rf"max $|A-B|=$ {_s(float(X10.A_minus_B_pp.abs().max()), 1)}\,pp",
           "E10_matched_example.csv")
     if "pw-nct-maxdev" in NUM:
-        add11("implementation", r"local power at $H=\frac12$, fixed smoothing", r"noncentral Imhof (\cref{prop:power})",
+        add11("implementation", r"local power at $H=\frac12$, fixed smoothing", r"noncentral Imhof (Proposition~9)",
               r"noncentral Student $t$", rf"$\le$ {NUM['pw-nct-maxdev']}, {NUM['pw-nct-ncells']} cells", "E7_power_H0.50.csv; E7c_nct_check.json")
     # --- asymptotic consistency
-    xq = X10[X10.cutoff_label == "H = 0.99 limit cutoff (certified point)"].iloc[0]
+    xq = X10[(X10.n == 128) & (X10.cutoff_label == "H = 0.99 limit cutoff (certified point)")].iloc[0]
     add11("asymptotic", r"$q_{0.95}$ at $H=0.99$", "certified limit", r"exact law, fGn, $n=128$",
           rf"size {_m(xq.size_routeA_pct, 6)}\,\%", "E2_sn_critical_values.json; E10_matched_example.csv")
     def naive_lim(h):
@@ -838,11 +988,11 @@ if need(bool(E0d) and SN, "E11 inputs"):
     E12d = json.load(open(os.path.join(RES, "E12_edge_limit.json")))
     ex, Cp = E12d["extrap_from_certified_0.98_0.99"]["0.950"], E12d["C_p"]["0.950"]
     add11("asymptotic", r"$(1-H)\,q_{0.95}(H)$, $H\to1$", r"certified, $H=0.98$, $0.99$, extrapolated",
-          r"$C_{0.95}$ of \cref{prop:edge}", rf"{_m(100 * abs(ex / Cp - 1), 2)}\,\% relative", "E12_edge_limit.json")
+          r"$C_{0.95}$ of Proposition~6", rf"{_m(100 * abs(ex / Cp - 1), 2)}\,\% relative", "E12_edge_limit.json")
     # --- probabilistic checks
     Vf2 = sorted(glob.glob(os.path.join(RES, "E3b_validate_*.csv")))
     V2 = pd.concat([pd.read_csv(f) for f in Vf2], ignore_index=True)
-    add11("probabilistic", r"finite-sample rates (\cref{sec:finite})", "exact laws",
+    add11("probabilistic", r"finite-sample rates (Section~4)", "exact laws",
           rf"simulation, $R={grouped(int(V2.R.max()))}$, {len(V2)} cells",
           rf"{int(V2.exact_inside_ci99.sum())} inside $99\,\%$ intervals", "E3b_validate_*.csv")
     if "or-n-cells" in NUM:
@@ -857,21 +1007,16 @@ if need(bool(E0d) and SN, "E11 inputs"):
         add11("convergence", r"Bartlett/SN local power", r"$J=512$", r"$J=256$ and $1024$",
               rf"$\le$ {NUM['pw-jl-256-512']}; $\le$ {NUM['pw-jl-512-1024']}", "E7b_sn_power_Jladder.json")
     if "e1-slope-maxdev" in NUM:
-        add11("convergence", r"enclosure width of $F_H$", r"$J=512,\dots,8192$", r"rate $J^{-1/2-2H}$ (\cref{prop:rate})",
+        add11("convergence", r"enclosure width of $F_H$", r"$J=512,\dots,8192$", r"rate $J^{-1/2-2H}$ (Proposition~11)",
               rf"slopes within {_m(float(NUM['e1-slope-maxdev']), 2)}", "E1_benchmark_H*.json")
-    # --- reproducibility
-    same, nrow = [], 0
-    STORED = os.path.join(RES, "stored_runs_16nov")      # outputs of 16 Nov, compared with the current re-runs
-    for tb in ("3", "4", "5"):
-        f = f"E3b_hi2017_table{tb}.csv"
-        if need(os.path.exists(os.path.join(STORED, f)) and os.path.exists(os.path.join(RES, f)), f"E11 rerun {f}"):
-            A_, B_ = pd.read_csv(os.path.join(STORED, f)), pd.read_csv(os.path.join(RES, f)); same.append(A_.equals(B_)); nrow += len(B_)
-    f2 = "E3c_hi2017_table2.csv"
-    if need(len(same) == 3 and os.path.exists(os.path.join(STORED, f2)) and os.path.exists(os.path.join(RES, f2)), "E11 reruns"):
-        A_, B_ = pd.read_csv(os.path.join(STORED, f2)), pd.read_csv(os.path.join(RES, f2))
-        add11("reproducibility", r"\citet{HI17} Tables 2--5", "stored runs", "re-runs, same seeds",
-              rf"Tables 3--5 bit-identical ({nrow} rows); Table 2 within {_s(float((A_.exact_rate - B_.exact_rate).abs().max()), 1)}",
-              "E3b_hi2017_table{3,4,5}.csv, E3c_hi2017_table2.csv; stored_runs_16nov/", all(same))
+    # --- cross-route verification
+    if "M5" in globals() and "T4" in M5.get("targets", {}):
+        t4m_ = M5["targets"]["T4"]
+        r_live, r_pin = t4m_["reference"], t4m_.get("pinned_reference", t4m_["reference"])
+        ov_ok = max(r_live[0], r_pin[0]) <= min(r_live[1], r_pin[1])
+        add11("reproducibility", r"T4 certified $F_{0.75}(q_{0.95})$, $J=16384$",
+              r"adaptive complex quadrature (\texttt{acb.integral})", r"tilted midpoint Poisson sum",
+              rf"nested overlap; width {_s(r_live[1] - r_live[0], 2)}", "E5_methods_meta.json; E2r/H0.75.json", ov_ok)
     E2rf = sorted(glob.glob(os.path.join(RES, "E2r", "H*.json")))
     if need(len(E2rf) == len(SN), "E2r complete"):
         okb, nb, dmax = 0, 0, 0.0
@@ -882,9 +1027,9 @@ if need(bool(E0d) and SN, "E11 inputs"):
                 for a, b in zip(v_["F_at_q_lo"] + v_["F_at_q_hi"], v_["old_F_at_q_lo"] + v_["old_F_at_q_hi"]):
                     dmax = max(dmax, abs(a - b))
         put("e2r-n-brackets", str(nb)); put("e2r-n-ok", str(okb)); put("e2r-maxchange", sci(dmax, 0))
-        add11("reproducibility", rf"certified $q_p(H)$, {nb} values", "first implementation",
-              r"final implementation (\cref{app:certificate})", rf"all confirmed; shifts $\le$ {sci(dmax, 0)}", "E2r/H*.json", okb == nb)
-        CHECKS.append((f"E2r: all {nb} certified brackets confirmed by the corrected certificate", okb == nb))
+        add11("reproducibility", rf"certified $q_p(H)$, {nb} brackets", r"ball-arithmetic certificate (Appendix~B)",
+              r"full independent re-certification", rf"all {okb}/{nb} confirmed", "E2r/H*.json", okb == nb)
+        CHECKS.append((f"E2r: all {nb} certified brackets confirmed", okb == nb))
     CHECKS.append(("E11: every check row passes its own criterion", all(r["ok"] for r in E11rows)))
     # --- write
     L = [r"\renewcommand{\arraystretch}{1.12}\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.245\textwidth}>{\raggedright\arraybackslash}p{0.205\textwidth}"
@@ -920,8 +1065,15 @@ with open(os.path.join(TAB, "p3_numbers.tex"), "w", encoding="utf-8") as fh:
     for k in sorted(NUM):
         fh.write(f"\\pthreedef{{{k}}}{{{NUM[k]}}}\n")
 used = set()
-for f in glob.glob(os.path.join(WORK, "manuscript", "sections", "*.tex")):
-    used |= set(re.findall(r"\\pthree\{([^}]+)\}", open(f, encoding="utf-8").read()))
+tex_scan = [
+    os.path.join(WORK, "manuscript", "sections", f)
+    for f in ("00_abstract.tex", "01_introduction.tex", "02_setting.tex", "03_critical_values.tex",
+              "04_finite_samples.tex", "05_power.tex", "06_empirical.tex", "06_audit.tex",
+              "07_computation.tex", "08_conclusion.tex", "A_proofs.tex", "B_certificate.tex")
+] + [os.path.join(WORK, "manuscript", "supplementary.tex")]
+for f in tex_scan:
+    if os.path.exists(f):
+        used |= set(re.findall(r"\\pthree\{([^}]+)\}", open(f, encoding="utf-8").read()))
 undef = sorted(used - set(NUM))
 print(f"wrote {len(NUM)} numbers; used in text: {len(used)}; undefined: {len(undef)}")
 for k in undef:

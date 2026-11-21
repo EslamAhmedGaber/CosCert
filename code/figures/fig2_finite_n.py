@@ -22,7 +22,12 @@ from matplotlib.lines import Line2D  # noqa: E402
 from matplotlib.ticker import FixedLocator, NullFormatter, FuncFormatter  # noqa: E402
 
 RES = os.path.join(F.WORK, "results")
-MODELS = [("fgn", "fGn"), ("arfima0", r"ARFIMA$(0,d,0)$"), ("arfima1p", r"ARFIMA$(1,d,0)$, $\phi{=}0.5$"), ("arfima1m", r"$\phi{=}-0.5$")]
+MODELS = [
+    ("fgn", "fGn"),
+    ("arfima0", r"ARFIMA$(0,d,0)$"),
+    ("arfima1p", r"ARFIMA$(1,d,0)$, $\phi{=}0.5$"),
+    ("arfima1m", r"ARFIMA$(1,d,0)$, $\phi{=}-0.5$"),
+]
 H_LINE = 0.7
 HI_SHOW, EWC_SHOW = (1, 4, 16), (8, 32)
 
@@ -51,16 +56,20 @@ def main():
     E = E[(E.cv_label == "own_limit") & (np.isclose(E.alpha, 0.05))].copy()
     E["k"] = pd.to_numeric(E.param, errors="coerce").fillna(0).astype(int); E["size"] = 100 * E.rejection_rate
     pfiles = sorted(glob.glob(os.path.join(RES, "E3b_plugin_v2_*.csv")))
+    ext_f = os.path.join(RES, "E3d_plugin_n50_ewc.csv")
+    if os.path.exists(ext_f):
+        pfiles.append(ext_f)
     P = pd.concat([pd.read_csv(f) for f in pfiles], ignore_index=True)
     P = P[np.isclose(P.alpha, 0.05)].copy(); P["k"] = pd.to_numeric(P.param, errors="coerce").fillna(0).astype(int); P["size"] = 100 * P.mc_rate
     # one rule for all procedures: H-hat clipped to [1/2, 0.99] (SN: plugin_exact already clipped; HI/EWC: plugin_exact_trunc)
     P = P[((P.procedure == "SN") & (P.rule == "plugin_exact")) | ((P.procedure != "SN") & (P.rule == "plugin_exact_trunc"))]
+    P = P.drop_duplicates(subset=["model", "H", "n", "procedure", "k"], keep="last")
     hi_col = dict(zip(HI_SHOW, [F.tint(F.COL["HI"], 0.42), F.COL["HI"], F.shade(F.COL["HI"], 0.5)]))
     ewc_col = dict(zip(EWC_SHOW, [F.COL["EWC"], F.shade(F.COL["EWC"], 0.45)]))
     series = [("SN", 0, F.COL["SN"], 1.8)] + [("HI", m, hi_col[m], 1.15) for m in HI_SHOW]
 
-    fig = plt.figure(figsize=(F.TEXTWIDTH, 4.55))
-    gs = fig.add_gridspec(2, 4, left=0.083, right=0.99, bottom=0.095, top=0.885, wspace=0.08, hspace=0.12)
+    fig = plt.figure(figsize=(F.TEXTWIDTH, 4.6))
+    gs = fig.add_gridspec(2, 4, left=0.083, right=0.99, bottom=0.095, top=0.88, wspace=0.08, hspace=0.12)
     axes = [[fig.add_subplot(gs[r, c]) for c in range(4)] for r in range(2)]
     for c, (mod, title) in enumerate(MODELS):
         for r, (D, marker) in enumerate(((E, None), (P, "o"))):
@@ -68,16 +77,16 @@ def main():
             for proc, k, col, lw in series:
                 s = S[(S.procedure == proc) & (S.k == k)]
                 band = s.groupby("n")["size"].agg(["min", "max"])
-                ax.fill_between(band.index, band["min"], band["max"], color=col, alpha=0.16, lw=0, zorder=1)
+                ax.fill_between(band.index, band["min"], band["max"], color=col, alpha=0.12, lw=0, zorder=1)
                 line = s[np.isclose(s.H, H_LINE)].sort_values("n")
                 ax.plot(line.n, line["size"], color=col, lw=lw, zorder=4 if proc == "SN" else 3,
-                        marker=marker, ms=2.6 if marker else 0, mfc=col, mec=col)
+                        marker=marker, ms=2.5 if marker else 0, mfc=col, mec=col)
             for B in EWC_SHOW:
                 s = S[(S.procedure == "EWC") & (S.k == B) & np.isclose(S.H, H_LINE)].sort_values("n")
                 ax.plot(s.n, s["size"], ls="none", marker="o", ms=3.4, mfc="white", mec=ewc_col[B], mew=0.85, zorder=5)
             fmt_axes(ax, r, c)
             if r == 0:
-                ax.set_title(title, fontsize=F.SIZES[0])
+                ax.set_title(title, fontsize=F.SIZES[1])
             ax.text(0.04, 0.965, r"\textbf{(" + "abcdefgh"[4 * r + c] + ")}", transform=ax.transAxes, ha="left", va="top",
                     fontsize=F.SIZES[0], color=F.COL["INK"])
     axes[0][0].text(0.96, 0.05, r"bands: range over $H$", transform=axes[0][0].transAxes, ha="right", va="bottom",

@@ -1,22 +1,26 @@
-"""Exact finite-sample laws of studentised-mean statistics under Gaussian stationary models.
+"""Exact finite-sample laws of studentised-mean statistics under Gaussian stationary models,
+plus simulation, semiparametric memory estimators (LW, ELW), MAC (ADG 2009) and subsampling baselines.
 
 Data x_t = mu + u_t, t = 1..n, u Gaussian with autocovariance gamma (fGn, ARFIMA(0,d,0), ARFIMA(1,d,0), AR(1)).
 Under H0 every statistic below is a ratio of quadratic forms in u, so P(stat^2 <= c) = P(X_c <= 0) with
-X_c = Y_0^2 - c * (PSD form): an exact finite-dimensional law.
+X_c = Y_0^2 - c * (PSD form): an exact finite-dimensional law (Proposition 6).
 
   SN / Lobato (2001) / Bartlett b = 1 (KVB):  T_n = n xbar^2 / C_n,  C_n = n^-2 sum_t S_t^2,  S_t = sum_{s<=t} (x_s - xbar);
-      u = L xi (Gamma = L L^T), Z_n = w^T xi with w = L^T 1 / |L^T 1|,  n^-2 sum S_t^2 = xi^T K xi,  K = G^T G / n^2,
-      G = D (I - 11^T/n) L (D = cumulative sum).  One eigendecomposition K = Q diag(kappa) Q^T per (model, n);
-      phi(s) = det(I + z K)^(-1/2) (1 - 2 i s u(z))^(-1/2),  u(z) = sum_i wt_i^2 / (1 + z kappa_i),  z = 2 i s c n / (1^T Gamma 1).
+      A = D (I - 11^T/n) (last row identically zero); K_tilde = n^-2 A Gamma A^T is (n-1)x(n-1) PSD, formed in O(n^2)
+      without a Cholesky factorisation.  By the push-through identity (Proposition 6(b)), with v = 1^T Gamma 1 and
+      b = n^-1 A Gamma 1, one eigendecomposition K_tilde = Q diag(kappa) Q^T serves every cutoff c:
+          phi(s) = det(I + z K_tilde)^(-1/2) (1 - 2 i s u(z))^(-1/2),
+          u(z) = 1 - z sum_k b2_k / (1 + z kappa_k),  b2_k = (q_k^T b)^2 / v,  z = 2 i s c n / v.
+      Evaluated by adaptive Gauss-Kronrod quadrature (Imhof's integral) with a two-band head/power-sum split,
+      and cross-checked by the tilted Bromwich midpoint rule (cdf_bromwich).
   Hualde-Iacone (2017) Daniell tau:  tau^2 <= c  <=>  (sum u)^2 <= (c/m) sum_j |sum_t u_t e^{i lambda_j t}|^2,  lambda_j = 2 pi j / n.
   EWC (Lazarus et al. 2018, eq. 10):  t^2 <= c  <=>  (sum u)^2 / n <= (c/B) sum_j Lambda_j^2,  Lambda_j = sqrt(2/n) sum_t cos(pi j (t - 1/2)/n) u_t.
-The low-rank laws use the (2m+1)- or (B+1)-dimensional covariance C Gamma C^T and Ruben's Beta mixture; the SN law uses the
-tilted Bromwich midpoint rule of certify.py in double precision with the head/power-sum split of the spectrum of K.
 """
 import math
 
 import numpy as np
-from scipy.linalg import cholesky, eigh, toeplitz, matmul_toeplitz
+from scipy import integrate
+from scipy.linalg import eigh, toeplitz, matmul_toeplitz
 from scipy.optimize import brentq
 from scipy.special import gammaln
 
@@ -74,70 +78,133 @@ def make_acf(model, n):
     raise ValueError(model)
 
 
-# ============================================================================ SN / Bartlett b = 1: exact law via one eigendecomposition
+# ============================================================================ SN / Bartlett b = 1: Cholesky-free one-eigh law
 class SNExact:
+    """Exact finite-sample law of T_n via one eigendecomposition of K_tilde = n^-2 A Gamma A^T (no Cholesky)."""
+
     def __init__(self, gamma):
         n = gamma.size
         self.n = n
-        L = cholesky(toeplitz(gamma), lower=True, overwrite_a=True, check_finite=False)
-        s = L.sum(axis=0)                      # L^T 1
-        v = float(s @ s)                       # 1^T Gamma 1
-        w = s / math.sqrt(v)
-        L -= L.mean(axis=0, keepdims=True)     # (I - 11^T/n) L
-        np.cumsum(L, axis=0, out=L)            # D (I - 11^T/n) L
-        K = L.T @ L
-        del L
-        K /= float(n) ** 2
-        kappa, Q = eigh(K, overwrite_a=True, check_finite=False)
-        self.n_clipped = int(np.sum(kappa < 0))            # K is PSD; negative eigenvalues are rounding (recorded, D4)
+        G = toeplitz(gamma)
+        s1 = G.sum(axis=1)                             # Gamma 1
+        v = float(s1.sum())                            # 1^T Gamma 1
+        b = np.cumsum(s1 - s1.mean())[:-1] / float(n)  # n^-1 A Gamma 1 (last entry is identically 0)
+        # Apply A = D (I - 11^T/n) on the left and A^T on the right in O(n^2)
+        G -= G.mean(axis=0, keepdims=True)
+        np.cumsum(G, axis=0, out=G)
+        AG = G[:-1, :]
+        AG -= AG.mean(axis=1, keepdims=True)
+        np.cumsum(AG, axis=1, out=AG)
+        Kt = np.ascontiguousarray(AG[:, :-1])
+        del G, AG
+        Kt /= float(n) ** 2
+        Kt = 0.5 * (Kt + Kt.T)
+        kappa, Q = eigh(Kt, overwrite_a=True, check_finite=False, driver="evd")
+        self.n_clipped = int(np.sum(kappa < 0))
         self.min_kappa_raw = float(kappa.min())
         kappa = np.clip(kappa, 0.0, None)
-        wt2 = (Q.T @ w) ** 2
-        del Q, K
+        b2 = (Q.T @ b) ** 2 / v                        # (q_k^T b)^2 / v
+        del Q, Kt
         order = np.argsort(kappa)[::-1]
         self.kappa = kappa[order]
-        self.w2 = wt2[order]
-        self.w2 /= self.w2.sum()
-        self.scale = n / v                     # c' = c * n / (1^T Gamma 1)
+        self.b2 = b2[order]
+        # Equivalent weights w2_k on nonzero modes for Bromwich path: w2_k = b2_k / kappa_k where kappa_k > 0
+        # Note u(z) = 1 - z sum_k b2_k / (1 + z kappa_k) directly avoids dividing by small kappa_k!
+        self.scale = n / v                             # c' = c * n / (1^T Gamma 1)
 
-    # u(z) and log det(I + zK) with a head / power-sum split (tail |z| kappa <= 0.05; 8 terms, remainder < 1e-12 relative)
-    def _prep(self, zmax):
-        head = self.kappa * zmax > 0.05
-        nh = int(head.sum())
-        kt, wt = self.kappa[nh:], self.w2[nh:]
-        P = [np.sum(kt ** j) for j in range(1, 9)]
-        Wp = [np.sum(wt * kt ** j) for j in range(0, 9)]
-        return nh, P, Wp
+    def _band_prep(self, zmax):
+        nh = int(np.sum(self.kappa * zmax > 0.05))
+        kt, bt = self.kappa[nh:], self.b2[nh:]
+        P = [float(np.sum(kt ** j)) for j in range(1, 9)]
+        Bp = [float(np.sum(bt * (kt ** j))) for j in range(0, 9)]
+        return nh, self.kappa[:nh], self.b2[:nh], P, Bp
 
-    def _logdet_u(self, z, prep):
-        nh, P, Wp = prep
-        kh, wh = self.kappa[:nh], self.w2[:nh]
-        d = 1.0 + z[:, None] * kh[None, :]
-        ld = np.log(d).sum(axis=1)
-        u = (wh[None, :] / d).sum(axis=1)
+    def _eval_band(self, z, band):
+        nh, kh, bh, P, Bp = band
+        if nh > 0:
+            d = 1.0 + z * kh
+            ld = complex(np.sum(np.log(d)))
+            su = complex(np.sum(bh / d))
+        else:
+            ld = 0j
+            su = 0j
+        zp = z
+        ld += zp * P[0]
+        su += Bp[0] - zp * Bp[1]
+        for j in range(2, 9):
+            zp *= z
+            if j & 1:
+                ld += zp * (P[j - 1] / j)
+                su -= zp * Bp[j]
+            else:
+                ld -= zp * (P[j - 1] / j)
+                su += zp * Bp[j]
+        return ld, 1.0 - z * su
+
+    def cdf(self, c, epsabs=1e-13, epsrel=1e-12, limit=2000):
+        """P(T_n <= c) via adaptive Gauss-Kronrod quadrature on the exact one-eigh characteristic function."""
+        cp = c * self.scale
+        kap = self.kappa
+        b2 = self.b2
+        # Two-band head/power-sum split (s <= 5 and s <= 80) accelerates small-s evaluations dramatically
+        b1 = self._band_prep(10.0 * cp)
+        b2p = self._band_prep(160.0 * cp)
+        use_b1 = b1[0] < kap.size // 2
+        use_b2 = b2p[0] < kap.size // 2
+
+        def integrand(s):
+            if s == 0.0:
+                return 0.0
+            z = 2j * s * cp
+            if use_b1 and s <= 5.0:
+                ld, u = self._eval_band(z, b1)
+            elif use_b2 and s <= 80.0:
+                ld, u = self._eval_band(z, b2p)
+            else:
+                d = 1.0 + z * kap
+                ld = complex(np.sum(np.log(d)))
+                u = 1.0 - z * complex(np.sum(b2 / d))
+            r = 1.0 - 2j * s * u
+            lphi = -0.5 * (ld + np.log(r))
+            return math.sin(lphi.imag) * math.exp(lphi.real) / s
+
+        val, _ = integrate.quad(integrand, 0.0, np.inf, epsabs=epsabs, epsrel=epsrel, limit=limit)
+        return 0.5 - val / math.pi
+
+    def _logdet_u_vec(self, z, band):
+        nh, kh, bh, P, Bp = band
+        if nh > 0:
+            d = 1.0 + z[:, None] * kh[None, :]
+            ld = np.log(d).sum(axis=1)
+            su = (bh[None, :] / d).sum(axis=1)
+        else:
+            ld = np.zeros_like(z)
+            su = np.zeros_like(z)
         zp = np.ones_like(z)
         for j in range(1, 9):
             zp = zp * z
-            ld = ld + ((-1) ** (j + 1)) * zp * P[j - 1] / j
+            ld = ld + ((-1) ** (j + 1)) * zp * (P[j - 1] / j)
         zp = np.ones_like(z)
         for j in range(0, 9):
-            u = u + ((-1) ** j) * zp * Wp[j]
+            su = su + ((-1) ** j) * zp * Bp[j]
             zp = zp * z
-        return ld, u
+        return ld, 1.0 - z * su
 
     def theta_plus(self, cp):
-        prep = self._prep(cp * 1e3)
+        kap = self.kappa
+        b2 = self.b2
 
         def h(th):
-            z = np.array([cp / th + 0j])
-            _, u = self._logdet_u(z, prep)
-            return float(u[0].real) - th
+            z = cp / th
+            u = 1.0 - z * float(np.sum(b2 / (1.0 + z * kap)))
+            return u - th
+
         if h(1.0) >= 0:
             return 1.0
         return brentq(h, 1e-10, 1.0, xtol=1e-15, rtol=1e-15)
 
-    def cdf(self, c, theta=0.25, eps=1e-13):
-        """P(T_n <= c) (computed; numerical error < 1e-10)."""
+    def cdf_bromwich(self, c, theta=0.25, eps=1e-13):
+        """P(T_n <= c) via tilted Bromwich midpoint sum (independent cross-check of cdf)."""
         cp = c * self.scale
         L = 20.0
         while _alias_tilt(0.0, L, theta) > eps:
@@ -150,8 +217,8 @@ class SNExact:
         sg = (np.arange(K) + 0.5) * Delta
         s = sg - 1j * theta
         z = 2j * s * cp
-        prep = self._prep(float(np.max(np.abs(z))))
-        ld, u = self._logdet_u(z, prep)
+        band = self._band_prep(float(np.max(np.abs(z))))
+        ld, u = self._logdet_u_vec(z, band)
         tp = self.theta_plus(cp)
         tis = 2j * s
         p1 = 1.0 - tis * tp
@@ -238,12 +305,12 @@ class LowRankExact:
         return 1.0 - self.cdf2(cv * cv)
 
 
-# ============================================================================ simulation (circulant embedding) and local Whittle
+# ============================================================================ simulation, memory estimators & competitors
 class CirculantSampler:
     def __init__(self, gamma):
         n = gamma.size
         row = np.concatenate([gamma, gamma[-2:0:-1]])
-        lam = np.fft.rfft(row).real if False else np.fft.fft(row).real
+        lam = np.fft.fft(row).real
         if lam.min() < -1e-10 * lam.max():
             raise ValueError(f"circulant embedding not nonnegative (min {lam.min():.3e})")
         self.sq = np.sqrt(np.clip(lam, 0, None) / row.size)
@@ -262,8 +329,9 @@ def periodogram_fourier(X, m):
     return (np.abs(F) ** 2) / n
 
 
-def local_whittle(X, m, grid=np.linspace(-0.49, 0.49, 197)):
-    """Robinson (1995) local Whittle estimate of d for each row (grid search + parabolic refinement)."""
+def local_whittle(X, m, grid=np.linspace(-0.49, 0.49, 197), return_G=False):
+    """Robinson (1995) local Whittle estimate of d for each row (grid search + interior parabolic refinement).
+    Boundary minima (j = 0 or j = G - 1) are kept at the boundary rather than snapped inward."""
     n = X.shape[1]
     I = periodogram_fourier(X, m)
     lam = 2 * math.pi * np.arange(1, m + 1) / n
@@ -272,12 +340,93 @@ def local_whittle(X, m, grid=np.linspace(-0.49, 0.49, 197)):
     R = np.empty((X.shape[0], grid.size))
     for i, d in enumerate(grid):
         R[:, i] = np.log(np.mean(I * lam[None, :] ** (2 * d), axis=1)) - 2 * d * mean_llam
-    j = np.clip(np.argmin(R, axis=1), 1, grid.size - 2)
-    r0, r1, r2 = R[np.arange(R.shape[0]), j - 1], R[np.arange(R.shape[0]), j], R[np.arange(R.shape[0]), j + 1]
+    j_raw = np.argmin(R, axis=1)
+    interior = (j_raw > 0) & (j_raw < grid.size - 1)
+    jc = np.clip(j_raw, 1, grid.size - 2)
+    idx = np.arange(X.shape[0])
+    r0, r1, r2 = R[idx, jc - 1], R[idx, jc], R[idx, jc + 1]
     h = grid[1] - grid[0]
     den = r0 - 2 * r1 + r2
-    off = np.where(den > 0, 0.5 * (r0 - r2) / np.where(den > 0, den, 1.0), 0.0)
-    return np.clip(grid[j] + off * h, -0.49, 0.49)
+    off = np.where(interior & (den > 0), 0.5 * (r0 - r2) / np.where(den > 0, den, 1.0), 0.0)
+    dhat = np.clip(grid[j_raw] + off * h, grid[0], grid[-1])
+    if not return_G:
+        return dhat
+    # 2 pi G_hat = mean_j (lam_j^(2 dhat) * 2 pi I(lam_j))
+    twopi_G = np.mean(I * (lam[None, :] ** (2.0 * dhat[:, None])), axis=1)
+    return dhat, twopi_G
+
+
+def exact_local_whittle(X, m, grid=np.linspace(-0.49, 0.49, 99)):
+    """Demeaned (feasible) Exact Local Whittle estimator (Shimotsu & Phillips 2005; Shimotsu 2010) for each row of X.
+    Evaluates (1 - L)^d (x_t - xbar) via FFT convolution on the grid, then applies interior parabolic refinement."""
+    X = np.asarray(X, dtype=float)
+    Xc = X - X.mean(axis=1, keepdims=True)
+    B, n = Xc.shape
+    lam = 2 * math.pi * np.arange(1, m + 1) / n
+    mean_llam = float(np.mean(np.log(lam)))
+    nfft = 1 << int(math.ceil(math.log2(2 * n)))
+    FX = np.fft.rfft(Xc, n=nfft, axis=1)
+    # Precompute fractional filter FFTs for all grid points once
+    R = np.empty((B, grid.size))
+    idx_k = np.arange(1, n, dtype=float)
+    for i, d in enumerate(grid):
+        pi = np.empty(n)
+        pi[0] = 1.0
+        # pi_k = prod_{j=1}^k (j - 1 - d) / j
+        pi[1:] = np.cumprod((idx_k - 1.0 - d) / idx_k)
+        fpi = np.fft.rfft(pi, n=nfft)
+        dX = np.fft.irfft(FX * fpi[None, :], n=nfft, axis=1)[:, :n]
+        I = (np.abs(np.fft.rfft(dX, axis=1)[:, 1:m + 1]) ** 2) / n
+        R[:, i] = np.log(np.mean(I, axis=1)) - 2 * d * mean_llam
+    j_raw = np.argmin(R, axis=1)
+    interior = (j_raw > 0) & (j_raw < grid.size - 1)
+    jc = np.clip(j_raw, 1, grid.size - 2)
+    rows = np.arange(B)
+    r0, r1, r2 = R[rows, jc - 1], R[rows, jc], R[rows, jc + 1]
+    h = grid[1] - grid[0]
+    den = r0 - 2 * r1 + r2
+    off = np.where(interior & (den > 0), 0.5 * (r0 - r2) / np.where(den > 0, den, 1.0), 0.0)
+    return np.clip(grid[j_raw] + off * h, grid[0], grid[-1])
+
+
+def adg_mac_stat(X, m, dhat=None, twopi_G=None, clip_d=(-0.49, 0.49)):
+    """Memory- and autocorrelation-consistent (MAC) studentised mean statistic of Abadir, Distaso & Giraitis (2009):
+        t_MAC = n^(1/2 - dhat) * xbar / sqrt(V_MAC),
+        V_MAC = (2 pi G_hat) * Gamma(1 - 2 dhat) / ((2 dhat + 1) Gamma(1 + dhat) Gamma(1 - dhat)),
+    which has an asymptotic N(0, 1) distribution for d in (-1/2, 1/2)."""
+    X = np.asarray(X, dtype=float)
+    n = X.shape[1]
+    if dhat is None or twopi_G is None:
+        dhat, twopi_G = local_whittle(X, m, return_G=True)
+    d = np.clip(np.asarray(dhat, dtype=float), clip_d[0], clip_d[1])
+    log_cf = gammaln(1.0 - 2.0 * d) - np.log(2.0 * d + 1.0) - gammaln(1.0 + d) - gammaln(1.0 - d)
+    V_mac = np.maximum(twopi_G * np.exp(log_cf), 1e-300)
+    xbar = X.mean(axis=1)
+    return (n ** (0.5 - d)) * xbar / np.sqrt(V_mac)
+
+
+def subsampling_sn_pvalue(X, b=None):
+    """Rate-free self-normalised subsampling (Politis, Romano & Wolf 1999; Shao 2010):
+    computes the empirical upper-tail p-value of T_n against the (n - b + 1) overlapping block statistics T_b^{(i)}
+    centred at the full-sample mean xbar, so no memory parameter H or convergence rate needs to be estimated."""
+    X = np.asarray(X, dtype=float)
+    B, n = X.shape
+    if b is None:
+        b = max(12, int(round(n ** 0.5)))
+    xbar = X.mean(axis=1)
+    S_full = np.cumsum(X - xbar[:, None], axis=1)
+    Tn = n * (xbar ** 2) / ((S_full * S_full).sum(axis=1) / (n ** 2))
+    # Overlapping blocks of length b, centred at xbar
+    nblk = n - b + 1
+    Xc = X - xbar[:, None]
+    # Strided view (B, nblk, b)
+    s0, s1 = Xc.strides
+    W = np.lib.stride_tricks.as_strided(Xc, shape=(B, nblk, b), strides=(s0, s1, s1))
+    wbar = W.mean(axis=2)                                       # (B, nblk)
+    Sw = np.cumsum(W - wbar[:, :, None], axis=2)
+    Cb = (Sw * Sw).sum(axis=2) / (b ** 2)
+    Tb = b * (wbar ** 2) / np.maximum(Cb, 1e-300)
+    return np.mean(Tb >= Tn[:, None], axis=1)
 
 
 def stats_from_samples(X, m_list=(), B_list=()):

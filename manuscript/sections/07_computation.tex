@@ -10,36 +10,49 @@ $X_J=Z^2-cW_J$ and $\bar\mu_J=\min(\tau_J,\bar c_J)$.
 Let $\frac12\le H<1$, $c>0$, $J\ge1$, $t>0$, and
 $s_{\mathrm{hi}}=\tau_J+2\sqrt{\bar\mu_J\tau_Jt}+2\bar\mu_Jt$, $s_{\mathrm{lo}}=\max(0,\tau_J-2\sqrt{\bar\mu_J\tau_Jt})$. Then
 \[P(X_J\le c\,s_{\mathrm{lo}})-e^{-t}\;\le\;F_H(c)\;\le\;P(X_J\le c\,s_{\mathrm{hi}})+e^{-t}.\]
-For every $x$, every $\Delta>0$ and every tilt $\vartheta\in(0,\frac12)$, the exceedance probability satisfies
+For every $x\ge0$ and every tilt $\vartheta\in(0,\frac12)$, the exceedance probability satisfies
+\[\big|P(X_J>x)-I_{s_{\max}}(x)\big|\le\epsilon(s_{\max},x),\]
+where $I_{s_{\max}}(x)=\frac1\pi\int_0^{s_{\max}}\operatorname{Re}\!\big(\mathcal M(\vartheta+\mathrm is)e^{-(\vartheta+\mathrm is)x}/(\vartheta+\mathrm is)\big)\dd s$
+is the finite Bromwich integral (with zero aliasing error) and $\epsilon(s_{\max},x)$ is the explicit tail bound given
+in \cref{app:proofs,app:certificate}. Likewise, for any lattice spacing $\Delta>0$ and truncation $K$, the tilted
+midpoint Poisson sum $S_{\Delta,K}(x)$ satisfies
 \[\big|P(X_J>x)-S_{\Delta,K}(x)\big|\le\epsilon_\Delta^+(x)+\epsilon_\Delta^-+\epsilon_K,\]
-where $S_{\Delta,K}$ is the sum of the first $K$ terms of the tilted midpoint sum $S_\Delta$ of the inversion integral,
-$\epsilon_\Delta^\pm$ bound the upper and lower aliases of $S_\Delta$ and $\epsilon_K$ the omitted terms, all given
-explicitly in the proof (\cref{app:proofs}) and \cref{app:certificate}; hence $P(X_J\le x)=1-P(X_J>x)$ is enclosed by an interval of the same width. With $x=c\,s_{\mathrm{lo}}$ and
-$x=c\,s_{\mathrm{hi}}$ the two statements together give a computable enclosure of $F_H(c)$.
+with explicit alias bounds $\epsilon_\Delta^\pm$ and tail bound $\epsilon_K=\epsilon((K-\frac12)\Delta,x)$. Evaluating
+either bound at $x=c\,s_{\mathrm{lo}}$ and $x=c\,s_{\mathrm{hi}}$ yields a deterministic enclosure of $F_H(c)$.
 \end{theorem}
 
 The theorem reduces the infinite-dimensional problem to a finite one with explicit, rigorous error terms: the
 remainder enters only through $\tau_J$, which is a closed form, and $\bar c_J$ from \cref{thm:eig}; the remainder's
 dependence on $(Z,W_J)$ never needs to be known. The finite problem is solved in ball arithmetic \citep{Joh17}.
 The characteristic function of $X_J$ is evaluated without an eigendecomposition of the $(J+1)$-dimensional covariance:
-the odd cosine coordinates are uncorrelated with the rest (\cref{prop:coords}c), so the determinant factorises into an odd block, an even block and a scalar Schur
-complement carrying $Z$; each factor is evaluated as a head block of up to $128$ coordinates, diagonalised approximately in floating point and
-corrected by an exact similarity transformation in ball arithmetic, and a tail block bounded through its trace,
-Frobenius norm and couplings.
-The principal branch of every square root is the correct one on the whole strip $0\le\operatorname{Re}z<\frac12$
-(\cref{lem:branch}): the scalar factor carrying $Z$, $r(z)=1-2z\,s^\top(I+2zB)^{-1}s$, has
-$\operatorname{Im}r(\vartheta+\mathrm it)=-2t\sum_js_j^2/|1+2zb_j|^2$ and $r(\vartheta)\ge1-2\vartheta$, so it never meets the
-cut $(-\infty,0]$. Critical values follow by bracketing: if the certified lower bound of $F_H$ at $q^+$ exceeds $p$ and
-the certified upper bound at $q^-$ falls below $p$, then $q_p\in[q^-,q^+]$.
+the odd cosine coordinates are uncorrelated with the rest (\cref{prop:coords}c), so the determinant factorises into an
+odd block, an even block and a scalar Schur complement carrying $Z$; each factor is evaluated as a head block of up to
+$128$ coordinates, diagonalised approximately in floating point and corrected by an exact similarity transformation in
+ball arithmetic, and a tail block bounded through its trace, Frobenius norm and couplings (\cref{lem:logdet}). To avoid
+$O(J^2)$ tail assembly at large $J$, the tail Frobenius norm $\|A_{tt}\|_F^2$ is split into a symmetric near-field
+summation ($768$ modes) plus an exact Arb far-tail diagonal and an analytical far-tail off-diagonal bound in Arb
+(\cref{app:certificate}), accelerating the $J=16384$ system build by more than an order of magnitude while keeping the
+tail radius below $10^{-16}$. The principal branch of every square root is holomorphic not only on the strip
+$0\le\operatorname{Re}z<\frac12$ but on the larger slit domain $\Omega_{\mathrm{ext}}=\Omega\cup\{\operatorname{Im}z>0\}$
+(\cref{lem:branch}), which enables direct adaptive Petras/Gauss--Legendre complex ball quadrature of $I_{s_{\max}}(x)$
+via Arb's \texttt{acb.integral} \citep{Joh18} over geometric panels on $[0,s_{\max}]$ with zero aliasing error, and a
+cancellation-free difference integral for $x_{\mathrm{hi}}-x_{\mathrm{lo}}$. The tilted midpoint sum $S_{\Delta,K}(x)$
+serves as an independent cross-check. Critical values follow by bracketing: if the certified lower bound of $F_H$ at
+$q^+$ exceeds $p$ and the certified upper bound at $q^-$ falls below $p$, then $q_p\in[q^-,q^+]$.
 
-All production values use $J=16384$ and $t=25$, so that each of the two exceptional probabilities is $e^{-25}<1.4\times10^{-11}$.
-The protocol fixed these choices before production, after a benchmark over $J=512,\dots,16384$ (\cref{fig:certificate}b):
-the width of the enclosure decreases like $J^{-1/2-2H}$, as \cref{prop:rate} below predicts (the measured local slopes
-differ from $-\frac12-2H$ by at most \pthree{e1-slope-maxdev} for $J\le8192$), and at $J=16384$ it is at most
+The production Bartlett critical-value grid uses $J=16384$ and $t=25$, so that each of the two exceptional probabilities is
+$e^{-25}<1.4\times10^{-11}$, selected after a truncation benchmark over $J=512,\dots,16384$ (\cref{fig:certificate}b):
+the width of the enclosure decreases like $J^{-1/2-2H}$, as \cref{prop:rate} predicts (measured local slopes differ from
+$-\frac12-2H$ by at most \pthree{e1-slope-maxdev} for $J\le8192$), and at $J=16384$ it is at most
 \pthree{e1-width-max-16384} in probability. For $H\ge0.95$ the last doubling of $J$ gains less, because the
-finite-dimensional radius, which does not decrease with $J$, is reached. The tilted inversion
-($\vartheta=\frac14$) needs \pthree{e1-tilt-node-ratio-min}--\pthree{e1-tilt-node-ratio-max} times fewer nodes than the
-untilted one at the same accuracy.
+finite-dimensional ball radius, which does not decrease with $J$, is reached. In the cross-check midpoint rule, tilting
+($\vartheta=\frac14$) reduces the node count by a factor of \pthree{e1-tilt-node-ratio-min}--\pthree{e1-tilt-node-ratio-max}
+relative to untilted summation, while on benchmark T4 the adaptive rule uses $412$ integrand evaluations and accelerates the $J=16384$ certificate by \pthree{e5-T4-speedup}$\times$ overall
+(\pthree{e5-T4-cert-s}\,s total, of which \pthree{e5-T4-cert-eval-s}\,s is evaluation, versus \pthree{e5-T4-old-s}\,s for
+the tilted midpoint baseline).
+
+In \cref{fig:certificate}(a), the eigenvalues are scaled by their theoretical upper bound and the lower bound
+on this scale is one half. Panel~(b) uses the $90$th percentile; dashed lines show the predicted slope.
 
 The rate of the enclosure, and what it depends on, can be stated precisely.
 
@@ -56,13 +69,11 @@ which do not decrease with $J$, and a quantile bracket has width close to $w_J/f
 
 \begin{figure}[tbp]\centering
 \includegraphics[width=\textwidth]{fig6_certificate.pdf}
-\caption{Spectrum and certificate of the fractional Brownian bridge. (a)~Eigenvalues relative to the upper bound of
-\cref{thm:eig} (Galerkin, $J=2048$); the lower bound is $\frac12$. (b)~Width of the certified enclosure of $F_H$ at the
-$90\,\%$ quantile against $J$; dashed: slope $-\frac12-2H$ (\cref{prop:rate}), offset for visibility.}\label{fig:certificate}
+\caption{Fractional bridge eigenvalue bounds and certified probability widths as truncation order increases.}\label{fig:certificate}
 \end{figure}
 
 \subsection{Computational methods on identical targets}\label{sec:methods}
-We compared \pthree{e5-n-impl} implementations and modes of \pthree{e5-n-methods} distinct methods for generalized
+We compared \pthree{e5-n-impl} implementations and modes of \pthree{e5-n-methods} distinct methods for generalised
 chi-square probabilities on four targets: a fixed-$m$ limit (T1, $m=8$, $H=0.8$), an EWC limit (T2, $B=16$, $H=0.8$),
 the exact finite-sample law of $T_n$ at $n=1000$ under ARFIMA$(0,0.2,0)$ (T3), and the limit law of $T_H$ at $H=0.75$
 (T4). Every method received the same weights. The covariance of the fixed-smoothing coordinates is a shared input;
@@ -74,40 +85,44 @@ exact law of \cref{prop:exactn}(b), which the Imhof and Bromwich implementations
 outside its documented domain is run and labelled but not compared: the approximation of \citet{LTZ09} is documented
 for non-negative definite forms, and all four targets are indefinite. The R methods for positive forms, those of
 \citet{Hal83} and \citet{BE88} (HBE) and \citet{LPB00} (LPB4) as implemented by \citet{BA16}, and the saddlepoint and
-\citet{Sat46} options of the survey package \citep{Lum04}, are applied to the negative part of the form and integrated
-over the positive one by adaptive quadrature; a $64$-node Gauss--Hermite rule, which does not resolve the kink of that
-integrand, changes their values by up to \pthree{e5-gh-maxdiff-pp}\,pp.
+\citet{Sat46} options of the \texttt{survey} package \citep{Lum04}, are applied to the negative part of the form and
+integrated over the positive one by adaptive quadrature; a $64$-node Gauss--Hermite rule, which does not resolve the
+kink of that integrand, changes their values by up to \pthree{e5-gh-maxdiff-pp}\,pp.
 
 \begin{figure}[tbp]\centering
 \includegraphics[width=\textwidth]{fig5_methods.pdf}
-\caption{Accuracy and cost of computational methods on identical targets (T1, T3, T4; \cref{sec:methods}). (a)~Size
-error at the $95\,\%$ quantile; open markers: upper bounds (value inside the certified enclosure); grey bars: certified
-half-widths; shaded: double-precision floor. (b)~Wall-clock time including each method's spectral step.}\label{fig:methods}
+\caption{Probability error and computation time for numerical methods on three benchmark targets.}\label{fig:methods}
 \end{figure}
 
-Three conclusions follow. First, on the low-rank targets T1 and T2 every exact inversion method, Imhof's integral in
+Open markers in \cref{fig:methods}(a) denote upper error bounds; grey bars show certified half-widths.
+In panel~(b), the open square on T3 gives the cost of an additional cutoff after setup.
+
+On the low-rank targets T1 and T2 every exact inversion method---Imhof's integral in
 three implementations (SciPy, the R package of \citet{DL10}, and the \texttt{imhof} and \texttt{auto} modes of
-\citet{Das25}), Davies' algorithm, Ruben's series and our tilted Bromwich rule, has error at most
-\pthree{e5-T12-exact-maxerr} in probability at a cost below \pthree{e5-T12-exact-maxs}\,s, and the certified enclosure of \cref{prop:fixedcert},
-of width \pthree{e5-T12-cert-width}, costs \pthree{e5-T12-cert-s}\,s. Second, the approximations are not accurate enough
-for critical values. At the $5\,\%$ level the saddlepoint approximation of \citet{Kuo99} errs by up to
-\pthree{e5-lr-err-pp}\,pp in size, HBE by \pthree{e5-hbe-err-pp}, the saddlepoint option of survey by
-\pthree{e5-svsaddle-err-pp}, LPB4 by \pthree{e5-lpb4-err-pp} and Satterthwaite's two-moment approximation by
-\pthree{e5-satt-err-pp}\,pp; Pearson's three-moment approximation (the \texttt{pearson} mode of \citet{Das25}) errs by
-\pthree{e5-3mom-T1-pp}\,pp on T1 and returns the probability $1$ on T3 and T4, an error of
-\pthree{e5-approx-maxerr-pp}\,pp. A hybrid of the type studied by \citet{CL19}, which keeps the $20$ largest weights exactly and replaces
-the others by a two-moment scaled chi-square with fractional degrees of freedom, is accurate to
-\pthree{e5-lead20-err} in probability on every target. Third, for the long-memory targets the cost is the spectral step.
-On T3 the exact law of \cref{prop:exactn}(b) pays \pthree{e5-T3-setup-s}\,s once, for one Cholesky factorisation and one
-eigendecomposition, and then \pthree{e5-T3-query-s}\,s per cutoff, whereas a method that needs the eigenvalues of the
-cutoff-dependent ratio form pays \pthree{e5-T3-eig-s}\,s for them at every cutoff (\pthree{e5-T3-imhof-s}\,s in all with
-Imhof's integral). For one cutoff the costs are comparable; over \pthree{e5-amort-m} cutoffs they are
-\pthree{e5-amort-ours-s}\,s and \pthree{e5-amort-imhof-s}\,s, with agreement to \pthree{e5-amort-maxdiff}. The
-\texttt{ifft} mode of \citet{Das25} took \pthree{e5-T3-ifft-s}\,s on T3 and was less accurate, and on T4 with $J=2048$
-it exceeded the available memory; the \texttt{ray} mode took \pthree{e5-T4-ray2048-s}\,s there. On T4, Imhof's
-integral on the $J=512$ cosine coordinates, with the remainder replaced by its mean, lies inside the certified
-enclosure, of width \pthree{e5-T4-ref-width}, so its error is at most \pthree{e5-T4-galerkin-err}; it takes
-\pthree{e5-T4-galerkin-s}\,s against \pthree{e5-T4-cert-s}\,s for the certified evaluation at $J=16384$, including the
-construction of the system. We recommend it whenever a guarantee is not needed, and use the certificate to confirm it.
-All times are wall-clock times on one machine (\pthree{e5-env}, single-threaded linear algebra) and indicate orders of
-magnitude only.
+\citet{Das25}), Davies' algorithm, Ruben's series and our tilted Bromwich rule---has error at most
+\pthree{e5-T12-exact-maxerr} in probability at a cost below \pthree{e5-T12-exact-maxs}\,s, and the certified enclosure of
+\cref{prop:fixedcert}, of width \pthree{e5-T12-cert-width}, costs \pthree{e5-T12-cert-s}\,s. Moment and
+saddlepoint approximations are not accurate enough for critical values. At the $5\,\%$ level the saddlepoint
+approximation of \citet{Kuo99} errs by up to \pthree{e5-lr-err-pp}\,pp in size, HBE by \pthree{e5-hbe-err-pp}, the
+saddlepoint option of \texttt{survey} by \pthree{e5-svsaddle-err-pp}, LPB4 by \pthree{e5-lpb4-err-pp} and
+Satterthwaite's two-moment approximation by \pthree{e5-satt-err-pp}\,pp; Pearson's three-moment approximation (the
+\texttt{pearson} mode of \citet{Das25}) errs by \pthree{e5-3mom-T1-pp}\,pp on T1 and returns probability $1$ on T3 and
+T4, an error of \pthree{e5-approx-maxerr-pp}\,pp. A hybrid of the type studied by \citet{CL19}, which keeps the $20$
+largest weights exactly and replaces the others by a two-moment scaled chi-square with fractional degrees of freedom, is
+accurate to \pthree{e5-lead20-err} in probability on every target. For the long-memory targets the cost is
+dominated by the spectral step. On T3, the Cholesky-free Woodbury implementation of \cref{prop:exactn}(b)
+(\texttt{SNExact}) forms the demeaned cumulative-sum covariance directly in $O(n^2)$ operations and performs one
+divide-and-conquer eigendecomposition in \pthree{e5-T3-setup-s}\,s, followed by a two-band head/power-sum adaptive
+Imhof quadrature costing \pthree{e5-T3-query-s}\,s per cutoff, whereas competitors must diagonalise the cutoff-dependent
+ratio form at every cutoff (\pthree{e5-T3-eig-s}\,s for Cholesky plus eigenvalues, \pthree{e5-T3-imhof-s}\,s in total
+with Imhof's integral). Thus \texttt{SNExact} is already competitive on a single cutoff and achieves a
+\pthree{e5-amort-ratio}$\times$ speedup over \pthree{e5-amort-m} cutoffs (\pthree{e5-amort-ours-s}\,s versus
+\pthree{e5-amort-imhof-s}\,s, agreeing to \pthree{e5-amort-maxdiff}). The \texttt{ifft} mode of \citet{Das25} took
+\pthree{e5-T3-ifft-s}\,s on T3 with lower accuracy, and on T4 with $J=2048$ exceeded available memory; the Monte Carlo
+ray-tracing \texttt{ray} mode took \pthree{e5-T4-ray2048-s}\,s there. On T4, Imhof's integral on the $J=512$ cosine
+coordinates, with the remainder replaced by its mean, lies inside the certified enclosure of width
+\pthree{e5-T4-ref-width} (error at most \pthree{e5-T4-galerkin-err}) in \pthree{e5-T4-galerkin-s}\,s, while the full
+certified \CosCert{} evaluation at $J=16384$ now takes only \pthree{e5-T4-cert-s}\,s including system construction
+(\pthree{e5-T4-cert-eval-s}\,s for the adaptive complex ball integral itself---comparable in speed to uncertified
+Galerkin $J=2048$ with a deterministic probability enclosure of width $1.9\times10^{-8}$ on T4). All times are wall-clock times on one machine
+(\pthree{e5-env}, single-threaded linear algebra) and indicate orders of magnitude only.

@@ -1,0 +1,7 @@
+# Empirical series
+
+The three CSV files contain the consecutive observations used in Section 6. Run `python code/experiments/e13_empirical.py` from the repository root to reproduce the empirical table.
+
+- **New South Wales electricity demand.** Monash Australian Electricity Demand Dataset, series T1 (NSW). Daily energy is half the sum of the 48 half-hourly load readings. The analysis uses 100 times the log ratio of the daily total to the total 365 days earlier, from 1 March 2012 to 28 February 2015 (1,095 observations). Growth uses the original totals before rounding the archived CSV. [Source data](https://doi.org/10.5281/zenodo.4659727)
+- **London air quality.** Monash KDD Cup 2018 dataset with missing values, series T228 (Greenwich–Westhorne Avenue, GR9, PM2.5). Each daily mean uses the available hourly concentrations, followed by a natural logarithm before CSV rounding. From 1 January 2017 to 30 March 2018, 76 of 10,896 hourly slots are missing across 32 days. All 454 days contribute. The values 10 and 15 micrograms per cubic metre are illustrative reference concentrations for the geometric mean. [Source data](https://doi.org/10.5281/zenodo.3898318)
+- **Nile minima.** The 663 values in centimetres correspond to the annual minima at the Roda Gauge, AD 622–1284, distributed as NileMin in longmemo. The analysis uses a reference level of 1,100 cm. [Source series](https://github.com/cran/longmemo/blob/master/data/NileMin.R)

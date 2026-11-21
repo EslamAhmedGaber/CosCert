@@ -3,31 +3,26 @@
 A published critical value $\hat c$ for nominal level $\alpha$ is judged by the size it actually delivers,
 $P(\text{statistic}>\hat c)$ under the law it is meant for, not by its relative error: near the tail of a heavy-tailed
 law a $1\,\%$ error in $\hat c$ can be negligible or important depending on the density there. For every value in the
-ledger (\cref{app:audit}) we record the source, page and table; the statistic and its normalisation (\cref{tab:norm});
-the tail; the simulation design and number of replications $N$; and the version of the document that was read. We
-then compute the true size, certified where the law is certified, and compare its deviation from $\alpha$ with the Monte
-Carlo standard error of the source's own design, $\sqrt{\alpha(1-\alpha)/N}$. The verdict rules were fixed before the
-computation: a value is \emph{accurate within Monte Carlo error} if its size deviation is within three standard errors.
-The protocol allowed the word \emph{inaccurate} for deviations that the stated design does not explain or that exceed
-$0.1$\,pp at the $5\,\%$ level; we use it only in the first, stricter sense, for values more than three standard errors
-from nominal under the law they are meant for (class~E), and describe the others by their class. Each value receives
-one of five classes, assigned in this order. A value more than three standard errors from nominal in the limit is in
-class~(C) if it is within three standard errors under the exact law of a finite design that we infer the source
-simulated, and in class~(E) otherwise. A value within three standard errors is in class~(D) if its block (one source,
-statistic and memory regime, $H=\frac12$, $H>\frac12$ or $H<\frac12$) has at least three values, all within three standard
-errors, all deviating in one direction, with standardised sum $|\sum_iz_i|/\sqrt k>3$, where $z_i$ is a deviation in
-standard errors; otherwise it is in class~(B) if at the $5\,\%$ level it misses $5\,\%$ by more than $0.1$\,pp, and in
-class~(A) if not. Classes~C and~D were added after the patterns described below had been seen, and are reported as
-such. The standardised sum treats the values of a block as independent, but the values in one row of a table are
-usually quantiles of one simulated sample; class~D therefore marks a one-sign pattern, not a deviation established
-beyond Monte Carlo error.
+ledger (Supplementary Material Section~S.3) we record the source, page and table; the statistic and its normalisation
+(\cref{tab:norm}); the tail; the simulation design and number of replications $N$; and the version of the document that
+was read. We then compute the true size, certified where the law is certified, and compare its deviation from $\alpha$
+with the Monte Carlo standard error of the source's own design, $\sqrt{\alpha(1-\alpha)/N}$. A value is classified as
+\emph{accurate within Monte Carlo error} if its size deviation is within three standard errors, and \emph{inaccurate}
+only when its deviation exceeds three standard errors under the law it is meant for (class~E). Each value receives one
+of five classes, assigned in the following precedence order:
+(i)~a value more than three standard errors from nominal in the limit is assigned to class~(C) if it lies within three
+standard errors under the exact law of a finite design that we infer the source simulated, and to class~(E) otherwise;
+(ii)~a value within three standard errors is assigned to class~(D) if its block (one source, statistic and memory regime,
+$H=\frac12$, $H>\frac12$ or $H<\frac12$) has at least three values, all within three standard errors and all deviating in
+one direction, with standardised sum $|\sum_iz_i|/\sqrt k>3$, where $z_i$ is a deviation in standard errors;
+(iii)~otherwise it is assigned to class~(B) if at the $5\,\%$ level it misses $5\,\%$ by more than $0.1$\,pp, and to
+class~(A) if not. Classes~C and~D are diagnostic refinements introduced after the systematic patterns documented below
+were observed. Because values within one row of a table typically share one simulated sample, the standardised sum in
+class~D flags a one-sign pattern rather than a deviation established beyond Monte Carlo error.
 
 \begin{figure}[tbp]\centering
 \includegraphics[width=\textwidth]{fig4_audit.pdf}
-\caption{Size deviation of published critical values (pp); grey: $\pm3$ Monte Carlo standard errors of each
-source's design. (a)~Sources at $H=\frac12$. (b)~\citet[Table~1]{HI17}, $\delta\ge-0.3$. (c)~Same table,
-$\delta=-0.49$, $-0.4$: limit (filled), inferred finite design (open). (d)~\citet{MP09}: limit (filled), their
-design (open); bars: $\pm3$ raw-quantile standard errors (reference scale, not a bound).}\label{fig:audit}
+\caption{Size errors of published cutoffs against limiting and finite-design reference laws.}\label{fig:audit}
 \end{figure}
 
 \paragraph{$H=\frac12$} The values of \citet{AP97} and \citet{KV02} are exact to the printed digits: the largest
@@ -64,7 +59,7 @@ the increments; the ARFIMA design is our inference from this match, so class~C i
 The values are accurate for that design but are not limit critical values, and for strongly antipersistent series the critical value
 must be taken from the exact finite-sample law at the actual $n$ (\cref{prop:exactn}). For $\delta\ge-0.3$ the table is
 accurate to its Monte Carlo precision of about $\pm$\pthree{audit-hi-2se}\,pp in size, which is larger than the effect
-of $\delta$ on the critical value at small $|\delta|$; the certified values replace it (\cref{app:tables}).
+of $\delta$ on the critical value at small $|\delta|$; the certified values replace it (Supplementary Material Section~S.1).
 
 \paragraph{Bartlett values of \citet{MP09}} McElroy and Politis do not print simulated quantiles: for each kernel and
 memory parameter $\beta=2H-1$ they print the coefficients of a polynomial fit of the $\log$ critical value in the
@@ -91,20 +86,23 @@ against deviations of \pthree{audit-mp-T3-round-mindev}\,pp and more. The row $\
 \pthree{audit-mp-T1-devmax}\,pp, \pthree{audit-mp-T1-minz}--\pthree{audit-mp-T1-maxz} standard errors (class~E,
 conservative); the rows $\beta=-0.6$ and $-0.2$ are within Monte Carlo error.
 
+Grey bands in \cref{fig:audit} represent three Monte Carlo standard errors. Filled and open markers in panels
+(c) and (d) use limiting and finite-design references. Panel~(d) also shows three raw-quantile standard errors
+as a reference scale. The superscript in \cref{tab:audit} indicates an entry without Monte Carlo error.
+
 \paragraph{Summary} Of the \pthree{audit-n-values} audited values (the \pthree{audit-n-dup} values of the 1990 KPSS working
 paper, identical to those of the article, are counted once), \pthree{audit-n-AB} are within three standard errors
 of nominal in the law they are meant for (classes A and B), \pthree{audit-n-C} are consistent with a finite design that
 we infer their source simulated but not with the limit (C), \pthree{audit-n-D} share a one-sign pattern within Monte
 Carlo error (D), and
 \pthree{audit-n-E} are more than three standard errors from nominal (E), all of them fitted McElroy--Politis values
-at $\beta<0$; \cref{tab:audit} lists the classes by source and \cref{app:audit} every value. Two messages follow for the
+at $\beta<0$; \cref{tab:audit} lists the classes by source and Supplementary Material Tables~S.5--S.7 every value. Two messages follow for the
 user of a table. Monte Carlo precision of $\pm0.2$ to $\pm0.4$\,pp in size is all that most published tables deliver,
 and \pthree{audit-n-B} values miss $5\,\%$ by more than $0.1$\,pp for that reason alone. And for the long-memory tables
 the systematic component, whether from the fit or from the simulated design, can be larger than the Monte Carlo error.
 
 \begin{table}[tbp]\centering\small
-\caption{Verdicts by source. Deviation: true size minus nominal (pp); s.e.: Monte Carlo standard error of the
-source's design; classes as in the text. \textsuperscript{a}No Monte Carlo error. The 1990 KPSS working paper,
-identical to the article, is counted once.}\label{tab:audit}
+\caption{Published critical values classified by source, size discrepancy and simulation uncertainty.}\label{tab:audit}
 \input{tables/tab_audit.tex}%
 \end{table}
+\FloatBarrier

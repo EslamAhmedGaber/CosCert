@@ -258,4 +258,93 @@ def test_legacy_certified_names_are_disabled():
     for name in ("cdf_X_certified", "cdf_T_certified"):
         with pytest.raises(NotImplementedError, match="_tilt"):
             getattr(cf.BridgeSystem, name)(None, 1.0)
+    assert callable(getattr(cf.BridgeSystem, "cdf_T_certified_quad"))
     assert callable(getattr(cf.BridgeSystem, "cdf_T_certified_tilt"))
+
+
+# ---------------------------------------------------------------- upgrade tests (fast certificate, SNExact, competitors)
+@pytest.mark.parametrize("H", ["0.50", "0.60", "0.75", "0.95"])
+def test_fast_nested_tail_frobenius_encloses_direct(H):
+    """fast_nested_tail_frobenius encloses nested_tail_frobenius for both parities and all heads."""
+    from p3 import certify as cf
+    km = cf.Kummer(H, 1024)
+    heads = (8, 16, 32, 64)
+    for modes in (np.arange(1, 1024, 2), np.arange(2, 1025, 2)):
+        ref = cf.nested_tail_frobenius(km, modes, heads)
+        fast = cf.fast_nested_tail_frobenius(km, modes, heads, n_near=256)
+        for h in heads:
+            s0, e0 = ref[h]
+            s1, e1 = fast[h]
+            assert s1 - e1 <= s0 + e0 and s0 - e0 <= s1 + e1
+
+
+@pytest.mark.parametrize("H,q", [("0.50", 45.526085752448), ("0.75", 163.28), ("0.95", 900.0)])
+def test_certified_quad_matches_tilt_and_anchor(H, q):
+    """Adaptive acb.integral Bromwich certificate overlaps the tilted midpoint certificate and encloses 0.95 at H=0.5."""
+    from flint import ctx
+    from p3 import certify as cf
+    ctx.prec = 128
+    s = cf.BridgeSystem(H, 256)
+    rq = s.cdf_T_certified_quad(q)
+    rt = s.cdf_T_certified_tilt(q)
+    assert max(rq["lo"], rt["lo"]) <= min(rq["hi"], rt["hi"])
+    if H == "0.50":
+        assert rq["lo"] < 0.95 < rq["hi"]
+
+
+def test_sn_exact_woodbury_matches_bromwich_and_mpmath():
+    """Cholesky-free Woodbury SNExact.cdf agrees with SNExact.cdf_bromwich and 30-digit mpmath Imhof to < 1e-12."""
+    g = fn.acf_arfima0(0.25, 64)
+    sn = fn.SNExact(g)
+    for c in (12.5, 45.52608575, 180.0):
+        v_quad = sn.cdf(c)
+        v_brom = sn.cdf_bromwich(c)
+        assert abs(v_quad - v_brom) < 1e-12
+    # Independent 30-digit Imhof check at c = 45.52608575
+    n = 64
+    from scipy.linalg import toeplitz
+    R = np.linalg.cholesky(toeplitz(g))
+    one = np.ones((n, 1))
+    M = np.tril(np.ones((n, n))) @ (np.eye(n) - one @ one.T / n)
+    A = one @ one.T - (45.52608575 / n) * (M.T @ M)
+    lam = np.linalg.eigvalsh(R.T @ A @ R)
+    mp.mp.dps = 30
+    lmp = [mp.mpf(float(x)) for x in lam if abs(x) > 1e-300]
+    def f(u):
+        if u == 0:
+            return mp.mpf(0.5) * mp.fsum(lmp)
+        th = mp.fsum(mp.atan(l * u) for l in lmp) / 2
+        lr_ = mp.fsum(mp.log1p((l * u) ** 2) for l in lmp) / 4
+        return mp.sin(th) / (u * mp.exp(lr_))
+    lmax = max(abs(x) for x in lmp)
+    brk = [0] + [mp.mpf(10) ** k / lmax for k in range(-3, 9)] + [mp.inf]
+    p_upper = float(mp.mpf(0.5) + mp.quad(f, brk) / mp.pi)
+    assert abs((1.0 - sn.cdf(45.52608575)) - p_upper) < 1e-12
+
+
+def test_local_whittle_boundary_and_elw_accuracy():
+    """local_whittle preserves boundary optima (-0.49/+0.49) and exact_local_whittle recovers d on ARFIMA(0, d, 0)."""
+    rng = np.random.default_rng(42)
+    # Near-unit-root cumulative sum pushes d_hat to the upper boundary +0.49
+    rw = np.cumsum(rng.standard_normal((4, 512)), axis=1)
+    d_lw = fn.local_whittle(rw, m=32)
+    assert np.all(d_lw >= 0.489)
+    # Stationary ARFIMA(0, 0.25, 0) recovery
+    x = fn.CirculantSampler(fn.acf_arfima0(0.25, 2048)).sample(1, rng)[:1]
+    m_bw = int(round(2048 ** 0.65))
+    d_lw2 = float(fn.local_whittle(x, m=m_bw)[0])
+    d_elw = float(fn.exact_local_whittle(x, m=m_bw)[0])
+    assert abs(d_lw2 - 0.25) < 0.15 and abs(d_elw - 0.25) < 0.15
+
+
+def test_adg_mac_and_subsampling_sanity():
+    """ADG (2009) MAC statistic and rate-free subsampling p-value behave consistently under null and large shift."""
+    rng = np.random.default_rng(123)
+    x0 = fn.CirculantSampler(fn.acf_fgn(0.7, 256)).sample(1, rng)[:1]
+    m_bw = int(round(256 ** 0.65))
+    t0 = float(fn.adg_mac_stat(x0, m=m_bw)[0])
+    t1 = float(fn.adg_mac_stat(x0 + 5.0, m=m_bw)[0])
+    assert math.isfinite(t0) and abs(t1) > abs(t0) + 3.0
+    p0 = float(fn.subsampling_sn_pvalue(x0)[0])
+    p1 = float(fn.subsampling_sn_pvalue(x0 + 5.0)[0])
+    assert 0.0 <= p0 <= 1.0 and 0.0 <= p1 <= 1.0 and p1 < 0.05

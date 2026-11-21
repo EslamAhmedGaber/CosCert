@@ -211,3 +211,25 @@ unchanged; only the partition of that mode's random stream differs from the BATC
    ≤ 0.05 pp.
 6. **Independent checks (E11)** are assembled by make_numbers.py from result files in six evidence categories; the earlier
    KPSS row compared the closed-form Cramér–von Mises quantile with itself (mislabelled) and was replaced.
+
+
+### Amendment 9 — 20 Nov 2026 (pre-submission Q1 upgrade: solver acceleration, competitor benchmark, empirical applications and manuscript split)
+
+1. **Fast certified solver and Woodbury finite-sample reduction (`code/p3/certify.py`, `code/p3/finite_n.py`).**
+   - Added analytical far-tail Frobenius remainder bound (`fast_nested_tail_frobenius`) and shared block slicing in `BridgeSystem`, reducing T4 ($H=0.75, J=16384$) build time from 24.81 s to 1.95 s (12.7× faster).
+   - Added certified adaptive complex ball quadrature (`cdf_X_certified_quad`, `cdf_T_certified_quad`) via Arb's `acb.integral` (Johansson 2018) on geometric panels with zero aliasing error and extended Lemma 12 / Lemma 14 on the slit complex plane, reducing T4 evaluation time from 17.71 s to 0.68 s (26.1× faster) and total certification time from 42.52 s to 2.63 s (16.1× faster), with strictly tighter nested enclosure `[0.9499999908876946, 0.9500000095473667]` (width $1.87\times 10^{-8}$).
+   - Replaced dense Cholesky in `SNExact` with a Cholesky-free Woodbury reduction and two-band adaptive Imhof quadrature (`cdf`, with `cdf_bromwich` retained for cross-checking), cutting T3 ($n=1000$) set-up to 0.21 s, repeat query to 0.0094 s (6.1× faster), and 10-cutoff amortisation to 0.337 s vs 2.084 s for SciPy Imhof (6.2× faster, max diff $1.11\times 10^{-16}$, zero clipped negative eigenvalues).
+   - Added `(1 + 1e-12)` outward safety padding on all float64 matrix bounds entering Arb and extended the unit test suite (`code/tests/test_p3.py`) from 35 to 45 passing tests.
+2. **Extended plug-in grid, competitor benchmark and exact HI oracle (`code/experiments/e3d_plugin_extended.py`).**
+   - `E3d_plugin_n50_ewc.csv`: closed the Figure 2 bottom-row $n=50$ and EWC $B\in\{8,32\}$ gaps ($R=40\,000$, identical RNG streams to `e3b_mc.py`).
+   - `E3d_competitors.csv`: 24-design ($n\in\{100,500\}$, $H\in\{0.5,0.7,0.9\}$, 4 models, $R=20\,000$) head-to-head size and local power ($c=2.8$) comparison across CosCert LW, demeaned Exact Local Whittle (Shimotsu & Phillips 2005; Shimotsu 2010), conservative one-sided $90\,\%$ upper-CI plug-in, ADG--MAC (Abadir, Distaso & Giraitis 2009), and rate-free self-normalised subsampling (Politis, Romano & Wolf 1999).
+   - `E3d_hi2017_exact_oracle.csv`: exact finite-$T$ oracle and naive $t_{2m}$ rejection rates paired with Tables 3--5 of Hualde & Iacone (2017).
+3. **Empirical applications (`data/`, `code/experiments/e13_empirical.py`, `results/E13_empirical.json/.csv`).**
+   - Added three contiguous, zero-missing-value publicly archived time series spanning $0.64\le\hat H\le 0.91$: NSW daily electricity demand YoY growth (Monash Archive, $n=1095$), London GR9 daily $\log\mathrm{PM}_{2.5}$ (KDD Cup 2018, $n=454$), and Nile River annual minima (622--1284 AD, $n=663$).
+4. **Ball-arithmetic response-surface certification (`code/experiments/e9b_surface_certified.py`) and clean manuscript split.**
+   - Re-certified all 150 held-out surface points directly from the exact decimal values printed in Table 5 in 128-bit Arb via `cdf_T_certified_quad` (max certified size error $2.40\times 10^{-4}$ pp at $H=0.51, p=0.800$).
+   - Split archival reference tables, extended simulation tables, the full 233-value audit ledger and validation summaries into a standalone 14-page Supplementary Material PDF (`CosCert_supplementary_material.pdf`), keeping the main manuscript (`CosCert_manuscript.pdf`, 42 pages including proofs and certificate appendices) focused and compliant with Elsevier CSDA guidelines (CRediT statement, mandatory AI purpose clause, consistent British English, $\le 250$-word abstract, 5 highlights $\le 85$ characters).
+
+### Editorial and reproducibility amendment, 21 November 2026
+
+E3d compares observed absolute deviations from 5% across 24 designs. ELW and the upper-confidence rule apply to the tested fixed-periodogram procedure; size and raw power are reported separately. E13 uses reference concentrations for the geometric mean of London PM2.5. Its 454 consecutive daily values use the available hourly readings; 32 days have incomplete hourly coverage. Numerical probability enclosures fix H at the fitted estimate rounded to four decimals. The near-zero cutoff shortcut was removed from E13; zero itself has upper-tail probability one. The table generator now derives the empirical sample sizes and displayed memory estimates from E13. The proof and benchmark use squared statistics for the edge rate and identify T4 as one probability evaluation including setup.

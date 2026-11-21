@@ -38,7 +38,7 @@ def main():
     a.set_title(r"Every eigenvalue lies in the proven band" if inband else r"Normalised bridge eigenvalues")
     a.text(1.3, 0.53, "lower bound", fontsize=F.SIZES[2], color=F.COL["REF"], va="bottom")
 
-    He = [h for h in sorted(E1) if abs(h - 0.51) > 1e-9]; ce = dict(zip(He, F.ramp(F.COL["SN"], len(He), lo=0.35))); ends = []
+    He = [h for h in sorted(E1) if abs(h - 0.51) > 1e-9]; ce = dict(zip(He, F.ramp(F.COL["SN"], len(He), lo=0.48))); ends = []
     for H in He:
         rows = sorted([r for r in E1[H]["rows"] if abs(r["p"] - 0.9) < 1e-9], key=lambda r: r["J"])
         J = np.array([r["J"] for r in rows], float); w = np.array([r["width_F"] for r in rows])
@@ -47,10 +47,10 @@ def main():
         b.plot(J, ref, color=ce[H], lw=0.8, ls=(0, (3, 2)))
         ends.append((J[-1], w[-1], rf"$H={H:g}$", ce[H]))
     b.set_xscale("log", base=2); b.set_yscale("log")
-    b.set_xlim(400, 16384 * 2.6)
-    F.direct_labels(b, ends[0][0] * 1.12, [e[1] for e in ends], [e[2] for e in ends], [e[3] for e in ends])
-    b.set_xlim(400, 16384 * 2.6)
-    b.set_xticks([512, 2048, 8192]); b.set_xticklabels(["512", "2048", "8192"])
+    b.set_xlim(400, 16384 * 3.1)
+    F.direct_labels(b, ends[0][0] * 1.15, [e[1] for e in ends], [e[2] for e in ends], [e[3] for e in ends])
+    b.set_xlim(400, 16384 * 3.1)
+    b.set_xticks([512, 2048, 8192, 16384]); b.set_xticklabels(["512", "2048", "8192", "16384"])
     b.set_xlabel(r"truncation $J$"); b.set_ylabel(r"width of the enclosure of $F_H(q_{0.9})$")
     b.set_title(r"Width falls like $J^{-1/2-2H}$ (dashed)")
     F.panel_tag(a, "a"); F.panel_tag(b, "b")
