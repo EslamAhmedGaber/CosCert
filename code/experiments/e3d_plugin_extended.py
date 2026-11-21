@@ -240,10 +240,11 @@ def run_competitors(R=20_000, c_alt=2.8, alpha=0.05):
                     # Critical values
                     c_sn_lw = sncv[alpha](H_lw_sn)
                     c_sn_up = sncv[alpha](H_up_sn)
-                    c_hi_lw = cv["HI|4|0.05"](H_lw)
-                    c_hi_elw = cv["HI|4|0.05"](H_elw)
-                    c_hi_up = cv["HI|4|0.05"](H_up)
-                    c_ewc_lw = cv["EWC|8|0.05"](H_lw)
+                    # every feasible rule truncates the memory estimate to [1/2, 0.99], as SN and Section 4.3 do (21 Nov)
+                    c_hi_lw = cv["HI|4|0.05"](H_lw_sn)
+                    c_hi_elw = cv["HI|4|0.05"](np.clip(H_elw, 0.50, 0.99))
+                    c_hi_up = cv["HI|4|0.05"](H_up_sn)
+                    c_ewc_lw = cv["EWC|8|0.05"](H_lw_sn)
 
                     decisions = {
                         "SN_CosCert_LW": (sn0 > c_sn_lw, sn1 > c_sn_lw),

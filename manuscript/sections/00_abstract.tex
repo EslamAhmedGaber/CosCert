@@ -1,19 +1,22 @@
 \begin{abstract}
-Tests of a time-series mean can reject far too often when long memory is ignored. We compute critical values
-for three such tests using the Hurst index $H$: the Bartlett self-normalised test, the fixed-$m$ periodogram test
-and the equal-weighted cosine test. Two-sided eigenvalue bounds for the fractional Brownian bridge and
-adaptive quadrature in ball arithmetic give deterministic error bounds for Bartlett limit probabilities.
-For the Bartlett statistic, the $5\,\%$ critical value rises from \pthree{sn-q-0.50-0.950} at $H=0.5$
-to \pthree{sn-q-0.99-0.950} at $H=0.99$. Keeping the short-memory cutoff at $H=0.9$ gives a limiting rejection
-rate of \pthree{naive-sn-0.90-0.05}\,\% under the null. At $H=0.75$, one distribution-function evaluation near
-the $95$th percentile takes \pthree{e5-T4-cert-s}\,s including setup, \pthree{e5-T4-speedup} times faster than
-the recorded midpoint benchmark. For the fixed-smoothing tests, first-moment rescaling keeps limiting size
-within \pthree{rs-maxerr-090-0.05} percentage points of $5\,\%$ on the grid through $H=0.9$.
-Gaussian finite-sample laws quantify the effect of short-run dependence at known $H$.
-In simulations, using an upper confidence bound for $H$ reduces rejection under both the null and local alternatives.
-Across three empirical series, plug-in calibration changes test decisions and widens nominal confidence intervals by up to
-\pthree{emp-nile-HI16-ratio} times. An audit of \pthree{audit-n-values} published critical values expresses discrepancies
-in rejection-probability units and identifies entries consistent with a finite simulation design.
+At Hurst index $H=0.9$, the short-memory cutoff for a nominal $5\,\%$ Bartlett self-normalised test of a
+time-series mean gives a limiting rejection rate of \pthree{naive-sn-0.90-0.05}\,\% under the null.
+\CosCert{} computes critical values for this test and for the fixed-$m$ periodogram and equal-weighted cosine tests.
+Eigenvalue bounds for the fractional Brownian bridge and adaptive quadrature in complex ball arithmetic
+give deterministic enclosures for Bartlett probabilities. We certify all \pthree{e2q-n-brackets} tabulated Bartlett
+critical values across six levels and \pthree{e2q-n-H} values of $H$. The $5\,\%$ critical value rises from
+\pthree{sn-q-0.50-0.950} at $H=0.5$ to \pthree{sn-q-0.99-0.950} at $H=0.99$.
+At $H=0.75$, one probability evaluation near the 95th percentile takes \pthree{e5-T4-cert-s}\,s including setup,
+a \pthree{e5-T4-speedup}-fold speedup over the midpoint benchmark.
+Rescaling Student-$t$ cutoffs keeps the limiting size of the fixed-smoothing tests within
+\pthree{rs-maxerr-090-0.05} percentage points of $5\,\%$ on the grid through $H=0.9$.
+In simulations with estimated memory, plug-in tests reject up to \pthree{pl-pure-max-100}\,\% of the time at $n=100$
+under pure long memory. For the four-frequency periodogram test, using an upper confidence bound for $H$ gives
+rejection rates at most \pthree{comp-hi4-up-n500-max}\,\% in the $n=500$ designs.
+For the Nile minima, calibrated intervals are \pthree{emp-ratio-min}--\pthree{emp-ratio-max} times as wide as
+short-memory intervals, whose coverage under the fitted Gaussian model falls to \pthree{emp-cover-nv-min}\,\%.
+Of \pthree{audit-n-values} published critical values, \pthree{audit-n-AB} yield rejection rates within three
+Monte Carlo standard errors of nominal size.
 \end{abstract}
 
 \begin{keyword}

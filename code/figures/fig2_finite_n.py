@@ -76,8 +76,9 @@ def main():
             ax = axes[r][c]; S = D[D.model == mod]
             for proc, k, col, lw in series:
                 s = S[(S.procedure == proc) & (S.k == k)]
-                band = s.groupby("n")["size"].agg(["min", "max"])
-                ax.fill_between(band.index, band["min"], band["max"], color=col, alpha=0.12, lw=0, zorder=1)
+                if proc == "SN" or k == 4:      # bands only for the two procedures compared in the text (21 Nov)
+                    band = s.groupby("n")["size"].agg(["min", "max"])
+                    ax.fill_between(band.index, band["min"], band["max"], color=col, alpha=0.13, lw=0, zorder=1)
                 line = s[np.isclose(s.H, H_LINE)].sort_values("n")
                 ax.plot(line.n, line["size"], color=col, lw=lw, zorder=4 if proc == "SN" else 3,
                         marker=marker, ms=2.5 if marker else 0, mfc=col, mec=col)
@@ -89,7 +90,7 @@ def main():
                 ax.set_title(title, fontsize=F.SIZES[1])
             ax.text(0.04, 0.965, r"\textbf{(" + "abcdefgh"[4 * r + c] + ")}", transform=ax.transAxes, ha="left", va="top",
                     fontsize=F.SIZES[0], color=F.COL["INK"])
-    axes[0][0].text(0.96, 0.05, r"bands: range over $H$", transform=axes[0][0].transAxes, ha="right", va="bottom",
+    axes[0][0].text(0.96, 0.05, r"bands: range over $H$" "\n" r"(SN and HI, $m{=}4$)", transform=axes[0][0].transAxes, ha="right", va="bottom",
                     fontsize=F.SIZES[2], color=F.COL["INK"])   # bands are variation over H, not uncertainty (referee, 16 Nov)
     axes[0][0].set_ylabel(r"$H$ known: exact size (\%)")
     axes[1][0].set_ylabel(r"$H$ estimated: simulated size (\%)")

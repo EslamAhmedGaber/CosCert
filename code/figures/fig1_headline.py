@@ -59,7 +59,7 @@ def main():
                mec=ewc_col[B], mew=0.9, zorder=6)
     a.set_yscale("log"); F.log_ticks(a, "y", [1, 2, 5, 10, 20])
     a.set_ylim(0.93, 16)
-    a.set_ylabel(r"$c_{0.05}(H)\,/\,c_{0.05}(1/2)$, $t$-scale")
+    a.set_ylabel(r"$c_{0.05}(H)\,/\,c_{0.05}(1/2)$, signed scale")
     a.set_title("Correct values grow with $H$")
 
     # (b) size with the short-memory critical value ------------------------------------------------------------------

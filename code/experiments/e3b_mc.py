@@ -173,11 +173,12 @@ def part_plugin(model, H, R=40_000, bw=0.65):
         batch = max(100, min(BATCH, int(2_000_000 // n)))
         for X in mc_batches(g, R, seed, batch):
             dh = fn.local_whittle(X, mlw); dhs.append(dh); Hh = np.clip(dh + 0.5, 0.01, 0.99); Hs = np.clip(Hh, 0.50, 0.99)
-            st = fn.stats_from_samples(X, m_list=(1, 4, 16), B_list=(4, 16)); Rtot += X.shape[0]
+            # EWC B = 8, 32 added 21 Nov (pairing B = 2m with HI m = 4, 16); same streams, so earlier columns are unchanged
+            st = fn.stats_from_samples(X, m_list=(1, 4, 16), B_list=(4, 8, 16, 32)); Rtot += X.shape[0]
             for a in ALPHAS:
                 rules = {("SN", 0, "plugin_exact"): (st["SN"], sncv[a](Hs)), ("SN", 0, "naive_half"): (st["SN"], SN_HALF[a]),
                          ("SN", 0, "oracle_exact"): (st["SN"], float(sncv[a](max(H, 0.5))))}
-                for kind, ks, dof in (("HI", (1, 4, 16), 2), ("EWC", (4, 16), 1)):
+                for kind, ks, dof in (("HI", (1, 4, 16), 2), ("EWC", (4, 8, 16, 32), 1)):
                     for k in ks:
                         s = np.abs(st[(kind, k)]); tq = stats.t.ppf(1 - a / 2, dof * k)
                         rules[(kind, k, "plugin_exact")] = (s, cv[f"{kind}|{k}|{a:.2f}"](Hh))

@@ -12,9 +12,10 @@ asymptotic,$q_{0.95}$ at $H=0.99$,certified limit,"exact law, fGn, $n=128$","siz
 asymptotic,"naive size at $H=0.9$, $0.99$",certified limits,"exact law, fGn, $n=128$","$6.9\times10^{-5}$; $9.2\times10^{-6}$\,pp",E2r/J4096; E10_matched_example.csv,True
 asymptotic,"$(1-H)\,q_{0.95}(H)$, $H\to1$","certified, $H=0.98$, $0.99$, extrapolated",$C_{0.95}$ of Proposition~6,"$0.04$\,\% relative",E12_edge_limit.json,True
 probabilistic,finite-sample rates (Section~4),exact laws,"simulation, $R=200\,000$, 192 cells","191 inside $99\,\%$ intervals",E3b_validate_*.csv,True
-probabilistic,"oracle rates, estimated-$H$ study","exact laws, true $H$","simulation, 1\,800 cells","98.9\,\% inside $99\,\%$ intervals",E3b_plugin grid; E3_rates_*.csv,True
+probabilistic,"oracle rates, estimated-$H$ study","exact laws, true $H$","simulation, 2\,400 cells","98.8\,\% inside $99\,\%$ intervals",E3b_plugin grid; E3_rates_*.csv,True
+probabilistic,"feasible plug-in sizes (SN, HI, EWC)","simulation, $R=40\,000$","separate simulation, $R=20\,000$, other seeds","max $|z|=1.89$, 72 cells",E3b_plugin_v2_*.csv; E3d_competitors.csv,True
 probabilistic,\citet[Table~2]{HI17},exact finite-$T$ laws,their simulation,"max $|z|=2.17$, 64 cells",E3c_hi2017_table2.csv,True
 convergence,Bartlett/SN local power,$J=512$,$J=256$ and $1024$,$\le$ $9.0\times10^{-9}$; $\le$ $1.1\times10^{-9}$,E7b_sn_power_Jladder.json,True
 convergence,enclosure width of $F_H$,"$J=512,\dots,8192$",rate $J^{-1/2-2H}$ (Proposition~11),slopes within $0.05$,E1_benchmark_H*.json,True
 reproducibility,"T4 certified $F_{0.75}(q_{0.95})$, $J=16384$",adaptive complex quadrature (\texttt{acb.integral}),tilted midpoint Poisson sum,nested overlap; width $1.87\times10^{-8}$,E5_methods_meta.json; E2r/H0.75.json,True
-reproducibility,"certified $q_p(H)$, 300 brackets",ball-arithmetic certificate (Appendix~B),full independent re-certification,all 300/300 confirmed,E2r/H*.json,True
+reproducibility,"certified $q_p(H)$, 300 brackets",adaptive complex ball quadrature (Theorem~10),"tilted midpoint Poisson sum, separate full run",both certify 300/300; 600/600 enclosures overlap,E2q/H*.json; E2r/H*.json,True

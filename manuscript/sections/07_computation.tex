@@ -38,7 +38,12 @@ $0\le\operatorname{Re}z<\frac12$ but on the larger slit domain $\Omega_{\mathrm{
 via Arb's \texttt{acb.integral} \citep{Joh18} over geometric panels on $[0,s_{\max}]$ with zero aliasing error, and a
 cancellation-free difference integral for $x_{\mathrm{hi}}-x_{\mathrm{lo}}$. The tilted midpoint sum $S_{\Delta,K}(x)$
 serves as an independent cross-check. Critical values follow by bracketing: if the certified lower bound of $F_H$ at
-$q^+$ exceeds $p$ and the certified upper bound at $q^-$ falls below $p$, then $q_p\in[q^-,q^+]$.
+$q^+$ exceeds $p$ and the certified upper bound at $q^-$ falls below $p$, then $q_p\in[q^-,q^+]$. Every tabulated
+Bartlett bracket is certified in this way: all \pthree{e2q-n-brackets} brackets (\pthree{e2q-n-H} values of $H$, six
+levels) pass with the current code in \pthree{e2q-cpu-min} CPU minutes, with enclosure widths at most
+\pthree{e2q-maxwidth} and median \pthree{e2q-medwidth}. A separate full run of the tilted midpoint route
+(\pthree{e2r-cpu-h} CPU hours) certifies the same brackets; all \pthree{e2q-n-eval} pairs of enclosures overlap, and their
+centres agree to \pthree{e2q-maxmiddiff}.
 
 The production Bartlett critical-value grid uses $J=16384$ and $t=25$, so that each of the two exceptional probabilities is
 $e^{-25}<1.4\times10^{-11}$, selected after a truncation benchmark over $J=512,\dots,16384$ (\cref{fig:certificate}b):
@@ -125,4 +130,10 @@ coordinates, with the remainder replaced by its mean, lies inside the certified 
 certified \CosCert{} evaluation at $J=16384$ now takes only \pthree{e5-T4-cert-s}\,s including system construction
 (\pthree{e5-T4-cert-eval-s}\,s for the adaptive complex ball integral itself---comparable in speed to uncertified
 Galerkin $J=2048$ with a deterministic probability enclosure of width $1.9\times10^{-8}$ on T4). All times are wall-clock times on one machine
-(\pthree{e5-env}, single-threaded linear algebra) and indicate orders of magnitude only.
+(\pthree{e5-env}, single-threaded linear algebra).
+
+\paragraph{Software development} The code was developed by the authors with the assistance of AI coding tools (ChatGPT,
+including Codex, and Claude), which were also used to cross-check numerical results. The validity of the results does not rest on
+these tools: every certified quantity carries the interval-arithmetic enclosure of \cref{app:certificate}, the exact
+finite-sample laws are validated against independent simulation (\cref{sec:finite}), and every number, table and figure
+is regenerated from the archived code (Supplementary Material Section~S.4).

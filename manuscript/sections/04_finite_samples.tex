@@ -66,8 +66,8 @@ $H$ and $n$ in the design, and the EWC test with $B=2m$ behaves like the fixed-$
 \setlength{\tabcolsep}{4.5pt}\input{tables/tab_finite.tex}%
 \end{table}
 
-In \cref{fig:finite}, markers follow $H=0.7$ and bands span the simulated grid from $0.5$ to $0.9$.
-Open circles mark EWC with $B=2m$. The lower panels use $40\,000$ replications per cell.
+In \cref{fig:finite}, lines and markers follow $H=0.7$; the bands, drawn for SN and HI with $m=4$, span the grid
+$H\in\{0.5,\dots,0.9\}$. Open circles mark EWC with $B=2m$. The lower panels use $40\,000$ replications per cell.
 
 \paragraph{Validation} The exact computations were checked against independent Monte Carlo simulation with
 \pthree{val-R} replications per cell, by the circulant-embedding sampler of \citet{DH87}: in
@@ -102,10 +102,10 @@ feasible tests reject between \pthree{pl-pure-min-100} and \pthree{pl-pure-max-1
 most \pthree{fn-maxdev-pure}\,pp of distortion when $H$ is known. At $H=0.9$ and $n=100$ under fractional Gaussian noise
 the Bartlett/self-normalised test rejects \pthree{pl-fgn-SN-0.9-100}\,\%, the fixed-$m$ test with $m=4$
 \pthree{pl-fgn-HI4-0.9-100}\,\% and with $m=16$ \pthree{pl-fgn-HI16-0.9-100}\,\%. With estimated $H$ the distortion
-again grows with the number of components: in the \pthree{pl-n-pure-cells} pure-memory cells with $H\ge0.6$, HI with
-$m=1$ is less distorted than SN in \pthree{pl-share-hi1-le-sn}\,\% of cells, EWC with $B=4$ in
-\pthree{pl-share-ewc4-le-sn}\,\%, and SN is less distorted than HI with $m=4$ and $m=16$ in
-\pthree{pl-share-sn-le-hi4}\,\%. The power ranking of \cref{sec:power} therefore comes with the opposite ranking in
+grows with the number of components: in the \pthree{pl-n-pure-cells} pure-memory cells with $H\ge0.6$, HI with $m=1$
+is less distorted than SN in \pthree{pl-share-hi1-le-sn}\,\% of cells and EWC with $B=4$ in \pthree{pl-share-ewc4-le-sn}\,\%,
+whereas SN is less distorted than HI with $m=4$ and $16$ in \pthree{pl-share-sn-le-hi4}\,\% and than EWC with $B=8$ and $32$
+in \pthree{pl-share-sn-le-ewc8}\,\%. The power ranking of \cref{sec:power} therefore comes with the opposite ranking in
 feasible size. Positive short-run correlation biases $\hat H$ upwards and makes every feasible test conservative (sizes
 between \pthree{pl-ar1p-min} and \pthree{pl-ar1p-max}\,\%); negative correlation biases $\hat H$ downwards, pushing
 rejection rates up to \pthree{pl-ar1m-max-100}\,\% at $n=100$. Clipping matters only near $H=\frac12$: at $H=0.5$,
@@ -127,7 +127,8 @@ distorted up to \pthree{bw-80-arfima0-max-500}\,\% and amplifies short-run bias 
 \end{table}
 
 \subsection{Competitor baselines and practical remedies under unknown \texorpdfstring{$H$}{H}}\label{sec:competitors}
-We compare \CosCert{} plug-in rules with four feasible alternatives in \cref{tab:competitors} ($20\,000$ replications per design,
+We compare \CosCert{} plug-in rules, all with $\hat H$ truncated to $[\frac12,0.99]$ as in \cref{sec:plugin}, with four
+feasible alternatives in \cref{tab:competitors} ($20\,000$ replications per design,
 $n\in\{100,500\}$, $H\in\{0.5,0.7,0.9\}$, all four data models, measuring both null size and finite-sample local power
 at $\mu_n=2.8\sqrt{\Var(\bar x_n)}$, where the Gaussian known-variance $z$-test has approximately $80\,\%$ power in every
 design):
@@ -136,7 +137,6 @@ estimator $\hat H_{\mathrm{ELW}}$ of \citet{SP05} and \citet{Shi10};
 (ii)~\emph{Upper-confidence-bound plug-in}---evaluating \CosCert{} at the one-sided $90\,\%$ upper confidence bound
 $\hat H_{\mathrm{up}}=\min\big(0.99,\,\hat H_{\mathrm{LW}}+z_{0.90}/(2\sqrt{m_{\mathrm{LW}}})\big)$ to guard directly
 against downward estimation errors in $\hat H$;
-For fixed-smoothing rules we allow $\hat H$ down to $0.01$; for SN the lower endpoint is $0.50$. 
 (iii)~\emph{Memory- and autocorrelation-consistent (ADG--MAC) Studentisation} \citep{ADG09}---forming
 $t_{\mathrm{MAC}}=n^{1/2-\hat d}\bar x/\hat V_{\mathrm{MAC}}^{1/2}$ with
 $\hat V_{\mathrm{MAC}}=(2\pi\hat G)\,\Gamma(1-2\hat d)/\{(2\hat d+1)\Gamma(1+\hat d)\Gamma(1-\hat d)\}$ and
@@ -150,16 +150,19 @@ estimating $H$ at all.
 \footnotesize\setlength{\tabcolsep}{2.6pt}\input{tables/tab_competitors.tex}%
 \end{table}
 
-\Cref{tab:competitors} reports six of the 24 designs. In the fixed-$m$ test with $m=4$, replacing local Whittle (LW)
-by demeaned exact local Whittle (ELW) moved the simulated rejection rate closer to $5\,\%$ in \pthree{comp-elw-closer}
-designs. In all \pthree{comp-elw-further} positive-AR designs the LW rule already rejected too rarely and ELW
-reduced rejection further. Under fractional Gaussian noise at $H=0.9$ and $n=100$, ELW reduced size from
-\pthree{comp-hi4-lw-fgn-09-100}\,\% to \pthree{comp-hi4-elw-fgn-09-100}\,\%, with a corresponding loss of power.
+\Cref{tab:competitors} reports six of the \pthree{comp-n-designs} designs. For the fixed-$m$ test with $m=4$, replacing
+local Whittle (LW) by demeaned exact local Whittle (ELW) moves the simulated size closer to $5\,\%$ in exactly the
+\pthree{comp-elw-closer} designs with $H>\frac12$ and no positive short-run correlation. In the other
+\pthree{comp-elw-further} designs the LW rule already rejects too rarely---under positive AR, and at $H=\frac12$, where
+truncation holds it at \pthree{comp-hi4-lw-h05-min}--\pthree{comp-hi4-lw-h05-max}\,\%---and ELW lowers rejection further.
+Under fractional Gaussian noise at $H=0.9$ and $n=100$, ELW reduces size from \pthree{comp-hi4-lw-fgn-09-100}\,\% to
+\pthree{comp-hi4-elw-fgn-09-100}\,\%.
 
-Using the upper confidence bound reduced rejection further. In the negative-AR design at $H=0.9$ and $n=100$,
-size fell from \pthree{comp-hi4-lw-ar1m-09-100}\,\% to \pthree{comp-up-worst}\,\%, still above $5\,\%$.
-At $n=500$ the largest simulated size for this rule was \pthree{comp-hi4-up-n500-max}\,\%.
-Under fractional Gaussian noise at $H=0.7$ and $n=500$, power fell from \pthree{comp-hi4-lw-fgn-07-500-pw}\,\%
+For the four-frequency test, the upper-confidence-bound rule reduces rejection. At $n=500$ its simulated size is at most
+\pthree{comp-hi4-up-n500-max}\,\% in all \pthree{comp-n500-designs} designs, against up to \pthree{comp-hi4-lw-n500-max}\,\%
+for the LW rule and \pthree{comp-hi4-elw-n500-max}\,\% for the ELW rule. At $n=100$ it cuts the worst case, the
+negative-AR design at $H=0.9$, from \pthree{comp-hi4-lw-ar1m-09-100}\,\% to \pthree{comp-hi4-up-ar1m-09-100}\,\%. The price
+is power: under fractional Gaussian noise at $H=0.7$ and $n=500$, power falls from \pthree{comp-hi4-lw-fgn-07-500-pw}\,\%
 to \pthree{comp-hi4-up-fgn-07-500-pw}\,\%.
 
 At $H=0.9$ under fractional Gaussian noise, subsampling rejected a true null in \pthree{comp-sub-fgn-09-100}\,\% of

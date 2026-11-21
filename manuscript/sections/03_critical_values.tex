@@ -26,7 +26,7 @@ the values agree with the closed-form law of \citet{AP97} to \pthree{g0-min-digi
 \end{table}
 
 The values grow quickly with memory: $q_{0.95}$ is multiplied by \pthree{sn-infl-0.80-0.950} between $H=\frac12$ and
-$H=0.8$ and by \pthree{sn-infl-0.99-0.950} up to $H=0.99$. On the $t$ scale of \cref{fig:headline}a, where the
+$H=0.8$ and by \pthree{sn-infl-0.99-0.950} up to $H=0.99$. On the signed scale of \cref{fig:headline}a, where the
 Bartlett/self-normalised value is shown as $\sqrt{q_{0.95}(H)/q_{0.95}(\frac12)}$, this is a factor
 \pthree{sn-tinfl-0.99-0.950}.
 
@@ -128,12 +128,11 @@ exact real surface value, and under the true law the resulting critical value ha
 bracket, the bound follows from the enclosures of $F_H$ at the bracket ends by monotonicity; otherwise
 ($\pthree{rs-surface-cert-ndirect}$ of the $\pthree{rs-surface-cert-ncells}$ cases) $F_H$ is enclosed afresh at both
 outward-rounded ball endpoints. The bound holds at the held-out points only: between them the surface is an
-interpolation without a guarantee, and outside $\frac12\le H\le0.99$ it should not be used.
+interpolation without a guarantee, and outside $\frac12\le H\le0.99$ it should not be used. In \cref{tab:surface}, as in
+\cref{tab:sncv}, level $p$ serves two-sided tests at $\alpha=1-p$ and one-sided tests with a signed statistic at
+$a=(1-p)/2$; both error rows are the largest values over the held-out grid points.
 
 \begin{table}[tbp]\centering\small
 \caption{Bartlett quantile response surfaces fitted on even grid points and checked on odd grid points.}\label{tab:surface}
 \footnotesize\setlength{\tabcolsep}{4pt}\input{tables/tab_surface.tex}%
-\par\smallskip\parbox{\linewidth}{\raggedright\footnotesize Level $p$: two-sided tests at $\alpha=1-p$, one-sided tests with a signed
-statistic at $a=(1-p)/2$. \textsuperscript{a}Largest held-out size error against the tabulated values, computed through the
-density. \textsuperscript{b}Largest held-out size error of the printed surface under the true law, certified in ball arithmetic.}
 \end{table}

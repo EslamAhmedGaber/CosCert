@@ -115,7 +115,9 @@ value is obtained in two stages: Brent's method locates a computed quantile $q$ 
 distribution function is then evaluated at both endpoints of $[q(1-f\rho-10^{-12}),\,q(1+f\rho+10^{-12})]$, doubling
 $f$ from $1.5$ until the certified upper bound at the left endpoint lies below $p$ and the certified lower bound at the
 right endpoint exceeds $p$. The printed critical value is the shortest decimal whose rounding changes the computed size
-by at most $2\times10^{-5}$, and its size is certified separately.
+by at most $2\times10^{-5}$, and its size is certified separately. The brackets of the Bartlett grid were located with the
+midpoint route; each of the \pthree{e2q-n-brackets} brackets is certified by the adaptive quadrature of the current code
+and, independently, by a full run of the midpoint route.
 
 \begin{table}[tbp]\centering\footnotesize
 \caption{Sources of error and bounds used in the Bartlett probability certificate.}\label{tab:errsources}

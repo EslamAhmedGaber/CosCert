@@ -19,11 +19,23 @@ For Gaussian samples with specified covariance, the same quadratic-form represen
 rejection probabilities. We use Monte Carlo to check these probabilities and to evaluate feasible procedures
 that estimate $H$ or use subsampling.
 
+\paragraph{Main findings} \Cref{fig:headline} shows what is at stake. The $5\,\%$ critical value of the
+Bartlett/self-normalised statistic rises from \pthree{sn-q-0.50-0.950} at $H=\frac12$ to \pthree{sn-q-0.99-0.950} at
+$H=0.99$; keeping the short-memory value at $H=0.9$ gives a limiting rejection rate of \pthree{naive-sn-0.90-0.05}\,\%, and
+\pthree{naive-min-0.90}--\pthree{naive-max-0.90}\,\% across the three families. With the correct critical value, memory itself
+costs little: exact finite-sample sizes under pure long memory stay within \pthree{fn-maxdev-pure} percentage points of
+nominal. Estimating $H$ costs more: plug-in tests reject up to \pthree{pl-pure-max-100}\,\% at $n=100$, and the four-frequency test using an upper
+confidence bound for $H$ rejects in at most \pthree{comp-hi4-up-n500-max}\,\% of simulations in the $n=500$ designs. All \pthree{e2q-n-brackets} tabulated Bartlett critical
+values are certified, one certified evaluation of the distribution function takes \pthree{e5-T4-cert-s}\,s, and common
+moment and saddlepoint approximations err by up to \pthree{e5-approx-maxerr-pp} percentage points in size.
+
 \paragraph{Contributions}
 \begin{enumerate}
 \item[(C1)] Certified critical values of $T_H$ at six levels and of the fixed-$m$ and EWC limits at three levels, tabulated
 for $\frac12\le H\le0.99$, with deterministic enclosures (\cref{sec:cv,sec:computation}, \cref{thm:certificate}) and adaptive
-quadrature in complex ball arithmetic \citep{Joh18}. An analytical bound on the far tail speeds up assembly.
+quadrature in complex ball arithmetic \citep{Joh18}. All \pthree{e2q-n-brackets} Bartlett brackets are certified in
+\pthree{e2q-cpu-min} CPU minutes and confirmed by an independent run of a second certified route. An analytical bound on
+the far tail speeds up assembly.
 On benchmark T4 ($H=0.75$, $J=16384$), one certified probability takes \pthree{e5-T4-cert-s}\,s including setup.
 The fixed-smoothing certificate also applies for $0<H<\frac12$. As $H\uparrow1$, fixed quantiles of the squared
 statistics grow at rate $(1-H)^{-1}$ and their positive signed cutoffs at rate $(1-H)^{-1/2}$ (\cref{prop:edge}).
@@ -36,8 +48,9 @@ computed size error, and the collapse of the self-normaliser that explains why i
 Bartlett/self-normalised statistic (\cref{prop:rho}).
 \item[(C4)] Local power, exact for the fixed-smoothing tests and computed for the Bartlett/self-normalised test, and the
 size--power trade-off across the three families (\cref{sec:power}).
-\item[(C5)] Empirical demonstrations on three contiguous series from energy systems, urban air quality and hydrology
-(\cref{sec:empirical}), quantifying decision reversals and confidence-interval expansion in practice.
+\item[(C5)] An empirical illustration on the Nile minima (\cref{sec:empirical}): \CosCert{} intervals for the mean are
+\pthree{emp-ratio-min}--\pthree{emp-ratio-max} times wider than short-memory intervals, whose exact coverage under the fitted
+model falls to \pthree{emp-cover-nv-min}\,\%, and the decisions of four tests reverse.
 \item[(C6)] An audit, in test-size units, of \pthree{audit-n-values} published critical values from
 \pthree{audit-n-sources} sources, with explicit matching of statistic, normalisation, tail and design
 (\cref{sec:audit}, Supplementary Material Section~S.3).
@@ -54,8 +67,8 @@ reproducible code accompanies the paper. The classical case $H=\frac12$ \citep{A
 
 \paragraph{Organisation} \Cref{sec:setting} fixes the statistics, their normalisations and their common coordinates.
 \Cref{sec:cv} gives the critical values and response surface, \cref{sec:finite} the finite-sample rejection rates and
-feasible competitor comparison, \cref{sec:power} local power and test selection, \cref{sec:empirical} the three
-empirical applications, \cref{sec:audit} the audit of published tables, \cref{sec:computation} the \CosCert{}
+feasible competitor comparison, \cref{sec:power} local power and test selection, \cref{sec:empirical} the empirical
+illustration, \cref{sec:audit} the audit of published tables, \cref{sec:computation} the \CosCert{}
 certificate and computational benchmark, and \cref{sec:conclusion} practical recommendations. Proofs are in
 \cref{app:proofs} and certificate details in \cref{app:certificate}; complete critical-value tables, extended simulation
 tables, the full 233-value audit ledger and validation details are provided in the standalone Supplementary Material

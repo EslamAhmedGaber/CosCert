@@ -1,13 +1,13 @@
 {
  "figure": "fig1_headline",
- "created": "2026-11-21 00:35:16",
+ "created": "2026-11-21 07:57:12",
  "script": "code\\figures\\fig1_headline.py",
  "note": "",
  "size_in": [
   6.475716064757161,
   2.62
  ],
- "pgf_seconds": 7.629633799995645,
+ "pgf_seconds": 8.329698999994434,
  "inputs": [
   {
    "path": "results\\E2_sn_critical_values.json",

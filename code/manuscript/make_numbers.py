@@ -166,14 +166,14 @@ if need(os.path.exists(SURF), "E9 surface"):
     for i in range(K9 + 1):
         lines.append(f"$a_{{p,{i}}}$ & " + " & ".join(f"{sf['fits'][p]['coef'][i]:.{s_need - 1}e}".replace("e", r"\,\mathrm{e}") .join(["$", "$"]) if False else
                                                      f"${float(f'{sf['fits'][p]['coef'][i]:.{s_need - 1}e}'):.{s_need}g}$" for p in ps) + r"\\")
-    lines.append(r"\midrule fit error (pp)\textsuperscript{a} & " + " & ".join(sci(sf["fits"][p]["max_heldout_fit_err_pp"], 1) for p in ps) + r"\\")
+    lines.append(r"\midrule fit error (pp) & " + " & ".join(sci(sf["fits"][p]["max_heldout_fit_err_pp"], 1) for p in ps) + r"\\")
     SFC = os.path.join(RES, "E9_surface_certified.json")
     if need(os.path.exists(SFC), "E9b certified surface"):
         sc = json.load(open(SFC))
         assert int(sc["digits"]) == int(s_need), "certified surface used different printed digits"
         put("rs-surface-cert-maxerr", sci(sc["max_bound_pp"], 1)); put("rs-surface-cert-argH", sc["argmax"][0])
         put("rs-surface-cert-ndirect", str(sc["n_direct"])); put("rs-surface-cert-ncells", str(len(sc["cells"])))
-        lines.append(r"certified bound (pp)\textsuperscript{b} & " + " & ".join(sci(sc["max_bound_pp_by_p"][p], 1) for p in ps) + r"\\")
+        lines.append(r"certified bound (pp) & " + " & ".join(sci(sc["max_bound_pp_by_p"][p], 1) for p in ps) + r"\\")
     lines.append(r"\bottomrule\end{tabular}")
     open(os.path.join(TAB, "tab_surface.tex"), "w").write("\n".join(lines) + "\n")
 
@@ -633,7 +633,8 @@ for sid, ref, ver, loc in SRC:
 L.append(r"\bottomrule\end{tabular}"); open(os.path.join(TAB, "tab_sources.tex"), "w").write("\n".join(L) + "\n")
 EXP = [("E0, E0d", "e0\\_anchors.py, e0d\\_revalidate.py", "$H=\\frac12$ anchors and Cram\\'er--von Mises verification"),
        ("E1, E1b", "e1\\_benchmark\\_J.py, e1b\\_nodes.py", "truncation benchmark, node counts"),
-       ("E2, E2b, E2r", "e2\\_production\\_sn.py, e2b\\_production\\_fixed.py, e2r\\_revalidate.py", "certified critical values and full bracket verification"),
+       ("E2, E2b", "e2\\_production\\_sn.py, e2b\\_production\\_fixed.py", "certified critical values"),
+       ("E2q, E2r", "e2q\\_quad\\_certify.py, e2r\\_revalidate.py", "certification of all brackets: quadrature and midpoint routes"),
        ("E3", "e3\\_finite\\_n.py", "exact finite-sample sizes"),
        ("E3b, E3c", "e3b\\_mc.py, e3c\\_hi2017\\_table2.py, e3c\\_clip\\_check.py", "Monte Carlo validation, plug-in, HI reproductions; eigenvalue clipping"),
        ("E3d", "e3d\\_plugin\\_extended.py", "extended $n=50$/EWC plug-in grid, competitor benchmark, exact HI oracle"),
@@ -645,7 +646,7 @@ EXP = [("E0, E0d", "e0\\_anchors.py, e0d\\_revalidate.py", "$H=\\frac12$ anchors
        ("E10", "e10\\_matched\\_example.py", "matched finite-grid fGn check ($n=64,128$)"),
        ("E11", "make\\_numbers.py", "independent verification matrix (\\cref{tab:reproduction})"),
        ("E12", "e12\\_edge\\_limit.py", r"limit constants as $H\to1$"),
-       ("E13", "e13\\_empirical.py", "empirical applications (AusElec-NSW, London GR9 $\\mathrm{PM}_{2.5}$, Nile minima)")]
+       ("E13", "e13\\_empirical.py", "empirical illustration (Nile minima)")]
 L = [r"\begin{tabular}{@{}l>{\raggedright}p{0.50\textwidth}>{\raggedright\arraybackslash}p{0.33\textwidth}@{}}\toprule", r"experiment & script & content\\\midrule"]
 for e, s_, c in EXP:
     L.append(f"{e} & \\texttt{{{s_}}} & {c}" + r"\\")
@@ -753,6 +754,8 @@ if need(len(PLf) == 20, "E3b plugin v2"):
     put("pl-share-hi1-le-sn", str(int(round(100 * np.mean([pz(mo, "HI", 1, H_, n_) <= pz(mo, "SN", 0, H_, n_) for mo, H_, n_ in cells_])))))
     put("pl-share-ewc4-le-sn", str(int(round(100 * np.mean([pz(mo, "EWC", 4, H_, n_) <= pz(mo, "SN", 0, H_, n_) for mo, H_, n_ in cells_])))))
     put("pl-share-sn-le-hi4", str(int(round(100 * np.mean([pz(mo, "SN", 0, H_, n_) <= min(pz(mo, "HI", 4, H_, n_), pz(mo, "HI", 16, H_, n_)) for mo, H_, n_ in cells_])))))
+    put("pl-share-sn-le-ewc8", str(int(round(100 * np.mean([pz(mo, "SN", 0, H_, n_) <= min(pz(mo, "EWC", 8, H_, n_), pz(mo, "EWC", 32, H_, n_)) for mo, H_, n_ in cells_])))))
+    put("pl-share-ewc8-le-sn", str(int(round(100 * np.mean([pz(mo, "EWC", 8, H_, n_) <= pz(mo, "SN", 0, H_, n_) for mo, H_, n_ in cells_])))))
     # oracle vs exact (second validation of the exact laws)
     O = PL[PL.rule == "oracle_exact"].copy()
     E3a = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.join(RES, "E3_rates_*.csv"))], ignore_index=True)
@@ -768,7 +771,7 @@ if need(len(PLf) == 20, "E3b plugin v2"):
          r"model & test & $n=100$ & $500$ & $2000$ & $n=100$ & $500$ & $2000$\\\midrule"]
     MODN = {"fgn": "fGn", "arfima0": r"ARFIMA$(0,d,0)$", "arfima1p": r"ARFIMA$(1,d,0)$, $\phi=0.5$", "arfima1m": r"ARFIMA$(1,d,0)$, $\phi=-0.5$"}
     for mo in ("fgn", "arfima0", "arfima1p", "arfima1m"):
-        for i, (proc, k, lab) in enumerate((("SN", 0, "SN"), ("HI", 4, r"HI, $m=4$"), ("HI", 16, r"HI, $m=16$"), ("EWC", 16, r"EWC, $B=16$"))):
+        for i, (proc, k, lab) in enumerate((("SN", 0, "SN"), ("HI", 4, r"HI, $m=4$"), ("HI", 16, r"HI, $m=16$"), ("EWC", 8, r"EWC, $B=8$"), ("EWC", 32, r"EWC, $B=32$"))):
             vals = [pz(mo, proc, k, H_, n_) for H_ in (0.7, 0.9) for n_ in (100, 500, 2000)]
             L.append((MODN[mo] if i == 0 else "") + f" & {lab} & " + " & ".join(fixed(v, 1) for v in vals) + r"\\")
         if mo != "arfima1m":
@@ -787,6 +790,25 @@ if need(os.path.exists(COMPf), "E3d competitors"):
     put("comp-elw-closer", str(int((elw_error < lw_error).sum())))
     put("comp-elw-further", str(int((elw_error > lw_error).sum())))
     put("comp-up-worst", fixed(sizes["HI4_CosCert_UpperCI"].max(), 2))
+    put("comp-n-designs", str(len(sizes)))
+    # structure of the ELW comparison (21 Nov, all rules truncated to [1/2, 0.99]): closer exactly when H > 1/2 without positive AR
+    closer_set = {ix for ix in sizes.index if elw_error[ix] < lw_error[ix]}
+    expect_closer = {ix for ix in sizes.index if ix[1] > 0.5 + 1e-9 and ix[0] != "arfima1p"}
+    CHECKS.append(("E3d: ELW closer to 5 % exactly in the designs with H > 1/2 and no positive AR", closer_set == expect_closer))
+    further_ = [ix for ix in sizes.index if ix not in closer_set]
+    CHECKS.append(("E3d: in every other design LW rejects below 5 % and ELW rejects less than LW",
+                   all(sizes.loc[ix, "HI4_CosCert_LW"] < 5 and sizes.loc[ix, "HI4_CosCert_ELW"] < sizes.loc[ix, "HI4_CosCert_LW"] for ix in further_)))
+    put("comp-elw-closer-pos", str(sum(1 for ix in sizes.index if ix[1] > 0.5 + 1e-9 and ix[0] == "arfima1p")))
+    put("comp-n-h05", str(sum(1 for ix in sizes.index if abs(ix[1] - 0.5) < 1e-9)))
+    h05 = sizes[np.isclose(sizes.index.get_level_values("H"), 0.5)]
+    put("comp-hi4-lw-h05-min", fixed(h05["HI4_CosCert_LW"].min(), 1)); put("comp-hi4-lw-h05-max", fixed(h05["HI4_CosCert_LW"].max(), 1))
+    n500 = sizes[sizes.index.get_level_values("n") == 500]
+    put("comp-hi4-lw-n500-max", fixed(n500["HI4_CosCert_LW"].max(), 1)); put("comp-hi4-elw-n500-max", fixed(n500["HI4_CosCert_ELW"].max(), 1))
+    put("comp-n500-designs", str(len(n500)))
+    pwv = CP.pivot(index=["model", "H", "n"], columns="method", values="pw")
+    loss_ = pwv["HI4_CosCert_LW"] - pwv["HI4_CosCert_UpperCI"]
+    put("comp-up-pwloss-med", fixed(float(loss_.median()), 0)); put("comp-up-pwloss-max", fixed(float(loss_.max()), 0))
+    CHECKS.append(("E3d: upper-bound rule at or below 5 % in every n = 500 design", bool(n500["HI4_CosCert_UpperCI"].max() <= 5.0)))
     def cpv(model, H_, n_, meth, col="sz"):
         s = CP[(CP.model == model) & np.isclose(CP.H, H_) & (CP.n == n_) & (CP.method == meth)]
         return float(s[col].iloc[0])
@@ -797,9 +819,9 @@ if need(os.path.exists(COMPf), "E3d competitors"):
     pure_up = CP[CP.model.isin(["fgn", "arfima0"]) & (CP.method == "HI4_CosCert_UpperCI")]
     put("comp-hi4-up-pure-max", fixed(float(pure_up.sz.max()), 1))
     up_500 = CP[(CP.n == 500) & (CP.method == "HI4_CosCert_UpperCI")]
-    put("comp-hi4-up-n500-max", fixed(float(up_500.sz.max()), 1))
+    put("comp-hi4-up-n500-max", fixed(float(up_500.sz.max()), 2))
     put("comp-hi4-lw-ar1m-09-100", fixed(cpv("arfima1m", 0.9, 100, "HI4_CosCert_LW", "sz"), 1))
-    put("comp-hi4-up-ar1m-09-100", fixed(cpv("arfima1m", 0.9, 100, "HI4_CosCert_UpperCI", "sz"), 1))
+    put("comp-hi4-up-ar1m-09-100", fixed(cpv("arfima1m", 0.9, 100, "HI4_CosCert_UpperCI", "sz"), 2))
     put("comp-hi4-lw-ar1m-07-500", fixed(cpv("arfima1m", 0.7, 500, "HI4_CosCert_LW", "sz"), 1))
     put("comp-hi4-up-ar1m-07-500", fixed(cpv("arfima1m", 0.7, 500, "HI4_CosCert_UpperCI", "sz"), 1))
     put("comp-hi4-up-fgn-07-500-pw", fixed(cpv("fgn", 0.7, 500, "HI4_CosCert_UpperCI", "pw"), 1))
@@ -844,68 +866,88 @@ if need(os.path.exists(COMPf), "E3d competitors"):
     Lc.append(r"\bottomrule\end{tabular}")
     open(os.path.join(TAB, "tab_competitors.tex"), "w", encoding="utf-8").write("\n".join(Lc) + "\n")
 
-# ------------------------------------------------------------------ Section 6: Empirical applications (E13)
+# ------------------------------------------------------------------ Section 6: Empirical illustration, Nile minima (E13)
 E13f = os.path.join(RES, "E13_empirical.json")
 if need(os.path.exists(E13f), "E13 empirical"):
-    E13 = json.load(open(E13f, encoding="utf-8"))
-    by_id = {c["id"]: c for c in E13["cases"]}
-    cmap = [("aus", "aus_elec_nsw"), ("lon", "london_pm25_who05"), ("lon15", "london_pm25_who21"), ("nile", "nile_minima")]
-    for pfx, cid in cmap:
-        c = by_id[cid]
-        put(f"emp-{pfx}-xbar", fixed(c["xbar"], 2) if pfx != "nile" else fixed(c["xbar"], 1))
-        put(f"emp-{pfx}-hlw", fixed(c["H_lw"], 3))
-        put(f"emp-{pfx}-helw", fixed(c["H_elw"], 3))
-        put(f"emp-{pfx}-seh", fixed(c["se_H"], 3))
-        put(f"emp-{pfx}-hup", fixed(c["H_up90"], 3))
-        put(f"emp-{pfx}-adg-p", fixed(c["tests"]["ADG_MAC"]["p_value"], 3))
-        put(f"emp-{pfx}-sub-p", fixed(c["tests"]["Subsampling_SN"]["p_value"], 3))
-        for tk in ("SN", "HI4", "HI16", "EWC8", "EWC32"):
-            t = c["tests"][tk]
-            put(f"emp-{pfx}-{tk}-stat", fixed(t["stat"], 2))
-            put(f"emp-{pfx}-{tk}-cvcc", fixed(t["cv_coscert_lw"], 2))
-            put(f"emp-{pfx}-{tk}-pnv", fixed(t["p_naive"], 3))
-            put(f"emp-{pfx}-{tk}-pcc", fixed(t["p_coscert_lw"], 3))
-            put(f"emp-{pfx}-{tk}-ratio", fixed(t["ci_width_ratio"], 2))
-            put(f"emp-{pfx}-{tk}-exnv", fixed(t["exact_arfima_size_naive_pct"], 1))
-    london = pd.read_csv(os.path.join(WORK, "data", "london_gr9_pm25_2017_2018.csv"))
-    put("emp-lon-arith", fixed(london.daily_pm25_ugm3.mean(), 2))
-    put("emp-lon-geom", fixed(np.exp(london.log_pm25.mean()), 2))
-    # Table 9: Empirical summary table
-    Le = [r"\begin{tabular}{@{}llrrrrrrr@{}}\toprule",
-          r"series & test & stat & \multicolumn{2}{c}{$5\,\%$ cutoff} & \multicolumn{2}{c}{$p$-value} & CI & naive\\",
-          r"\cmidrule(lr){4-5}\cmidrule(lr){6-7}",
-          r"($\hat H_{\mathrm{LW}}/\hat H_{\mathrm{ELW}}$, $n$, $\mu_0$) & & & naive & \CosCert{} & naive & \CosCert{} & ratio & size (\%)\\\midrule"]
-    tbl_cases = [
-        ("aus_elec_nsw", "AusElec-NSW"), ("london_pm25_who05", "London GR9"),
-        ("nile_minima", "Nile minima"), ("london_pm25_who21", "London GR9"),
-    ]
-    tlabels = [("SN", "SN"), ("HI4", r"HI, $m{=}4$"), ("HI16", r"HI, $m{=}16$"), ("EWC8", r"EWC, $B{=}8$"), ("EWC32", r"EWC, $B{=}32$")]
-    for ci, (cid, series_name) in enumerate(tbl_cases):
-        c = by_id[cid]
-        reference = {"aus_elec_nsw": r"0\,\%", "nile_minima": r"1100\,\mathrm{cm}",
-                     "london_pm25_who05": r"\log 10", "london_pm25_who21": r"\log 15"}[cid]
-        estimate_line = rf"$\hat H{{=}}{c['H_lw']:.3f}/{c['H_elw']:.3f}$"
-        design_line = rf"$n{{=}}{c['n']}$, $\mu_0{{=}}{reference}$"
-        meta_lines = [series_name, estimate_line, design_line]
-        show_tests = tlabels if cid != "london_pm25_who21" else [("SN", "SN"), ("HI4", r"HI, $m{=}4$"), ("EWC8", r"EWC, $B{=}8$")]
-        for ti, (tk, tl) in enumerate(show_tests):
-            t = c["tests"][tk]
-            col0 = meta_lines[ti] if ti < len(meta_lines) else ""
-            rev = r"$^\dagger$" if t["reversal_lw"] else ""
-            pnv_s = r"$<0.001$" if t["p_naive"] < 0.0005 else fixed(t["p_naive"], 3)
-            pcc_s = r"$<0.001$" if t["p_coscert_lw"] < 0.0005 else fixed(t["p_coscert_lw"], 3)
-            stat_s = f"${t['stat']:.2f}$" if t["stat"] < 0 else f"{t['stat']:.2f}"
-            Le.append(f"{col0} & {tl}{rev} & {stat_s} & {t['cv_naive']:.2f} & {t['cv_coscert_lw']:.2f} & "
-                      f"{pnv_s} & {pcc_s} & {t['ci_width_ratio']:.2f}$\\times$ & {t['exact_arfima_size_naive_pct']:.1f}" + r"\\")
-        tm, ts = c["tests"]["ADG_MAC"], c["tests"]["Subsampling_SN"]
-        tm_s = f"${tm['stat']:.2f}$" if tm["stat"] < 0 else f"{tm['stat']:.2f}"
-        Le.append(f" & ADG--MAC / Sub.\\ SN & {tm_s} / -- & "
-                  + r"\multicolumn{2}{c}{1.96 / --} & "
-                  + rf"\multicolumn{{2}}{{c}}{{{tm['p_value']:.3f} / {ts['p_value']:.3f}}} & -- & --" + r"\\")
-        if ci < len(tbl_cases) - 1:
-            Le.append(r"\midrule")
+    c = json.load(open(E13f, encoding="utf-8"))["cases"][0]
+    T13 = c["tests"]; FS = ("HI4", "HI16", "EWC8", "EWC32"); ALL5 = ("SN",) + FS
+    put("emp-n", str(c["n"])); put("emp-xbar", fixed(c["xbar"], 1)); put("emp-mlw", str(c["m_lw"])); put("emp-bsub", str(c["b_sub"]))
+    put("emp-hlw", fixed(c["H_lw"], 3)); put("emp-helw", fixed(c["H_elw"], 3)); put("emp-hup", fixed(c["H_up90"], 3))
+    put("emp-seh", fixed(c["se_H"], 3)); put("emp-dlw", fixed(c["d_lw"], 3)); put("emp-mu0", f"{c['mu0']:.0f}")
+    put("emp-min", f"{c['min']:.0f}"); put("emp-max", f"{c['max']:.0f}")
+    for tk in ALL5:
+        t = T13[tk]
+        put(f"emp-{tk}-ratio", fixed(t["ci_ratio"]["lw"], 2)); put(f"emp-{tk}-ratio-up", fixed(t["ci_ratio"]["up"], 1))
+        put(f"emp-{tk}-pnv", fixed(t["p_naive"], 3)); put(f"emp-{tk}-pcc", fixed(t["p_coscert_lw"], 3))
+        put(f"emp-{tk}-missnv", fixed(t["noncoverage_exact_pct"]["naive"], 1))
+        for r_, lab_ in (("naive", "nv"), ("lw", "cc"), ("up", "up")):
+            put(f"emp-{tk}-{lab_}-lo", fixed(t["ci95"][r_][0], 1)); put(f"emp-{tk}-{lab_}-hi", fixed(t["ci95"][r_][1], 1))
+    rat = [T13[k]["ci_ratio"]["lw"] for k in ALL5]; ratu = [T13[k]["ci_ratio"]["up"] for k in ALL5]
+    mnv = [T13[k]["noncoverage_exact_pct"]["naive"] for k in ALL5]; mcc = [T13[k]["noncoverage_exact_pct"]["lw"] for k in ALL5]
+    mup = [T13[k]["noncoverage_exact_pct"]["up"] for k in ALL5]
+    put("emp-ratio-min", fixed(min(rat), 2)); put("emp-ratio-max", fixed(max(rat), 2))
+    put("emp-ratio-up-min", fixed(min(ratu), 1)); put("emp-ratio-up-max", fixed(max(ratu), 1))
+    put("emp-missnv-min", fixed(min(mnv), 1)); put("emp-missnv-max", fixed(max(mnv), 1))
+    put("emp-cover-nv-min", fixed(100 - max(mnv), 0))
+    put("emp-misscc-min", fixed(min(mcc), 3)); put("emp-misscc-max", fixed(max(mcc), 3))
+    # bounds stated as "below", "p <=" and "p >=" are rounded outward so that the printed bound is true
+    put("emp-missup-max", f"{math.ceil(1000 * max(mup)) / 1000:.3f}")
+    put("emp-pnv-fs-max", f"{math.ceil(1000 * max(T13[k]['p_naive'] for k in FS)) / 1000:.3f}")
+    put("emp-pcc-min", f"{math.floor(1000 * min(T13[k]['p_coscert_lw_box'][0] for k in ALL5)) / 1000:.3f}")
+    tm, ts = T13["ADG_MAC"], T13["Subsampling_SN"]
+    put("emp-adg-p", fixed(tm["p_value"], 3)); put("emp-sub-p", fixed(ts["p_value"], 3))
+    put("emp-adg-lo", fixed(tm["ci95"][0], 1)); put("emp-adg-hi", fixed(tm["ci95"][1], 1))
+    put("emp-sub-lo", fixed(ts["ci95"][0], 1)); put("emp-sub-hi", fixed(ts["ci95"][1], 1))
+    CHECKS.append(("E13: every naive fixed-smoothing test rejects mu0 and no CosCert test does",
+                   all(T13[k]["reject_mu0"]["naive"] for k in FS) and not any(T13[k]["reject_mu0"]["lw"] for k in ALL5)))
+    nv_, cc_ = T13["SN"]["ci95"]["naive"], T13["SN"]["ci95"]["lw"]
+    CHECKS.append(("E13: MAC and subsampling intervals contain the short-memory SN interval and lie inside the CosCert SN interval",
+                   all(cc_[0] <= T13[k_]["ci95"][0] <= nv_[0] and nv_[1] <= T13[k_]["ci95"][1] <= cc_[1] for k_ in ("ADG_MAC", "Subsampling_SN"))))
+    CHECKS.append(("E13: LW and ELW CosCert decisions agree", all(T13[k]["reject_mu0"]["lw"] == T13[k]["reject_mu0"]["elw"] for k in ALL5)))
+    CHECKS.append(("E13: exact miss rate of CosCert intervals within 0.01 pp of 5 %", max(abs(v - 5) for v in mcc) < 0.01))
+    # Table 9: inference on the mean Nile minimum
+    def iv(lo, hi):
+        return f"${lo:.1f}$--${hi:.1f}$"
+    def pv(p_):
+        return r"$<0.001$" if p_ < 0.0005 else fixed(p_, 3)
+    Le = [r"\begin{tabular}{@{}lrrccrrrrrr@{}}\toprule",
+          r" & \multicolumn{2}{c}{$5\,\%$ cutoff} & \multicolumn{2}{c}{$95\,\%$ interval for $\mu$ (cm)} & \multicolumn{2}{c}{width ratio}"
+          r" & \multicolumn{2}{c}{miss rate (\%)} & \multicolumn{2}{c}{$p$ at $\mu_0=" + f"{c['mu0']:.0f}" + r"$}\\",
+          r"\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}\cmidrule(l){10-11}",
+          r"test & naive & \CosCert{} & naive & \CosCert{} & $\hat H_{\mathrm{LW}}$ & $\hat H_{\mathrm{up}}$ & naive & \CosCert{} & naive & \CosCert{}\\\midrule"]
+    for tk, tl in (("SN", "SN"), ("HI4", r"HI, $m{=}4$"), ("HI16", r"HI, $m{=}16$"), ("EWC8", r"EWC, $B{=}8$"), ("EWC32", r"EWC, $B{=}32$")):
+        t = T13[tk]; rev = r"$^\dagger$" if t["reversal_lw"] else ""
+        Le.append(f"{tl}{rev} & {t['cv']['naive']:.2f} & {t['cv']['lw']:.2f} & {iv(*t['ci95']['naive'])} & {iv(*t['ci95']['lw'])} & "
+                  f"{t['ci_ratio']['lw']:.2f} & {t['ci_ratio']['up']:.1f} & {t['noncoverage_exact_pct']['naive']:.1f} & "
+                  f"{t['noncoverage_exact_pct']['lw']:.2f} & {pv(t['p_naive'])} & {pv(t['p_coscert_lw'])}" + r"\\")
+    Le.append(r"\addlinespace")
+    Le.append(r"ADG--MAC & \multicolumn{2}{c}{$1.96$} & \multicolumn{2}{c}{" + iv(*tm["ci95"]) + r"} & -- & -- & -- & -- & \multicolumn{2}{c}{"
+              + fixed(tm["p_value"], 3) + r"}\\")
+    Le.append(r"subsampling & \multicolumn{2}{c}{--} & \multicolumn{2}{c}{" + iv(*ts["ci95"]) + r"} & -- & -- & -- & -- & \multicolumn{2}{c}{"
+              + fixed(ts["p_value"], 3) + r"}\\")
     Le.append(r"\bottomrule\end{tabular}")
     open(os.path.join(TAB, "tab_empirical.tex"), "w", encoding="utf-8").write("\n".join(Le) + "\n")
+
+# ------------------------------------------------------------------ E2q: certification of all tabulated SN brackets by adaptive quadrature
+E2qS = os.path.join(RES, "E2q_summary.json")
+if need(os.path.exists(E2qS), "E2q summary"):
+    sq = json.load(open(E2qS))
+    nest_, ovl_, tot_, dmid_, wq_ = 0, 0, 0, 0.0, []
+    for f in sorted(glob.glob(os.path.join(RES, "E2q", "H*.json"))):
+        Q_ = json.load(open(f)); R2 = json.load(open(os.path.join(RES, "E2r", os.path.basename(f))))
+        for p_, v_ in Q_["sn"].items():
+            w_ = R2["sn"][p_]
+            for a_, b_ in ((v_["F_at_q_lo"], w_["F_at_q_lo"]), (v_["F_at_q_hi"], w_["F_at_q_hi"])):
+                tot_ += 1; ovl_ += int(max(a_[0], b_[0]) <= min(a_[1], b_[1])); nest_ += int(b_[0] <= a_[0] and a_[1] <= b_[1])
+                dmid_ = max(dmid_, abs(0.5 * (a_[0] + a_[1]) - 0.5 * (b_[0] + b_[1]))); wq_.append(a_[1] - a_[0])
+    e2r_s = sum(json.load(open(f))["total_s"] for f in glob.glob(os.path.join(RES, "E2r", "H*.json")))
+    put("e2q-n-brackets", str(sq["n_brackets"])); put("e2q-n-ok", str(sq["n_certified"])); put("e2q-n-H", str(sq["n_H"]))
+    put("e2q-maxwidth", sci(sq["max_width"], 1)); put("e2q-medwidth", sci(float(np.median(wq_)), 1))
+    put("e2q-cpu-min", fixed(sq["total_seconds"] / 60, 0)); put("e2r-cpu-h", fixed(e2r_s / 3600, 1))
+    put("e2q-speedup", fixed(e2r_s / sq["total_seconds"], 0)); put("e2q-n-eval", str(tot_)); put("e2q-n-overlap", str(ovl_))
+    put("e2q-n-nested", str(nest_)); put("e2q-maxmiddiff", sci(dmid_, 1))
+    CHECKS.append((f"E2q: all {sq['n_brackets']} brackets certified by adaptive quadrature", sq["n_certified"] == sq["n_brackets"] and not sq["failed"]))
+    CHECKS.append((f"E2q vs E2r: all {tot_} enclosures overlap", ovl_ == tot_))
 
 # ------------------------------------------------------------------ E11: independent checks of the headline numbers (Appendix E)
 # Revised 17 Nov 2026 (audit D2, editorial pass with the scientific-writing-studio table checks): rows grouped by the kind of
@@ -999,6 +1041,20 @@ if need(bool(E0d) and SN, "E11 inputs"):
         add11("probabilistic", r"oracle rates, estimated-$H$ study", r"exact laws, true $H$",
               rf"simulation, {NUM['or-n-cells']} cells", rf"{NUM['or-inside-pct']}\,\% inside $99\,\%$ intervals",
               "E3b_plugin grid; E3_rates_*.csv")
+    if "PL" in globals() and "CP" in globals():
+        P5_ = PL[np.isclose(PL.alpha, 0.05)]
+        zz = []
+        for meth_, (proc_, k_, rule_) in {"SN_CosCert_LW": ("SN", 0, "plugin_exact"), "HI4_CosCert_LW": ("HI", 4, "plugin_exact_trunc"),
+                                         "EWC8_CosCert_LW": ("EWC", 8, "plugin_exact_trunc")}.items():
+            for _, r_ in CP[CP.method == meth_].iterrows():
+                s_ = P5_[(P5_.model == r_.model) & np.isclose(P5_.H, r_.H) & (P5_.n == r_.n) & (P5_.procedure == proc_) & (P5_.k == k_) & (P5_.rule == rule_)]
+                if len(s_) == 1:
+                    p1, n1, p2, n2 = float(s_.mc_rate.iloc[0]), int(s_.R.iloc[0]), float(r_.size_rate), int(r_.R)
+                    zz.append((p1 - p2) / math.sqrt(p1 * (1 - p1) / n1 + p2 * (1 - p2) / n2))
+        put("resim-n", str(len(zz))); put("resim-maxz", fixed(max(abs(z) for z in zz), 2))
+        add11("probabilistic", r"feasible plug-in sizes (SN, HI, EWC)", rf"simulation, $R={grouped(int(PL.R.max()))}$",
+              rf"separate simulation, $R={grouped(int(CP.R.max()))}$, other seeds", rf"max $|z|={max(abs(z) for z in zz):.2f}$, {len(zz)} cells",
+              "E3b_plugin_v2_*.csv; E3d_competitors.csv", max(abs(z) for z in zz) < 4)
     if "hi17-t2-maxz" in NUM:
         add11("probabilistic", r"\citet[Table~2]{HI17}", r"exact finite-$T$ laws", "their simulation",
               rf"max $|z|={NUM['hi17-t2-maxz']}$, {NUM['hi17-t2-n']} cells", "E3c_hi2017_table2.csv")
@@ -1027,8 +1083,10 @@ if need(bool(E0d) and SN, "E11 inputs"):
                 for a, b in zip(v_["F_at_q_lo"] + v_["F_at_q_hi"], v_["old_F_at_q_lo"] + v_["old_F_at_q_hi"]):
                     dmax = max(dmax, abs(a - b))
         put("e2r-n-brackets", str(nb)); put("e2r-n-ok", str(okb)); put("e2r-maxchange", sci(dmax, 0))
-        add11("reproducibility", rf"certified $q_p(H)$, {nb} brackets", r"ball-arithmetic certificate (Appendix~B)",
-              r"full independent re-certification", rf"all {okb}/{nb} confirmed", "E2r/H*.json", okb == nb)
+        add11("reproducibility", rf"certified $q_p(H)$, {nb} brackets", r"adaptive complex ball quadrature (Theorem~10)",
+              r"tilted midpoint Poisson sum, separate full run",
+              rf"both certify {okb}/{nb}; {NUM.get('e2q-n-overlap', '?')}/{NUM.get('e2q-n-eval', '?')} enclosures overlap",
+              "E2q/H*.json; E2r/H*.json", okb == nb and NUM.get("e2q-n-ok") == str(nb))
         CHECKS.append((f"E2r: all {nb} certified brackets confirmed", okb == nb))
     CHECKS.append(("E11: every check row passes its own criterion", all(r["ok"] for r in E11rows)))
     # --- write

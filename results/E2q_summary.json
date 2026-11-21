@@ -1,0 +1,13 @@
+{
+ "route": "cdf_T_certified_quad",
+ "J": 16384,
+ "t": 25.0,
+ "tilt": 0.25,
+ "n_H": 50,
+ "n_brackets": 300,
+ "n_certified": 300,
+ "max_width": 2.268329024945892e-06,
+ "total_seconds": 954.4493813000081,
+ "build_seconds": 189.79594810000708,
+ "failed": []
+}
